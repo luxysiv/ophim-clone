@@ -10,21 +10,6 @@ const routes =[
             path: '/TestPage',
             name: "TestPage",
             component: () => import("@/components/TestPage")
-        },
-        {
-            path: '/Profile',
-            name:'ProfilePage',
-            component: () => import("@/pages/Profile")
-        },
-        {
-            path: '/Action',
-            name:'ActionPage',
-            component: () => import("@/pages/Action")
-        },
-        {
-            path: '/Setting',
-            name:'SettingPage',
-            component: () => import("@/pages/Setting")
         }
         ]
     }
