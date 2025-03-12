@@ -6,11 +6,12 @@ const routes =[
         name: "Layout",
         redirect: '',
         component: () => import("@/components/Layout"),
-        children: [{
-            path: '/TestPage',
-            name: "TestPage",
-            component: () => import("@/components/TestPage")
-        }
+        children: [
+        {
+            path: '/home',
+            name: "HomePage",
+            component: () => import("@/pages/Home")
+        },
         ]
     }
 ]
