@@ -12,6 +12,7 @@ const routes =[
             name: "HomePage",
             component: () => import("@/pages/Home")
         },
+        
         ]
     }
 ]

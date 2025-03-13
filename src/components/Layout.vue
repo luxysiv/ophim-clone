@@ -7,37 +7,38 @@
 
     <div class="container-fluid">
       <div class="row">
-        <!-- Sidebar (Tuỳ chọn) -->
-        <aside class="col-md-3">
-          <sidebar-component />
-        </aside>
-
-        <!-- Main Content -->
-        <main class="col-md-9">
-          <slot />
-        </main>
+       
+      <b-col>
+        <b-skeleton v-if="isLoading1" width="100%" height="500px"></b-skeleton>
+        <b-img-lazy v-else :src="isLoading" alt="Loaded image" width="150px"></b-img-lazy>
+      </b-col>
+    
+        <router-view />
       </div>
     </div>
-
+    <hr/>
     <!-- Footer (Chân trang) -->
     <footer>
       <footer-component />
     </footer>
+    <el-backtop :right="100" :bottom="100" />
   </div>
 </template>
 
 <script>
+import imgloading from "@/assets/biu.jpg";
 import HeaderComponent from '../components/Header.vue'
-import SidebarComponent from '../components/Sidebar.vue'
 import FooterComponent from '../components/Footer.vue'
 export default {
   name: "LayoutPage",
   data() {
-    return {};
+    return {
+      imgloading: imgloading,
+      isLoading1: true,
+    };
   },
   components:{
     HeaderComponent,
-    SidebarComponent,
     FooterComponent
   }
 };
