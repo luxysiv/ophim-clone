@@ -4,7 +4,7 @@ const routes =[
     {
         path: '',
         name: "Layout",
-        redirect: '',
+        redirect: '/home',
         component: () => import("@/components/Layout"),
         children: [
         {
@@ -12,7 +12,12 @@ const routes =[
             name: "HomePage",
             component: () => import("@/pages/Home")
         },
-        
+        {
+            path: '/movie/:slug',
+            name: "MovieDetail",
+            component: () => import("@/pages/MoiveDetail.vue"),
+            props: true
+        },
         ]
     }
 ]

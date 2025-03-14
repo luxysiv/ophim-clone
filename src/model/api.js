@@ -12,4 +12,5 @@ let URLInfor = "https://ophim1.com/phim/"
 export const urlImage = "https://img.ophim.live/uploads/movies/"
  export const ListmovieNew= (params, success, error) => http.GetNew(`${URL}`, params, success, error)
  export const ListmovieInfor= (params, success, error) => http.GetNew(`${URLInfor}`, params, success, error)
+ export const MoveInfor= (params, success, error) => http.GetNew(`${URLInfor}${params}`, {}  , success, error)
     

@@ -1,17 +1,14 @@
 <template>
   <div>
     <!-- Header (Thanh điều hướng) -->
-    <header>
+    <header class="fixed-header">
       <header-component />
     </header>
 
-    <div class="container-fluid">
+    <div class="container-fluid main-content">
       <div class="row">
        
-      <b-col>
-        <b-skeleton v-if="isLoading1" width="100%" height="500px"></b-skeleton>
-        <b-img-lazy v-else :src="isLoading" alt="Loaded image" width="150px"></b-img-lazy>
-      </b-col>
+      
     
         <router-view />
       </div>
@@ -45,6 +42,21 @@ export default {
 </script>
 
 <style scoped>
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: white; /* Hoặc màu khác nếu cần */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+}
+
+/* Đảm bảo nội dung không bị che */
+.main-content {
+  padding-top: 70px; /* Điều chỉnh phù hợp với chiều cao của header */
+}
+
 .container-fluid {
   margin-top: 20px;
 }
