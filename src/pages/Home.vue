@@ -14,6 +14,7 @@
             controlslist="nodownload nofullscreen noremoteplayback"
             disablePictureInPicture
             muted
+            style="border: 1px solid #ccc"
           >
             Trình duyệt của bạn không hỗ trợ video.
           </video>
