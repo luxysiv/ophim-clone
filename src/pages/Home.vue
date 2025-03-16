@@ -25,7 +25,7 @@
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <b-row align-h="start" class="text-left">
           <b-col cols="3">
-            <h1>{{ section.title }}</h1>
+            <h1 class="Title">{{ section.title }}</h1>
           </b-col>
           <b-col cols="2" class="text-left">
             <router-link :to="{ name: '', params: { id: section.id } }">
@@ -49,8 +49,8 @@
             <div class="scroll-container" :ref="`scrollContainer${sectionIndex}`">
               <b-row class="flex-nowrap">
                 <b-col
-                  v-for="(item, index) in isLoading ? 8 : listMovie.slice(0, 8)"
-                  :key="index"
+                  v-for="item in isLoading ? Array(8).fill({})  : section.listMovie.slice(0, 10)"
+                  :key="item._id"
                   class="text-center"
                 >
                   <b-skeleton
@@ -61,7 +61,7 @@
                   ></b-skeleton>
                   <router-link :to="{name: 'MovieDetail', params:{slug: item.slug}}" v-else>
                     <b-img
-                      :src="`${imageMove}${item.poster_url}`"
+                      :src="`${urlImage}${item.poster_url}`"
                       alt="Card Image"
                       width="250"
                       height="200"
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { ListmovieNew } from "@/model/api";
+import { ListMovieByCateHome,urlImage } from "@/model/api";
 
 export default {
   name: "HomePage",
@@ -97,34 +97,45 @@ export default {
       imageLoading: 'https://trailer.vieon.vn/Teaser_TuCam_mkt.mp4',
       isLoading: true,
       page: 1,
-      imageMove: "",
+      urlImage: urlImage,
+      imageMove: [],
       listMovie: [],
       //showControls: false,
       showControls: [],
       sections: [
-        { title: "MỚI NHẤT",id: 'moi-nhat' },
-        { title: "TRUNG QUỐC", id: 'trung-quoc'},
-        { title: "HOT", id:'phim-hot'}
+        { title: "PHIM ĐỀ CỬ",id: 'danh-sach/moi-nhat',listMovie: [] },
+        { title: "PHIM THỊNH HÀNH", id: 'danh-sach/thinh-hanh',listMovie: []},
+        { title: "PHIM HÀN QUỐC", id:'quoc-gia/han-quoc',listMovie: []},
+        { title: "PHIM TRUNG QUỐC", id:'quoc-gia/trung-quoc',listMovie: []}
       ]
     };
   },
   mounted() {
-    ListmovieNew(
-      { page: this.page },
+    this.sections.forEach(item => {
+      this.ListMovie(item.id, item)
+
+    console.log(this.listMovie)
+    })
+  },
+  methods: {
+    ListMovie(sectionId,section){
+      ListMovieByCateHome(
+      sectionId ,
       (result) => {
-        if (result.status === true) {
-          this.listMovie = result.items;
-          this.imageMove = result.pathImage;
+        if (result.status === 'success') {
+          section.listMovie = result.data.items;
+          this.imageMove = result.data.items.poster_url;
           this.isLoading = false;
         }
-        console.log(result);
+        // console.log(result);
       },
       (err) => {
         console.log(err);
       }
     );
-  },
-  methods: {
+    },
+
+
     scrollLeft(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: -300, behavior: "smooth" });
     },
@@ -191,5 +202,10 @@ export default {
   width: 100%;
   height: 600px;
   object-fit: cover;
+}
+.Title{
+    font-weight: 700;
+    font-size: 24px;
+    margin: 15px 0;
 }
 </style>

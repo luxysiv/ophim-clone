@@ -15,6 +15,8 @@ let urlListMoiveByCategoris = "https://ophim1.com/v1/api/danh-sach/"
 // the loai phim
 let urlCategoris = "https://ophim1.com/v1/api/the-loai/"
 
+let urlCategorisHome = "https://ophim1.com/v1/api/"
+
 // quoc gia
 let urlCity = "https://ophim1.com/v1/api/quoc-gia/"
 
@@ -31,6 +33,7 @@ export const urlImage = "https://img.ophim.live/uploads/movies/"
 
  // danh sach phim theo the loai phim
  export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris}${params}`, {}  , success, error)
+ export const ListMovieByCateHome= (params, success, error) => http.GetNew(`${urlCategorisHome}${params}`, {}  , success, error)
 
  // the loai phim
  export const CategorisDetail= (params, success, error) => http.GetNew(`${urlCategoris}${params}`, {}  , success, error)

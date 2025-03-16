@@ -5,11 +5,8 @@
       <header-component />
     </header>
 
-    <div class="container-fluid main-content">
+    <div class="container">
       <div class="row">
-       
-      
-    
         <router-view />
       </div>
     </div>
@@ -48,16 +45,11 @@ export default {
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: white; /* Hoặc màu khác nếu cần */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+  background-color: rgb(2, 2, 2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
 
-/* Đảm bảo nội dung không bị che */
-.main-content {
-  padding-top: 70px; /* Điều chỉnh phù hợp với chiều cao của header */
-}
-
-.container-fluid {
-  margin-top: 20px;
+.container {
+  margin-top: 60px;
 }
 </style>

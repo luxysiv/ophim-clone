@@ -21,15 +21,20 @@
       </b-card-header>
       <b-card-body class="text-left">
         <b-button-group class="d-flex flex-wrap justify-content">
-          <div v-for="(episode, index) in movie.pageMovie" :key="index" class="episode-button-wrapper" style="width: 80px; height:40px;margin: 10px 20px; ">
-          <b-button
-            variant="dark"
-            class="episode-button"
-            style="margin: 10px 20px; width: 100%; height:100%"
-            @click="playEpisode(episode)"
+          <div
+            v-for="(episode, index) in movie.pageMovie"
+            :key="index"
+            class="episode-button-wrapper"
+            style="width: 80px; height: 40px; margin: 10px 20px"
           >
-            {{ episode.slug }}
-          </b-button>
+            <b-button
+              variant="dark"
+              class="episode-button"
+              style="margin: 10px 20px; width: 100%; height: 100%"
+              @click="playEpisode(episode)"
+            >
+              {{ episode.slug }}
+            </b-button>
           </div>
         </b-button-group>
       </b-card-body>
@@ -38,34 +43,47 @@
     <!-- Phần 2: Thông tin phim -->
     <div class="movie-info text-left">
       <h1>{{ movie.title }}</h1>
-      <p v-html= "movie.description"></p>
-      <p><strong>Diễn viên: </strong>{{ movie.actors.join(', ') }} </p>
-      <p><strong>Đạo diễn:</strong> {{ movie.director.join(', ') }}</p>
+      <p v-html="movie.description"></p>
+      <p><strong>Diễn viên: </strong>{{ movie.actors.join(", ") }}</p>
+      <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
       <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
-      <p><strong>Đánh giá:</strong> <el-rate v-model="valueRate" clearable /></p>
+      <p>
+        <strong>Đánh giá:</strong> <el-rate v-model="valueRate" clearable />
+      </p>
     </div>
 
     <!-- Phần 3: Đề xuất phimphim -->
     <div class="suggested-movies text-left">
       <h1>Đề xuất cho bạn!</h1>
-      <div class="movie-list" ref="movieList">
+      <div class="scroll-container movie-list" ref="movieList">
         <router-link
-          v-for="suggested in suggestedMovies"
+          v-for="suggested in suggestedMovies.slice(0, 8)"
           :key="suggested.id"
           :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
           class="movie-card"
         >
-          <img width="250" height="200" :src="urlImage+suggested.poster_url" :alt="suggested.origin_name" />
+          <b-img
+            width="250"
+            height="200"
+            :src="urlImage + suggested.poster_url"
+            :alt="suggested.origin_name"
+          />
           <p>{{ suggested.title }}</p>
         </router-link>
       </div>
+       <!-- Scroll Buttons -->
+    <div class="scroll-buttons">
+      <div class="scroll-button" @click="scrollLeft">←</div>
+      <div class="scroll-button" @click="scrollRight">→</div>
     </div>
+    </div>
+
 
     <!-- Phần 4: Binh luận -->
     <div class="comments">
-      <h2>Binh lu?n</h2>
+      <h2>Bình luận</h2>
       <b-form-textarea v-model="newComment" placeholder="Viết bình luận..." />
-      <b-button @click="addComment">G?i</b-button>
+      <b-button @click="addComment">Gửi</b-button>
       <ul>
         <li v-for="(comment, index) in comments" :key="index">{{ comment }}</li>
       </ul>
@@ -74,25 +92,25 @@
 </template>
 
 <script>
-import { MoveInfor,ListMovieByCate,urlImage } from "@/model/api";
+import { MoveInfor, ListMovieByCate, urlImage } from "@/model/api";
 
 export default {
   name: "MovieDetail",
   data() {
     return {
+      isLoading: true,
       movie: {
         title: "",
         valueRate: 5,
         description: "",
-        videoUrl:
-          "https://vip.opstream10.com/share/45b36e5ecc568d49a32b60f80f332b69",
+        videoUrl: "",
         actors: [],
         director: [],
         genre: "",
         pageMovie: [],
         page: 1,
         rating: 5,
-        categoris: ''
+        categoris: "",
       },
       urlImage: urlImage,
       suggestedMovies: [],
@@ -101,43 +119,60 @@ export default {
     };
   },
   props: ["slug"],
-   mounted() {
-    MoveInfor(
-      this.slug,
-      (result) => {
-        if (result.status == true) {
-          this.movie.title = result.movie.name;
-          this.movie.description = result.movie.content;
-          this.movie.pageMovie = result.episodes[0].server_data;
-          this.movie.director = result.movie.director;
-
-          this.movie.actors = result.movie.actor;
-          for(var i=0;i<result.movie.country.length;i++){
-            this.movie.genre = result.movie.country[i]
-          }
-          this.movie.categoris = result.movie.category[0].slug
-          console.log(this.movie.categoris)
-          
-        }
-        console.log(result);
-      },
-      (err) => {
-        console.log(err);
-      }
-    );
-    ListMovieByCate(this.movie.categoris,
-      (data) =>{
-        if(data.status == 'success'){
-          this.suggestedMovies = data.data.items
-        }
-        console.log(data)
-      },
-      (err) =>{
-        console.log(err)
-      }
-    )
+  watch: {
+    slug(newSlug) {
+      this.MoveInfor(newSlug);
+      this.ListMovieByCate();
+    },
+  },
+  mounted() {
+    this.MoveInfor(this.slug);
+    this.ListMovieByCate();
   },
   methods: {
+    // Call API
+    MoveInfor(slug) {
+      MoveInfor(
+        slug,
+        (result) => {
+          if (result.status == true) {
+            this.movie.title = result.movie.name;
+            this.movie.description = result.movie.content;
+            this.movie.pageMovie = result.episodes[0].server_data;
+            this.movie.director = result.movie.director;
+            this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
+            this.movie.actors = result.movie.actor;
+            for (var i = 0; i < result.movie.country.length; i++) {
+              this.movie.genre = result.movie.country[i];
+            }
+            this.movie.categoris = result.movie.category[0].slug;
+              
+            
+          }
+          console.log(result);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    },
+    ListMovieByCate() {
+      ListMovieByCate(
+        this.movie.categoris,
+
+        (data) => {
+          if (data.status == "success") {
+            this.suggestedMovies = data.data.items;
+            this.isLoading = false;
+          }
+          console.log(data);
+        },
+        (err) => {
+          console.log(err);
+        }
+      );
+    },
+
     addComment() {
       if (this.newComment.trim()) {
         this.comments.push(this.newComment);
@@ -149,6 +184,19 @@ export default {
       this.movie.videoUrl = episode.link_embed;
       this.movie.page = episode.slug;
     },
+
+    scrollLeft() {
+      const container = this.$refs.movieList;
+      container.scrollLeft -= 250; // Adjust the scroll distance as needed
+    },
+    
+    // Scroll the container to the right
+    scrollRight() {
+      const container = this.$refs.movieList;
+      container.scrollLeft += 250; // Adjust the scroll distance as needed
+    },
+
+
   },
 };
 </script>
@@ -160,10 +208,6 @@ export default {
 }
 
 .movie-info {
-  text-align: left;
-  margin-top: 20px;
-}
-suggested-movies{
   text-align: left;
   margin-top: 20px;
 }
@@ -205,8 +249,71 @@ suggested-movies{
 }
 
 .movie-card {
-  margin-right: 15px;
+  margin-right: 22px;
   text-align: center;
   flex-shrink: 0; /* Không co lại khi không gian bị hạn chế */
+}
+.suggested-movies {
+  position: relative;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: scroll;
+  gap: 16px;
+  padding-bottom: 8px;
+}
+
+.movie-card {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  text-align: center;
+  cursor: pointer;
+}
+
+.movie-card img {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.movie-card p {
+  margin-top: 8px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.scroll-buttons {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  visibility: hidden;
+}
+
+.scroll-container:hover + .scroll-buttons,
+.scroll-buttons:hover {
+  visibility: visible;
+}
+
+.scroll-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.scroll-button:hover {
+  background-color: rgba(0, 0, 0, 0.7);
 }
 </style>
