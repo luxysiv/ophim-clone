@@ -17,12 +17,6 @@
         <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le"
           >Phim Lẻ</b-nav-item
         >
-        <b-nav-item :active="$route.path === '/the-thao'" to="/the-thao"
-          >Thể thao</b-nav-item
-        >
-        <b-nav-item :active="$route.path === '/thieu-nhi'" to="/thieu-nhi"
-          >Thiếu nhi</b-nav-item
-        >
         <b-nav-item-dropdown text="Thể loại" right>
           <b-dropdown-item href="#">Hành động</b-dropdown-item>
           <b-dropdown-item href="#">Cổ trang</b-dropdown-item>
@@ -36,7 +30,6 @@
           <b-dropdown-item href="#">Trung Quốc</b-dropdown-item>
           <b-dropdown-item href="#">Hàn Quốc</b-dropdown-item>
           <b-dropdown-item href="#">Nhật Bản</b-dropdown-item>
-          <b-dropdown-item href="#">Tình Cảm</b-dropdown-item>
           <b-dropdown-item href="#">Thái Lan</b-dropdown-item>
           <b-dropdown-item href="#">Ấn Độ</b-dropdown-item>
           <b-dropdown-item href="#">Anh</b-dropdown-item>
@@ -44,10 +37,14 @@
       </b-navbar-nav>
 
       <b-navbar-nav class="right-section">
-        <b-nav-item :active="$route.path === '/vip'" to="/vip" class="vip-button">ĐĂNG KÝ VIP</b-nav-item>
-        <b-nav-item :active="$route.path === '/nhap-ma'" to="/nhap-ma"
-          >Nhập mã</b-nav-item
-        >
+        <b-form inline class="mr-3">
+          <b-input-group>
+            <b-form-input v-model="searchQuery" placeholder="Tìm kiếm tên phim..." class="mr-2" clearable></b-form-input>
+            <b-button variant="outline-light" @click="searchMovie">
+              <b-icon icon="search"></b-icon>
+            </b-button>
+          </b-input-group>
+        </b-form>
         <b-nav-item-dropdown text="Ngôn ngữ" right>
           <b-nav-item href="#"><b-icon icon="search"></b-icon>Tiếng việt</b-nav-item>
           <b-nav-item href="#"><b-icon icon="search"></b-icon>English</b-nav-item>
@@ -62,11 +59,23 @@
 </template>
 
 <script>
+
 export default {
   name: "HeaderComponent",
   data() {
-    return {};
+    return {
+      searchQuery: ''
+    };
   },
+
+  methods:{
+    searchMovie(){
+      if(this.searchQuery.trim()){
+        this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } })
+      }
+      
+    }
+  }
 };
 </script>
 <style scoped>
@@ -93,4 +102,6 @@ export default {
 .vip-button:hover {
   background-color: #e0a800;
 }
+
+
 </style>

@@ -60,13 +60,29 @@
                     style="margin: 10px"
                   ></b-skeleton>
                   <router-link :to="{name: 'MovieDetail', params:{slug: item.slug}}" v-else>
-                    <b-img
-                      :src="`${urlImage}${item.poster_url}`"
-                      alt="Card Image"
-                      width="250"
-                      height="200"
+                    <b-card
+                      class="movie-card"
+                      no-body
+                      style="width: 250px; border: none; margin: 10px"
                     >
-                    </b-img>
+                     <div class="image-container">
+                      <b-img
+                        :src="`${urlImage}${item.poster_url}`"
+                        alt="Card Image"
+                        width="250"
+                        height="200"
+                        class="movie-img"
+                        lazy
+                      >
+                      </b-img>
+                     </div>
+                      <!-- Tiêu đề phim -->
+                      <b-card-body class="p-2 text-center movie-title">
+                        <b-card-title class="m-0 text-truncate" :title="item.name">
+                          {{ item.name }}
+                        </b-card-title>
+                      </b-card-body>
+                    </b-card>
 
                   </router-link>
                 </b-col>
@@ -207,5 +223,36 @@ export default {
     font-weight: 700;
     font-size: 24px;
     margin: 15px 0;
+}
+.image-container {
+  width: 100%;
+  height: 200px;
+  overflow: hidden; /* Giữ ảnh trong khung */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.movie-img {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.image-container:hover .movie-img {
+  transform: scale(1.1); /* Phóng to ảnh khi hover */
+}
+
+.movie-title {
+  background: rgba(0, 0, 0, 0.7); /* Làm mờ nền đen */
+  color: white;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 5px;
+  font-size: 20px;
+}
+h4{
+  font-size: 20px;
 }
 </style>

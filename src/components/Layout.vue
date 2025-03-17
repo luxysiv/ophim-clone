@@ -15,7 +15,7 @@
     <footer>
       <footer-component />
     </footer>
-    <el-backtop :right="10" :bottom="70" />
+    <!-- <el-backtop :right="10" :bottom="70" /> -->
   </div>
 </template>
 

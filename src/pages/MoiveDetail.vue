@@ -67,6 +67,7 @@
             height="200"
             :src="urlImage + suggested.poster_url"
             :alt="suggested.origin_name"
+            lazy
           />
           <p>{{ suggested.title }}</p>
         </router-link>
