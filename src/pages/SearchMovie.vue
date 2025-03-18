@@ -20,6 +20,7 @@
           </b-card>
         </router-link>
       </b-col>
+      <b-pagination v-model="currentPage" :total-rows="totalMovies" :per-page="moviesPerPage" class="justify-content-center mt-3" />
     </b-row>
 
     <!-- Hiển thị thông báo nếu không có kết quả -->
@@ -36,7 +37,10 @@ export default {
   data(){
     return{
         movies: [],
-        urlImage: urlImage
+        urlImage: urlImage,
+        currentPage:1,
+      moviesPerPage:20,
+      totalMovies:100,
     }
   },
   watch: {

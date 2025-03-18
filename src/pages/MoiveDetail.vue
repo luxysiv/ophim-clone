@@ -60,16 +60,33 @@
           v-for="suggested in suggestedMovies.slice(0, 8)"
           :key="suggested.id"
           :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-          class="movie-card"
+          class="text-decoration-none"
         >
-          <b-img
+        <b-card no-body class="movie-card">
+          <b-card-img :src="urlImage+suggested.poster_url" alt="Movie Image" class="movie-image" loading="lazy" />
+          <div class="overlay">
+              <b-badge v-if="suggested.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ suggested.lang }}</b-badge>
+              <b-badge v-else variant="warning" class="badge-top-left">{{ suggested.episode_current }}-{{ suggested.lang }}</b-badge>
+            </div>
+            <b-card-body class="p-2 text-center movie-title">
+              <b-card-title class="m-0 text-truncate" :title="suggested.name">
+                {{ suggested.name }}
+              </b-card-title>
+            </b-card-body>
+        </b-card>
+          <!-- <b-img
             width="250"
             height="200"
             :src="urlImage + suggested.poster_url"
             :alt="suggested.origin_name"
             lazy
           />
-          <p>{{ suggested.title }}</p>
+          <b-card-body class="p-2 text-center movie-title">
+              <b-card-title class="m-0 text-truncate" :title="suggested.name">
+                {{ suggested.name }}
+              </b-card-title>
+            </b-card-body> -->
+          <!-- <p>{{ suggested.title }}</p> -->
         </router-link>
       </div>
        <!-- Scroll Buttons -->
@@ -273,6 +290,14 @@ export default {
   justify-content: flex-end;
   text-align: center;
   cursor: pointer;
+  position: relative;
+  background-color: #1c1c1e;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.movie-card:hover {
+  transform: scale(1.05);
 }
 
 .movie-card img {
@@ -316,5 +341,24 @@ export default {
 
 .scroll-button:hover {
   background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+.movie-title {
+  background: rgba(0, 0, 0, 0.7); /* Làm mờ nền đen */
+  color: white;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 5px;
+  font-size: 20px;
+}
+h4{
+  font-size: 20px;
+}
+.overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 </style>

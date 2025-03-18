@@ -66,16 +66,13 @@
                       style="width: 250px; border: none; margin: 10px"
                     >
                      <div class="image-container">
-                      <b-img
-                        :src="`${urlImage}${item.poster_url}`"
-                        alt="Card Image"
-                        width="250"
-                        height="200"
-                        class="movie-img"
-                        lazy
-                      >
-                      </b-img>
+                      <b-card-img :src="`${urlImage}${item.poster_url}`" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" />
+                      
                      </div>
+                     <div class="overlay">
+                      <b-badge v-if="item.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ item.lang }}</b-badge>
+                      <b-badge v-else variant="warning" class="badge-top-left">{{ item.episode_current }}-{{ item.lang }}</b-badge>
+                    </div>
                       <!-- Tiêu đề phim -->
                       <b-card-body class="p-2 text-center movie-title">
                         <b-card-title class="m-0 text-truncate" :title="item.name">
@@ -143,7 +140,7 @@ export default {
           this.imageMove = result.data.items.poster_url;
           this.isLoading = false;
         }
-        // console.log(result);
+        console.log(result);
       },
       (err) => {
         console.log(err);
@@ -163,6 +160,17 @@ export default {
 </script>
 
 <style scoped>
+.movie-card {
+  position: relative;
+  background-color: #1c1c1e;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+}
 .scroll-wrapper {
   position: relative;
   display: flex;
@@ -254,5 +262,10 @@ export default {
 }
 h4{
   font-size: 20px;
+}
+.overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
 }
 </style>
