@@ -35,11 +35,23 @@ const routes =[
             name: "PhimLe",
             component: () => import("@/pages/PhimLe/PhimLe.vue")
         },
-        // {
-        //     path: '/the-loai/:slug',
-        //     name: "PhimLe",
-        //     component: () => import("@/pages/PhimLe/PhimLe.vue")
-        // },
+        {
+            path: '/phim-sap-chieu',
+            name: "PhimSapChieu",
+            component: () => import("@/pages/PhimSapChieu/SapChieu.vue")
+        },
+        {
+            path: '/the-loai/:path',
+            name: "TheLoai",
+            component: () => import("@/pages/TheLoai/TheLoai.vue"),
+            props: true
+        },
+        {
+            path: '/quoc-gia/:path',
+            name: "QuocGia",
+            component: () => import("@/pages/QuocGia/QuocGia.vue"),
+            props: true
+        },
         ]
     }
 ]

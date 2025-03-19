@@ -12,6 +12,7 @@
               :src="`${urlImage}${movie.poster_url}`"
               alt="Movie Image"
               class="movie-image"
+              v-lazy="`${urlImage}${movie.poster_url}`"
             ></b-card-img>
             <b-card-body>
               <b-card-title class="text-dark">{{ movie.name }}</b-card-title>

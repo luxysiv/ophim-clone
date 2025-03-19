@@ -18,24 +18,26 @@
           >Phim Lẻ</b-nav-item
         >
         <b-nav-item-dropdown text="Thể loại" right>
-          <b-dropdown-item href="#">Hành động</b-dropdown-item>
-          <b-dropdown-item href="#">Cổ trang</b-dropdown-item>
-          <b-dropdown-item href="#">Chiến tranh</b-dropdown-item>
-          <b-dropdown-item href="#">Tình cảm</b-dropdown-item>
-          <b-dropdown-item href="#">Hài hước</b-dropdown-item>
-          <b-dropdown-item href="#">Âm nhạc</b-dropdown-item>
-          <b-dropdown-item href="#">Học đường</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'hanh-dong'}}">Hành động</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'co-trang'}}">Cổ trang</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'chien-tranh'}}">Chiến tranh</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'tinh-cam'}}">Tình cảm</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'hai-huoc'}}">Hài hước</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'am-nhac'}}">Âm nhạc</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'TheLoai', params:{path: 'hoc-duong'}}">Học đường</b-dropdown-item>
         </b-nav-item-dropdown>
         <b-nav-item-dropdown text="Quốc gia" right>
-          <b-dropdown-item href="#">Trung Quốc</b-dropdown-item>
-          <b-dropdown-item href="#">Hàn Quốc</b-dropdown-item>
-          <b-dropdown-item href="#">Nhật Bản</b-dropdown-item>
-          <b-dropdown-item href="#">Thái Lan</b-dropdown-item>
-          <b-dropdown-item href="#">Ấn Độ</b-dropdown-item>
-          <b-dropdown-item href="#">Anh</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'trung-quoc'}}">Trung Quốc</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'han-quoc'}}">Hàn Quốc</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'nhat-ban'}}">Nhật Bản</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'thai-lan'}}">Thái Lan</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'an-do'}}">Ấn Độ</b-dropdown-item>
+          <b-dropdown-item :to="{name: 'QuocGia', params:{path: 'anh'}}">Anh</b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu"
+            >Sắp chiếu</b-nav-item
+          >
       </b-navbar-nav>
-
       <b-navbar-nav class="right-section">
         <b-form inline class="mr-3">
           <b-input-group>
