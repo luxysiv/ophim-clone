@@ -1,5 +1,6 @@
 <template>
     <div class="movie-series container mt-4">
+      <b-spinner v-if="loading" label="Loading..."></b-spinner>
       <h2 class="text-warning">{{ titlePage}}</h2>
       <!-- <b-breadcrumb :items="breadcrumbItems" class="mb-3" /> -->
       
@@ -32,6 +33,7 @@
     name: 'QuocGia',
     data(){
       return{
+        loading: true,
         currentPage:1,
         moviesPerPage:20,
         totalMovies:100,
@@ -50,6 +52,7 @@
         if(result.status == 'success'){
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
+          this.loading = false
         }
         console.log(result)
       }, (err) =>{
@@ -59,10 +62,12 @@
     },
     watch:{
       currentPage(newpage){
+        this.loading = true
         this.currentPage = newpage
         this.ListMovie(this.path);
       },
       path(newpath){
+        this.loading = true
             this.ListMovie(newpath);
         }
     }
