@@ -41,7 +41,7 @@
       <b-navbar-nav class="right-section">
         <b-form inline class="mr-3">
           <b-input-group>
-            <b-form-input v-model="searchQuery" placeholder="Tìm kiếm tên phim..." class="mr-2" clearable></b-form-input>
+            <b-form-input v-model="searchQuery" placeholder="Tìm kiếm tên phim..." class="mr-2" clearable @keyup.enter="searchMovie"></b-form-input>
             <b-button variant="outline-light" @click="searchMovie">
               <b-icon icon="search"></b-icon>
             </b-button>

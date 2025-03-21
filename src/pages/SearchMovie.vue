@@ -1,8 +1,9 @@
 <template>
   <div class="search-page container mt-4">
     <h2 class="text-center text-light mb-4">Kết quả tìm kiếm cho "{{ $route.query.keyword }}"</h2>
-
-    <b-row v-if="movies.length > 0">
+    <hr/>
+    <b-spinner v-if="loading" label="Loading..."></b-spinner>
+    <b-row v-else>
       <b-col v-for="movie in movies" :key="movie.id" md="12" class="mb-4">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-card no-body class="movie-card d-flex flex-row">
@@ -14,7 +15,7 @@
                 loading="lazy"
               ></b-card-img>
               <div class="rating-badge bg-warning text-dark">
-                {{ movie.rating }}
+                {{ movie.quality }}
               </div>
             </div>
             
@@ -29,8 +30,9 @@
                 </div>
 
                 <div class="meta-info mb-3">
+                  <el-rate class="text-light" v-model="valueRate" disabled />
                   <span class="text-light me-3">{{ movie.year }}</span>
-                  <span class="text-light">{{ movie.episode_current }} tập</span>
+                  <!-- <span class="text-light">{{ movie.episode_current }} tập</span> -->
                 </div>
 
                 <p class="text-muted description-text">{{ movie.description }}</p>
@@ -59,7 +61,7 @@
       />
     </b-row>
 
-    <b-alert v-else variant="warning" show class="text-center text-dark">
+    <b-alert v-if="movies.length < 0" variant="warning" show class="text-center text-dark">
       Không tìm thấy phim nào khớp với từ khóa "<strong>{{ $route.query.keyword }}</strong>".
     </b-alert>
   </div>
@@ -72,32 +74,44 @@ export default {
   data(){
     return{
         movies: [],
+        loading: true,
         urlImage: urlImage,
         currentPage:1,
-      moviesPerPage:20,
-      totalMovies:100,
+        moviesPerPage:20,
+        totalMovies:100,
+        valueRate: 5,
+        path: ''
     }
   },
   watch: {
     "$route.query.keyword": {
       immediate: true,
       handler(query) {
+        this.loading = true
+        this.path = query
         this.SearchMovie(query);
       },
+
     },
+    currentPage(newpage){
+        this.loading = true
+        this.currentPage = newpage
+        this.SearchMovie(this.path);
+      },
   },
   methods:{
     SearchMovie(query){
-        Search({keyword: query}, (result) =>{
+        Search({keyword: query+`?page=${this.currentPage}`}, (result) =>{
           if(result.status == 'success'){
             this.movies = result.data.items
+            this.loading = false
           }
         console.log(result)
       },(err) =>{
         console.log(err)
       })
     }
-  }
+  },
 }
 </script>
 
@@ -120,8 +134,8 @@ export default {
 }
 
 .movie-image {
-  width: 200px;
-  height: 280px;
+  width: 440px;
+  height: 250px;
   object-fit: cover;
   border-radius: 8px 0 0 8px;
 }
@@ -137,11 +151,14 @@ export default {
 
 .genre-section {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  gap: 10px;
 }
 
+
 .genre-item {
+  background-color: #837676;
+  border-radius: 5px;
   font-size: 0.9rem;
   opacity: 0.8;
 }
@@ -162,5 +179,9 @@ export default {
 .action-buttons {
   border-top: 1px solid #444;
   padding-top: 1rem;
+}
+.d-flex {
+    display: flex !important;
+    align-items: flex-start;
 }
 </style>

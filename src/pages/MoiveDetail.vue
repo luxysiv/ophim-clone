@@ -48,7 +48,7 @@
       <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
       <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
       <p>
-        <strong>Đánh giá:</strong> <el-rate v-model="valueRate" clearable />
+        <strong>Đánh giá:</strong> <el-rate v-model="valueRate" disabled />
       </p>
     </div>
 
