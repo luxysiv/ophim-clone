@@ -2,8 +2,9 @@
   <div class="movie-series container mt-4">
     <h2 class="text-warning">{{ titlePage}}</h2>
     <!-- <b-breadcrumb :items="breadcrumbItems" class="mb-3" /> -->
-    
-    <b-row>
+    <hr/>
+    <b-spinner v-if="loading" label="Loading..."></b-spinner>
+    <b-row v-else>
       <b-col md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-card no-body class="movie-card">
@@ -32,6 +33,7 @@ export default {
   name: 'PhimLe',
   data(){
     return{
+      loading: true,
       currentPage:1,
       moviesPerPage:20,
       totalMovies:100,
@@ -50,6 +52,7 @@ export default {
       if(result.status == 'success'){
         this.movies = result.data.items
         this.titlePage = result.data.titlePage
+        this.loading = false
       }
       console.log(result)
     }, (err) =>{
@@ -59,6 +62,7 @@ export default {
   },
   watch:{
     currentPage(newpage){
+      this.loading = true
       this.currentPage = newpage
       this.ListMovie();
     }

@@ -1,18 +1,18 @@
 <template>
   <div class="movie-detail">
     <!-- Phần 1: Video phim -->
-    <div class="movie-video">
-      <iframe
-        :src="movie.videoUrl"
-        width="100%"
-        height="600px"
-        allowfullscreen
-        frameborder="0"
-        style="border: 1px solid #ccc"
-      >
-      </iframe>
-    </div>
-
+    <iframe
+      :src="movie.videoUrl"
+      autoplay
+      muted
+      width="100%"
+      height="600px"
+      allowfullscreen
+      frameborder="0"
+      style="border: 1px solid #ccc"
+    >
+      Your browser does not support the video tag.
+    </iframe>
     <!-- Tập phim -->
     <b-card class="bg-light text-dark">
       <b-card-header class="d-flex align-items-center">
@@ -48,7 +48,7 @@
       <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
       <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
       <p>
-        <strong>Đánh giá:</strong> <el-rate v-model="valueRate" disabled />
+        <strong>Đánh giá:</strong> <el-rate v-model="movie.rating" disabled />
       </p>
     </div>
 
@@ -164,7 +164,7 @@ export default {
               this.movie.genre = result.movie.country[i];
             }
             this.movie.categoris = result.movie.category[0].slug;
-              
+            this.isLoading = false  
             
           }
           console.log(result);
@@ -198,6 +198,7 @@ export default {
       }
     },
     playEpisode(episode) {
+      this.isLoading = true
       this.movie.title = episode.filename;
       this.movie.videoUrl = episode.link_embed;
       this.movie.page = episode.slug;
