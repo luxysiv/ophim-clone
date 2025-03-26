@@ -5,19 +5,39 @@
         <div class="row">
           <b-col>
           <b-skeleton v-if="isLoading" width="100%" height="500px"></b-skeleton>
-          <video 
-            v-else 
-            class="custom-video" 
-            :src="imageLoading" 
-            type="video/mp4"
-            controls 
-            controlslist="nodownload nofullscreen noremoteplayback"
-            disablePictureInPicture
-            muted
-            style="border: 1px solid #ccc"
-          >
-            Trình duyệt của bạn không hỗ trợ video.
-          </video>
+          <div>
+            <b-carousel
+                        id="carousel-1"
+                        v-model="slide"
+                        :interval="null"
+                        controls
+                        indicators
+                        background="#ababab"
+                        img-width="1024"
+                        img-height="480"
+                        style="text-shadow: 1px 1px 2px #333;"
+                        @sliding-start="onSlideStart"
+                        @sliding-end="onSlideEnd"
+                      >
+                        <b-carousel-slide v-for="(video, index) in videoList" :key="index">
+                          <template #img>
+                            <video
+                              class="d-block img-fluid w-100"
+                              width="1024"
+                              height="480"
+                              autoplay
+                              muted
+                              loop
+                              playsinline
+                              loading="lazy"
+                            >
+                              <source :src="video" type="video/mp4">
+                              Trình duyệt của bạn không hỗ trợ video.
+                            </video>
+                          </template>
+                        </b-carousel-slide>
+                      </b-carousel>
+          </div>
           <!-- <b-img-lazy v-else :src="imageLoading" alt="Loaded image" width="100%" height="500px"></b-img-lazy> -->
         </b-col>
 
@@ -109,6 +129,13 @@ export default {
     return {
       urlImage: urlImage,
       imageLoading: 'https://trailer.vieon.vn/Teaser_TuCam_mkt.mp4',
+      slide: 0,
+      sliding: false,
+      videoList: [
+        "https://www.w3schools.com/html/mov_bbb.mp4",
+        "https://www.w3schools.com/html/movie.mp4",
+        "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
+      ],
       isLoading: true,
       page: 1,
       
