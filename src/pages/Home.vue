@@ -66,7 +66,7 @@
                       style="width: 250px; border: none; margin: 10px"
                     >
                      <div class="image-container">
-                      <b-card-img :src="getOptimizedImage(item.poster_url)" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" @error="setDefaultImage" />
+                      <b-card-img :src="getOptimizedImage(item.poster_url)" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" />
                       
                      </div>
                      <div class="overlay">
@@ -150,9 +150,6 @@ export default {
     },
     getOptimizedImage(imagePath) {
       return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
-    },
-setDefaultImage(event) {
-      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
     },
 
     scrollLeft(index) {
