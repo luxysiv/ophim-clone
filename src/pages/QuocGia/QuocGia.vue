@@ -48,7 +48,7 @@
     },
     methods:{
       ListMovie(path){
-        CityDetail(path+`?page=${this.currentPage}`,(result) =>{
+        CityDetail(path+`&page=${this.currentPage}`,(result) =>{
         if(result.status == 'success'){
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
