@@ -91,9 +91,8 @@ export default {
       if(this.searchQuery.trim()){
         this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } })
       }
-      
     },
-      changeLanguage(langCode) {
+     changeLanguage(langCode) {
       console.log("Đổi ngôn ngữ sang: ", langCode);
     }
   }
