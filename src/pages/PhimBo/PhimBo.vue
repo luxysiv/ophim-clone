@@ -8,7 +8,7 @@
       <b-col md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-card no-body class="movie-card">
-            <b-card-img :src="getOptimizedImage(movie.poster_url)" alt="Movie Image" class="movie-image" loading="lazy" @error="setDefaultImage" />
+            <b-card-img :src="getOptimizedImage(movie.poster_url)" alt="Movie Image" class="movie-image" loading="lazy" />
             <div class="overlay">
               <b-badge v-if="movie.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ movie.lang }}</b-badge>
               <b-badge v-else variant="warning" class="badge-top-left">{{ movie.episode_current }}-{{ movie.lang }}</b-badge>
@@ -61,9 +61,6 @@ export default {
     },
     getOptimizedImage(imagePath) {
       return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
-    },
-setDefaultImage(event) {
-      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
     },
   },
   watch:{
