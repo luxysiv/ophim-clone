@@ -18,7 +18,7 @@
                 </b-card-img>
             </b-col>
             <b-col md="9">
-              <b-card-body :title="movie.name" style="color: black">
+              <b-card-body :title="movie.name" style="color: black; float:left;">
                 <b-card-text>
                   <div>
                     <div class="genre-section mb-2">
