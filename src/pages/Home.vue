@@ -51,7 +51,6 @@
                 <b-col
                   v-for="item in isLoading ? Array(8).fill({})  : section.listMovie.slice(0, 10)"
                   :key="item._id"
-                  cols="6" md="4" lg="3"
                   class="text-center"
                 >
                   <b-skeleton
