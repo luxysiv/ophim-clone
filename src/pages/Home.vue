@@ -111,7 +111,7 @@ export default {
       imageLoading: 'https://trailer.vieon.vn/Teaser_TuCam_mkt.mp4',
       isLoading: true,
       page: 1,
-      urlImage: urlImage,
+      
       imageMove: [],
       listMovie: [],
       //showControls: false,
