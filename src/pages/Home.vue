@@ -149,7 +149,7 @@ export default {
     );
     },
     getOptimizedImage(imagePath) {
-      return `https://ophim17.cc/_next/image?url=${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
+      return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
     },
 setDefaultImage(event) {
       event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
