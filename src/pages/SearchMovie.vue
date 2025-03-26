@@ -11,10 +11,10 @@
               <b-card-img 
                 :src="getOptimizedImage(movie.poster_url)"
                 alt="Movie Image"
-                class="movie-image"
+                class="movie-image rounded-0"
                 loading="lazy"
                 @error="setDefaultImage"
-                style="width: 100%; height: auto;" alt="Image" class="rounded-0">
+                style="width: 100%; height: auto;">
                 
                 </b-card-img>
             </b-col>
