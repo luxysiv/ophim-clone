@@ -3,7 +3,67 @@
     <h2 class="text-center text-light mb-4">Kết quả tìm kiếm cho "{{ $route.query.keyword }}"</h2>
     <hr/>
     <b-spinner v-if="loading" label="Loading..."></b-spinner>
-    <b-row v-else>
+    <div v-else>
+      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" >
+        <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
+          <b-row no-gutters>
+            <b-col md="3">
+              <b-card-img 
+                :src="getOptimizedImage(movie.poster_url)"
+                alt="Movie Image"
+                class="movie-image"
+                loading="lazy"
+                @error="setDefaultImage"
+                style="width: 100%; height: auto;" alt="Image" class="rounded-0">
+                
+                </b-card-img>
+            </b-col>
+            <b-col md="9">
+              <b-card-body :title="movie.name">
+                <b-card-text>
+                  <div>
+                    <div class="genre-section mb-2">
+                      <div v-for="(genre, index) in movie.category" :key="index" class="text-light genre-item">
+                        {{ genre.name }}
+                      </div>
+                    </div>
+
+                    <div class="meta-info mb-3">
+                      <el-rate class="text-light" v-model="valueRate" disabled />
+                      <span class="text-light me-3">{{ movie.year }}</span>
+                      <!-- <span class="text-light">{{ movie.episode_current }} tập</span> -->
+                    </div>
+                    <p class="text-muted description-text">{{ movie.description }}</p>
+                  </div>
+                  <div class="action-buttons mt-3">
+                    <b-button variant="outline-light" class="me-2">
+                      <i class="fas fa-play me-2"></i>Xem
+                    </b-button>
+                    <b-button variant="outline-light">
+                      <i class="fas fa-share me-2"></i>Chia sẻ
+                    </b-button>
+                  </div>
+
+                </b-card-text>
+              </b-card-body>
+            </b-col>
+          </b-row>
+          
+        </router-link>
+      </b-card>
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalMovies"
+        :per-page="moviesPerPage"
+        class="justify-content-center mt-3"
+        @change="fetchMovies"
+      />
+
+    <b-alert v-if="movies.length < 0" variant="warning" show class="text-center text-dark">
+      Không tìm thấy phim nào khớp với từ khóa "<strong>{{ $route.query.keyword }}</strong>".
+    </b-alert>
+    </div>
+    <!--<b-row v-else>
       <b-col v-for="movie in movies" :key="movie.id" md="12" class="mb-4">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-card no-body class="movie-card d-flex flex-row">
@@ -33,7 +93,6 @@
                 <div class="meta-info mb-3">
                   <el-rate class="text-light" v-model="valueRate" disabled />
                   <span class="text-light me-3">{{ movie.year }}</span>
-                  <!-- <span class="text-light">{{ movie.episode_current }} tập</span> -->
                 </div>
 
                 <p class="text-muted description-text">{{ movie.description }}</p>
@@ -51,20 +110,10 @@
           </b-card>
         </router-link>
       </b-col>
+    </b-row> -->
 
       <!-- Phân trang -->
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalMovies"
-        :per-page="moviesPerPage"
-        class="justify-content-center mt-3"
-        @change="fetchMovies"
-      />
-    </b-row>
-
-    <b-alert v-if="movies.length < 0" variant="warning" show class="text-center text-dark">
-      Không tìm thấy phim nào khớp với từ khóa "<strong>{{ $route.query.keyword }}</strong>".
-    </b-alert>
+      
   </div>
 </template>
 
