@@ -102,7 +102,7 @@ export default {
   },
   methods:{
     SearchMovie(query){
-        Search({keyword: query+`?page=${this.currentPage}`}, (result) =>{
+        Search({keyword: query+`&page=${this.currentPage}`}, (result) =>{
           if(result.status == 'success'){
             this.movies = result.data.items
             this.loading = false
