@@ -13,7 +13,6 @@
                 alt="Movie Image"
                 class="movie-image rounded-0"
                 loading="lazy"
-                @error="setDefaultImage"
                 style="width: 100%; height: auto;">
                 
                 </b-card-img>
@@ -163,9 +162,6 @@ export default {
     },
     getOptimizedImage(imagePath) {
       return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
-    },
-setDefaultImage(event) {
-      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
     },
   },
 }
