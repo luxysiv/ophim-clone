@@ -51,11 +51,9 @@
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
-  
 </template>
 
 <script>
-
 export default {
   name: "HeaderComponent",
   data() {
@@ -85,19 +83,19 @@ export default {
       ]
     };
   },
-
-  methods:{
-    searchMovie(){
-      if(this.searchQuery.trim()){
-        this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } })
+  methods: {
+    searchMovie() {
+      if (this.searchQuery.trim()) {
+        this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } });
       }
     },
-     changeLanguage(langCode) {
+    changeLanguage(langCode) {
       console.log("Đổi ngôn ngữ sang: ", langCode);
     }
   }
 };
 </script>
+
 <style scoped>
 .custom-navbar {
   background: linear-gradient(to right, #242424, #444);
@@ -118,5 +116,4 @@ export default {
     margin-bottom: 10px;
   }
 }
-
 </style>
