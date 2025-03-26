@@ -48,7 +48,7 @@
     },
     methods:{
       ListMovie(){
-        ListMovieByCate(this.path+`&page=${this.currentPage}`,(result) =>{
+        ListMovieByCate(this.path+`?page=${this.currentPage}`,(result) =>{
         if(result.status == 'success'){
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
