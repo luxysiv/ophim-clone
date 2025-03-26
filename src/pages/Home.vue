@@ -5,7 +5,7 @@
         <div class="row">
           <b-col>
           <b-skeleton v-if="isLoading" width="100%" height="500px"></b-skeleton>
-          <div>
+          <div v-else>
             <b-carousel
                         id="carousel-1"
                         v-model="slide"
