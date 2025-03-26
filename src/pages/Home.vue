@@ -66,7 +66,7 @@
                       style="width: 250px; border: none; margin: 10px"
                     >
                      <div class="image-container">
-                      <b-card-img :src="`${urlImage}${item.poster_url}`" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" />
+                      <b-card-img :src="getOptimizedImage(item.poster_url)" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" @error="setDefaultImage" />
                       
                      </div>
                      <div class="overlay">
@@ -147,7 +147,12 @@ export default {
       }
     );
     },
-
+    getOptimizedImage(imagePath) {
+      return `https://ophim17.cc/_next/image?url=${encodeURIComponent(imagePath)}&w=250&q=75`;
+    },
+setDefaultImage(event) {
+      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
+    },
 
     scrollLeft(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: -300, behavior: "smooth" });
