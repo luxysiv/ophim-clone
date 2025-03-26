@@ -152,7 +152,9 @@ export default {
     SearchMovie(query){
         Search({keyword: query,page: this.currentPage}, (result) =>{
           if(result.status == 'success'){
-            this.movies = result.data.items
+            this.movies = result.data.items.sort((a, b) => {
+              return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
+            });
             this.loading = false
           }
         console.log(result)
