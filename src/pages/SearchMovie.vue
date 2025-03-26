@@ -1,5 +1,5 @@
 <template>
-  <div class="search-page container mt-4">
+  <div class="search-page">
     <h2 class="text-center text-light mb-4">Kết quả tìm kiếm cho "{{ $route.query.keyword }}"</h2>
     <hr/>
     <b-spinner v-if="loading" label="Loading..."></b-spinner>
