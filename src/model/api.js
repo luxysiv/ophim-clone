@@ -21,7 +21,7 @@ let urlCategorisHome = "https://ophim1.com/v1/api/"
 let urlCity = "https://ophim1.com/v1/api/quoc-gia/"
 
 // tim kiem
-let urlSearch = "https://ophim1.com/v1/api/tim-kiem?"
+let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
 
 export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
  export const ListmovieNew= (params, success, error) => http.GetNew(`${URL}`, params, success, error)
