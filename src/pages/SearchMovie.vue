@@ -18,7 +18,7 @@
                 </b-card-img>
             </b-col>
             <b-col md="9">
-              <b-card-body :title="movie.name">
+              <b-card-body :title="movie.name" style="color: black">
                 <b-card-text>
                   <div>
                     <div class="genre-section mb-2">
@@ -35,10 +35,10 @@
                     <p class="text-muted description-text">{{ movie.description }}</p>
                   </div>
                   <div class="action-buttons mt-3">
-                    <b-button variant="outline-light" class="me-2">
+                    <b-button variant="outline-dark" class="me-2">
                       <i class="fas fa-play me-2"></i>Xem
                     </b-button>
-                    <b-button variant="outline-light">
+                    <b-button variant="outline-dark">
                       <i class="fas fa-share me-2"></i>Chia sẻ
                     </b-button>
                   </div>
