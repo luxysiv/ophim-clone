@@ -9,10 +9,11 @@
           <b-card no-body class="movie-card d-flex flex-row">
             <div class="position-relative">
               <b-card-img
-                :src="`${urlImage}${movie.poster_url}`"
+                :src="getOptimizedImage(movie.poster_url)"
                 alt="Movie Image"
                 class="movie-image"
                 loading="lazy"
+                @error="setDefaultImage"
               ></b-card-img>
               <div class="rating-badge bg-warning text-dark">
                 {{ movie.quality }}
@@ -110,7 +111,13 @@ export default {
       },(err) =>{
         console.log(err)
       })
-    }
+    },
+    getOptimizedImage(imagePath) {
+      return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
+    },
+setDefaultImage(event) {
+      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
+    },
   },
 }
 </script>
