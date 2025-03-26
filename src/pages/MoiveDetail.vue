@@ -63,7 +63,7 @@
           class="text-decoration-none"
         >
         <b-card no-body class="movie-card">
-          <b-card-img :src="urlImage+suggested.poster_url" alt="Movie Image" class="movie-image" loading="lazy" />
+          <b-card-img :src="getOptimizedImage(suggested.poster_url)" alt="Movie Image" class="movie-image" loading="lazy" @error="setDefaultImage" />
           <div class="overlay">
               <b-badge v-if="suggested.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ suggested.lang }}</b-badge>
               <b-badge v-else variant="warning" class="badge-top-left">{{ suggested.episode_current }}-{{ suggested.lang }}</b-badge>
@@ -173,6 +173,12 @@ export default {
           console.log(err);
         }
       );
+    },
+    getOptimizedImage(imagePath) {
+      return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
+    },
+setDefaultImage(event) {
+      event.target.src = 'https://via.placeholder.com/250x200?text=No+Image';
     },
     ListMovieByCate() {
       ListMovieByCate(
