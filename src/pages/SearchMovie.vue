@@ -28,7 +28,7 @@
                     </div>
 
                     <div class="meta-info mb-3">
-                      <el-rate class="text-light" v-model="valueRate" disabled />
+                      <el-rate class="text-dark" v-model="valueRate" disabled />
                       <span class="text-light me-3">{{ movie.year }}</span>
                       <!-- <span class="text-light">{{ movie.episode_current }} tập</span> -->
                     </div>
@@ -150,7 +150,7 @@ export default {
   },
   methods:{
     SearchMovie(query){
-        Search({keyword: query+`&page=${this.currentPage}`}, (result) =>{
+        Search({keyword: query,page: this.currentPage}, (result) =>{
           if(result.status == 'success'){
             this.movies = result.data.items
             this.loading = false
