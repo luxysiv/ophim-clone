@@ -238,4 +238,23 @@ export default {
     display: flex !important;
     align-items: flex-start;
 }
+  .b-card-body {
+  text-align: left;
+}
+
+.genre-section,
+.meta-info,
+.description-text {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.genre-item {
+  display: inline-block;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-start;
+}
 </style>
