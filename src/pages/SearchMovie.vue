@@ -4,7 +4,7 @@
     <hr/>
     <b-spinner v-if="loading" label="Loading..."></b-spinner>
     <div v-else>
-      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" >
+      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" style="margin: 10px 0;">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-row no-gutters>
             <b-col md="3">
