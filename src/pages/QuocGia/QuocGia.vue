@@ -59,7 +59,7 @@
         console.log(err)
       })
       },
-        getOptimizedImage(imagePath) {
+    getOptimizedImage(imagePath) {
       return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
     },
     },
