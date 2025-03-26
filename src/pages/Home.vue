@@ -51,6 +51,7 @@
                 <b-col
                   v-for="item in isLoading ? Array(8).fill({})  : section.listMovie.slice(0, 10)"
                   :key="item._id"
+                  cols="6" md="4" lg="3"
                   class="text-center"
                 >
                   <b-skeleton
@@ -273,5 +274,36 @@ h4{
   position: absolute;
   top: 10px;
   left: 10px;
+}
+  @media (max-width: 768px) {
+  .movie-title {
+    font-size: 16px;
+    padding: 3px;
+  }
+  .overlay {
+    top: 5px;
+    left: 5px;
+  }
+}
+  @media (max-width: 768px) {
+  .scroll-btn {
+    display: none;
+  }
+}
+  .scroll-container {
+  display: flex;
+  overflow-x: scroll;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+  max-width: 100vw;
+}
+  .image-container {
+  width: 100%;
+  height: auto;
+}
+
+.movie-img {
+  width: 100%;
+  height: auto;
 }
 </style>
