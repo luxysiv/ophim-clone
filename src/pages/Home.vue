@@ -32,7 +32,7 @@
               </b-carousel-slide>
             </b-carousel>
           </div>
-          <!-- <b-img-lazy v-else :src="imageLoading" alt="Loaded image" width="100%" height="500px"></b-img-lazy> -->
+          <p>{{videoList}}</p>
         </b-col>
 
         </div>
@@ -124,7 +124,7 @@ export default {
       urlImage: urlImage,
       imageLoading: 'https://trailer.vieon.vn/Teaser_TuCam_mkt.mp4',
       slide: 0,
-      sliding: false,
+      sliding: null,
       videoList: [
         "https://picsum.photos/1024/480/?image=52",
         "https://picsum.photos/1024/480/?image=54",
@@ -179,6 +179,12 @@ export default {
     scrollRight(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: 300, behavior: "smooth" });
     },
+    onSlideStart(slide) {
+        this.sliding = true
+      },
+      onSlideEnd(slide) {
+        this.sliding = false
+      }
   },
 };
 </script>
