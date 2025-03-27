@@ -9,7 +9,7 @@
             <b-carousel
               id="carousel-1"
               v-model="slide"
-              :interval="3000"
+              :interval="4000"
               controls
               indicators
               background="#ababab"
@@ -20,18 +20,15 @@
               @sliding-end="onSlideEnd"
             >
               <b-carousel-slide v-for="(video, index) in videoList" :key="index">
-                <video
-                  class="d-block w-100"
-                  width="1024"
-                  height="480"
-                  autoplay
-                  loop
-                  muted
-                  controls
-                >
-                  <source :src="video" type="video/mp4">
-                  Trình duyệt của bạn không hỗ trợ video.
-                </video>
+                <template #img>
+                  <img
+                    class="d-block img-fluid w-100"
+                    width="1024"
+                    height="480"
+                    :src="video"
+                    alt="image slot"
+                  >
+                </template>
               </b-carousel-slide>
             </b-carousel>
           </div>
@@ -129,9 +126,9 @@ export default {
       slide: 0,
       sliding: false,
       videoList: [
-        "https://www.w3schools.com/html/mov_bbb.mp4",
-        "https://www.w3schools.com/html/movie.mp4",
-        "https://samplelib.com/lib/preview/mp4/sample-5s.mp4"
+        "https://picsum.photos/1024/480/?image=52",
+        "https://picsum.photos/1024/480/?image=54",
+        "https://picsum.photos/1024/480/?image=58"
       ],
       isLoading: true,
       page: 1,
