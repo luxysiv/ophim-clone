@@ -21,19 +21,16 @@
                       >
                         <b-carousel-slide v-for="(video, index) in videoList" :key="index">
                           <template #img>
-                            <video
+                            <img
                               class="d-block img-fluid w-100"
                               width="1024"
                               height="480"
-                              autoplay
-                              muted
-                              loop
-                              playsinline
+                              alt="image slot"
                               loading="lazy"
                             >
-                              <source :src="video" type="video/mp4">
+                              <!--<source :src="video" type="video/mp4">
                               Trình duyệt của bạn không hỗ trợ video.
-                            </video>
+                            </video>-->
                           </template>
                         </b-carousel-slide>
                       </b-carousel>
