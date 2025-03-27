@@ -54,7 +54,7 @@
         </p>
       </b-carousel-slide>
     </b-carousel>
-          </div>
+
         </b-col>
 
         </div>
