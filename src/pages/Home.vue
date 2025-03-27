@@ -25,14 +25,13 @@
                     class="d-block img-fluid w-100"
                     width="1024"
                     height="480"
-                    :src="video"
+                    :src="video.url"
                     alt="image slot"
                   >
                 </template>
               </b-carousel-slide>
             </b-carousel>
           </div>
-          <p>{{videoList}}</p>
         </b-col>
 
         </div>
@@ -126,9 +125,9 @@ export default {
       slide: 0,
       sliding: null,
       videoList: [
-        "https://picsum.photos/1024/480/?image=52",
-        "https://picsum.photos/1024/480/?image=54",
-        "https://picsum.photos/1024/480/?image=58"
+        {url: "https://picsum.photos/1024/480/?image=52"},
+        {url: "https://picsum.photos/1024/480/?image=54"},
+        {url: "https://picsum.photos/1024/480/?image=58"}
       ],
       isLoading: true,
       page: 1,
@@ -179,10 +178,10 @@ export default {
     scrollRight(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: 300, behavior: "smooth" });
     },
-    onSlideStart(slide) {
+    onSlideStart() {
         this.sliding = true
       },
-      onSlideEnd(slide) {
+      onSlideEnd() {
         this.sliding = false
       }
   },
