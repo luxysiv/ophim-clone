@@ -7,33 +7,33 @@
           <b-skeleton v-if="isLoading" width="100%" height="500px"></b-skeleton>
           <div v-else>
             <b-carousel
-                        id="carousel-1"
-                        v-model="slide"
-                        :interval="3000"
-                        controls
-                        indicators
-                        background="#ababab"
-                        img-width="1024"
-                        img-height="480"
-                        style="text-shadow: 1px 1px 2px #333;"
-                        @sliding-start="onSlideStart"
-                        @sliding-end="onSlideEnd"
-                      >
-                        <b-carousel-slide v-for="(video, index) in videoList" :key="index">
-                          <template #img>
-                            <img
-                              class="d-block img-fluid w-100"
-                              width="1024"
-                              height="480"
-                              alt="image slot"
-                              loading="lazy"
-                            >
-                              <!--<source :src="video" type="video/mp4">
-                              Trình duyệt của bạn không hỗ trợ video.
-                            </video>-->
-                          </template>
-                        </b-carousel-slide>
-                      </b-carousel>
+              id="carousel-1"
+              v-model="slide"
+              :interval="3000"
+              controls
+              indicators
+              background="#ababab"
+              img-width="1024"
+              img-height="480"
+              style="text-shadow: 1px 1px 2px #333;"
+              @sliding-start="onSlideStart"
+              @sliding-end="onSlideEnd"
+            >
+              <b-carousel-slide v-for="(video, index) in videoList" :key="index">
+                <video
+                  class="d-block w-100"
+                  width="1024"
+                  height="480"
+                  autoplay
+                  loop
+                  muted
+                  controls
+                >
+                  <source :src="video" type="video/mp4">
+                  Trình duyệt của bạn không hỗ trợ video.
+                </video>
+              </b-carousel-slide>
+            </b-carousel>
           </div>
           <!-- <b-img-lazy v-else :src="imageLoading" alt="Loaded image" width="100%" height="500px"></b-img-lazy> -->
         </b-col>
