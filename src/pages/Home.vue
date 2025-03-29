@@ -4,19 +4,12 @@
       <div class="bv-example-row" style="width: 100%">
         <div class="row" style="width: 100%; height: 450px">
           <b-carousel
-      id="carousel-1"
-      
-      :interval="4000"
-      controls
-      indicators
-      background="#ababab"
-      img-width="100%"
-      img-height="450"
-      loading="lazy"
-      style="text-shadow: 1px 1px 2px #333;display: block;"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-      v-if="videoList.length > 0"
+            :interval="=2000"
+            controls
+            indicators
+            img-width="100%"
+            img-height="450"
+            v-if="videoList.length > 0"
     >
       <b-carousel-slide v-for="(item,index) in videoList" :key="index"
         :img-alt="'Slide ' + (index + 1)"
@@ -137,6 +130,11 @@ export default {
       ]
     };
   },
+  watch: {
+  slide(newVal) {
+    console.log("Slide hiện tại:", newVal);
+  }
+},
   mounted() {
     this.sections.forEach(item => {
       this.ListMovie(item.id, item)
