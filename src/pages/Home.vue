@@ -4,7 +4,7 @@
       <div class="bv-example-row" style="width: 100%">
         <div class="row" style="width: 100%; height: 450px">
           <b-carousel
-            :interval="=2000"
+            :interval="2000"
             controls
             indicators
             img-width="100%"
