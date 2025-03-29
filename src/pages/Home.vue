@@ -2,8 +2,7 @@
   <default-layout>
     <template #default>
       <div class="bv-example-row" style="width: 100%">
-        <div class="row">
-          <b-col>
+        <div class="row" style="width: 100%; height: 450px">
           <b-carousel
       id="carousel-1"
       v-model="slide"
@@ -54,8 +53,6 @@
         </p>
       </b-carousel-slide>
     </b-carousel>
-
-        </b-col>
 
         </div>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
