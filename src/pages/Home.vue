@@ -325,7 +325,7 @@ h4{
 }
 .carousel-item {
     position: relative;
-    /* display: none; */
+    display: block;
     float: left;
     width: 100%;
     margin-right: -100%;
