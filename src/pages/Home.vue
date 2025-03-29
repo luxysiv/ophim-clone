@@ -323,9 +323,13 @@ h4{
   width: 100%;
   height: auto;
 }
-  .b-carousel img {
-  display: block !important;
-  width: 100% !important;
-  height: auto !important;
+.carousel-item {
+    position: relative;
+    /* display: none; */
+    float: left;
+    width: 100%;
+    margin-right: -100%;
+    backface-visibility: hidden;
+    transition: transform .6sease-in-out;
 }
 </style>
