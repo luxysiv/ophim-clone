@@ -198,10 +198,10 @@ export default {
     scrollRight(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: 300, behavior: "smooth" });
     },
-    onSlideStart(slide) {
+    onSlideStart() {
         this.sliding = true
       },
-      onSlideEnd(slide) {
+      onSlideEnd() {
         this.sliding = false
       }
   },
