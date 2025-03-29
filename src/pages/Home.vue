@@ -10,13 +10,13 @@
       controls
       indicators
       background="#ababab"
-      img-width="1024"
-      img-height="480"
+      img-width="100%"
+      img-height="450"
       loading="lazy"
-      style="text-shadow: 1px 1px 2px #333;"
+      style="text-shadow: 1px 1px 2px #333;display: block;"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
-            v-if="videoList.length > 0"
+      v-if="videoList.length > 0"
     >
       <b-carousel-slide v-for="(item,index) in videoList" :key="index"
         :img-alt="'Slide ' + (index + 1)"
@@ -323,13 +323,5 @@ h4{
   width: 100%;
   height: auto;
 }
-.carousel-item {
-    position: relative;
-    display: block;
-    float: left;
-    width: 100%;
-    margin-right: -100%;
-    backface-visibility: hidden;
-    transition: transform .6sease-in-out;
-}
+
 </style>
