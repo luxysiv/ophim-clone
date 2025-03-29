@@ -323,4 +323,9 @@ h4{
   width: 100%;
   height: auto;
 }
+  .b-carousel img {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+}
 </style>
