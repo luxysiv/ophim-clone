@@ -16,6 +16,7 @@
       style="text-shadow: 1px 1px 2px #333;"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
+            v-if="videoList.lenght>0"
     >
       <b-carousel-slide v-for="(item,index) in videoList" :key="index"
         :img-alt="'Slide ' + (index + 1)"
