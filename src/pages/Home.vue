@@ -12,13 +12,15 @@
       background="#ababab"
       img-width="1024"
       img-height="480"
+      loading="lazy"
       style="text-shadow: 1px 1px 2px #333;"
       @sliding-start="onSlideStart"
       @sliding-end="onSlideEnd"
     >
       <b-carousel-slide v-for="(item,index) in videoList" :key="index"
-        caption="First slide"
-        text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+        :img-alt="'Slide ' + (index + 1)"
+        :caption="'Slide ' + (index + 1)"
+        :title="'Slide ' + (index + 1)"
         :img-src="item.url"
       >
       </b-carousel-slide>
