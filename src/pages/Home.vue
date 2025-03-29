@@ -130,11 +130,7 @@ export default {
       ]
     };
   },
-  watch: {
-  slide(newVal) {
-    console.log("Slide hiện tại:", newVal);
-  }
-},
+ 
   mounted() {
     this.sections.forEach(item => {
       this.ListMovie(item.id, item)
