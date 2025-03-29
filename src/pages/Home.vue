@@ -26,7 +26,7 @@
       >
       </b-carousel-slide>
     </b-carousel>
-
+    <div v-else>Khong có dữ liệu</div>
         </div>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <b-row align-h="start" class="text-left">
