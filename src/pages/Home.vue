@@ -5,7 +5,7 @@
         <div class="row" style="width: 100%; height: 450px">
           <b-carousel
       id="carousel-1"
-      v-model="slide"
+      
       :interval="4000"
       controls
       indicators
