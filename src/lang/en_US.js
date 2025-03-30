@@ -1,6 +1,6 @@
 export default
     {
-        'Register to book a car': 'Register to book a car',
+        'Duong': 'Register to book a car',
         'Constitute': 'Constitute',
         'Register car': 'Register car',
         'Search': 'Search',

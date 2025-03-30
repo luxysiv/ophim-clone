@@ -2,58 +2,8 @@
   <default-layout>
     <template #default>
       <div class="bv-example-row" style="width: 100%">
-        <div class="row" style="width: 100%; height: 450px">
-          <b-carousel
-      id="carousel-1"
-      v-model="slide"
-      :interval="4000"
-      controls
-      indicators
-      background="#ababab"
-      img-width="1024"
-      img-height="480"
-      style="text-shadow: 1px 1px 2px #333;"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-    >
-      <!-- Text slides with image -->
-      <b-carousel-slide
-        caption="First slide"
-        text="Nulla vitae elit libero, a pharetra augue mollis interdum."
-        img-src="https://picsum.photos/1024/480/?image=52"
-      ></b-carousel-slide>
-
-      <!-- Slides with custom text -->
-      <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
-        <h1>Hello world!</h1>
-      </b-carousel-slide>
-
-      <!-- Slides with image only -->
-      <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>
-
-      <!-- Slides with img slot -->
-      <!-- Note the classes .d-block and .img-fluid to prevent browser default image alignment -->
-      <b-carousel-slide>
-        <template #img>
-          <img
-            class="d-block img-fluid w-100"
-            width="1024"
-            height="480"
-            src="https://picsum.photos/1024/480/?image=55"
-            alt="image slot"
-          >
-        </template>
-      </b-carousel-slide>
-
-      <!-- Slide with blank fluid image to maintain slide aspect ratio -->
-      <b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt
-          a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.
-        </p>
-      </b-carousel-slide>
-    </b-carousel>
-    
+        <div>
+          <CarouselPage/>
         </div>
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <b-row align-h="start" class="text-left">
@@ -135,20 +85,14 @@
 
 <script>
 import { ListMovieByCateHome,urlImage } from "@/model/api";
-
+import CarouselPage from './Carousel.vue'
 export default {
   name: "HomePage",
   data() {
     return {
       urlImage: urlImage,
       imageLoading: 'https://trailer.vieon.vn/Teaser_TuCam_mkt.mp4',
-      slide: 0,
-      sliding: null,
-      videoList: [
-        {url: "https://picsum.photos/1024/480/?image=52"},
-        {url: "https://picsum.photos/1024/480/?image=54"},
-        {url: "https://picsum.photos/1024/480/?image=58"}
-      ],
+      
       isLoading: true,
       page: 1,
       
@@ -159,20 +103,22 @@ export default {
       sections: [
         { title: "PHIM ĐỀ CỬ",id: 'danh-sach/moi-nhat',listMovie: [] },
         { title: "PHIM THỊNH HÀNH", id: 'danh-sach/thinh-hanh',listMovie: []},
+        { title: "PHIM BỘ", id: 'danh-sach/phim-bo',listMovie: []},
+        { title: "PHIM PHIM LẺ", id: 'danh-sach/phim-le',listMovie: []},
         { title: "PHIM HÀN QUỐC", id:'quoc-gia/han-quoc',listMovie: []},
-        { title: "PHIM TRUNG QUỐC", id:'quoc-gia/trung-quoc',listMovie: []}
+        { title: "PHIM TRUNG QUỐC", id:'quoc-gia/trung-quoc',listMovie: []},
       ]
     };
   },
- 
+  components:{
+    CarouselPage
+  },
   mounted() {
     this.sections.forEach(item => {
       this.ListMovie(item.id, item)
 
     console.log(this.listMovie)
-    }),
-    console.log("Danh sách videoList:", this.videoList);
-
+    })
   },
   methods: {
     ListMovie(sectionId,section){
@@ -201,12 +147,6 @@ export default {
     scrollRight(index) {
       this.$refs[`scrollContainer${index}`][0].scrollBy({ left: 300, behavior: "smooth" });
     },
-    onSlideStart() {
-        this.sliding = true
-      },
-      onSlideEnd() {
-        this.sliding = false
-      }
   },
 };
 </script>
@@ -351,5 +291,7 @@ h4{
   width: 100%;
   height: auto;
 }
+
+
 
 </style>
