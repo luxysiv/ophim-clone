@@ -139,14 +139,4 @@ export default {
   height: 40px;
 }
 
-.search-form {
-  margin-right: 15px;
-}
-
-@media (max-width: 768px) {
-  .search-form {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-}
 </style>
