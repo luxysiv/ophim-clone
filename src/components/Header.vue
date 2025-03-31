@@ -1,5 +1,5 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="dark">
+  <b-navbar toggleable="lg" type="dark" variant="dark" class="px-3">
     <b-navbar-brand to="/">
       <img src="/vieon-logo.png" alt="VieON - Xem phim trực tuyến" class="logo" />
     </b-navbar-brand>
@@ -11,40 +11,83 @@
         <b-nav-item :active="$route.path === '/home'" to="/home">{{$t('Trang chủ')}}</b-nav-item>
         <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{$t('Phim Bộ')}}</b-nav-item>
         <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{$t('Phim Lẻ')}}</b-nav-item>
-        
+
+        <!-- Dropdown Thể Loại -->
         <b-nav-item-dropdown :text="$t('Thể loại')" right>
           <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{name: 'TheLoai', params:{path: genre.path}}">
             {{ genre.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
+        <!-- Dropdown Quốc Gia -->
         <b-nav-item-dropdown :text="$t('Quốc gia')" right>
           <b-dropdown-item v-for="country in countries" :key="country.path" :to="{name: 'QuocGia', params:{path: country.path}}">
             {{ country.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
-        
+
         <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
       </b-navbar-nav>
+
+      <!-- Phần Bên Phải Navbar -->
       <b-navbar-nav class="ml-auto">
         <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..."></b-form-input>
+          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." v-model="searchQuery"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" @click="searchMovie">Search</b-button>
         </b-nav-form>
 
+        <!-- Dropdown Ngôn Ngữ -->
         <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
           <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
             {{ lang.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
+        <!-- Icon Tài Khoản -->
         <b-nav-item href="/profile" :title="$t('Tài khoản')">
-          <b-icon icon="person-circle"></b-icon>
+          <b-icon icon="person-circle" font-scale="1.2"></b-icon>
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      searchQuery: '',
+      genres: [
+        { path: 'hanh-dong', name: 'Hành động' },
+        { path: 'hai-huoc', name: 'Hài hước' }
+      ],
+      countries: [
+        { path: 'trung-quoc', name: 'Trung Quốc' },
+        { path: 'han-quoc', name: 'Hàn Quốc' }
+      ],
+      languages: [
+        { title: 'vi', name: 'Tiếng Việt' },
+        { title: 'en', name: 'English' }
+      ]
+    };
+  },
+  methods: {
+    searchMovie() {
+      alert('Tìm kiếm: ' + this.searchQuery);
+    },
+    changeLanguage(lang) {
+      alert('Đổi ngôn ngữ sang: ' + lang);
+    }
+  }
+};
+</script>
+
+<style>
+.logo {
+  height: 40px;
+}
+</style>
+
 
 <script>
 import vi from 'element-plus/dist/locale/vi.mjs'
