@@ -40,7 +40,7 @@
         </b-form>
 
         <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
-          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.code)">
+          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
             {{ lang.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
