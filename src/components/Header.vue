@@ -4,35 +4,46 @@
       <img src="/vieon-logo.png" alt="VieON - Xem phim trực tuyến" class="logo" />
     </b-navbar-brand>
 
+    <!-- Nút Toggle -->
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-    <b-collapse id="nav-collapse" is-nav>
+    <!-- Menu chính -->
+    <b-collapse id="nav-collapse" is-nav v-model="isNavOpen">
       <b-navbar-nav>
-        <b-nav-item :active="$route.path === '/home'" to="/home">{{$t('Trang chủ')}}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{$t('Phim Bộ')}}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{$t('Phim Lẻ')}}</b-nav-item>
+        <b-nav-item :active="$route.path === '/home'" to="/home" @click="toggleNavbar">
+          {{$t('Trang chủ')}}
+        </b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo" @click="toggleNavbar">
+          {{$t('Phim Bộ')}}
+        </b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le" @click="toggleNavbar">
+          {{$t('Phim Lẻ')}}
+        </b-nav-item>
 
         <!-- Dropdown Thể Loại -->
         <b-nav-item-dropdown :text="$t('Thể loại')" right>
-          <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{name: 'TheLoai', params:{path: genre.path}}">
+          <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{name: 'TheLoai', params:{path: genre.path}}" @click="toggleNavbar">
             {{ genre.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <!-- Dropdown Quốc Gia -->
         <b-nav-item-dropdown :text="$t('Quốc gia')" right>
-          <b-dropdown-item v-for="country in countries" :key="country.path" :to="{name: 'QuocGia', params:{path: country.path}}">
+          <b-dropdown-item v-for="country in countries" :key="country.path" :to="{name: 'QuocGia', params:{path: country.path}}" @click="toggleNavbar">
             {{ country.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu" @click="toggleNavbar">
+          {{$t('Sắp chiếu')}}
+        </b-nav-item>
       </b-navbar-nav>
 
-      <!-- Phần Bên Phải Navbar -->
+      <!-- Phần Bên Phải -->
       <b-navbar-nav class="ml-auto">
-        <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." v-model="searchQuery"></b-form-input>
+        <!-- Ô tìm kiếm -->
+        <b-nav-form @submit.prevent="searchMovie">
+          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." v-model="searchQuery" @keyup.enter="searchMovie"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" @click="searchMovie">Search</b-button>
         </b-nav-form>
 
@@ -53,6 +64,7 @@
 </template>
 
 
+
 <script>
 import vi from 'element-plus/dist/locale/vi.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
@@ -62,6 +74,7 @@ export default {
   name: "HeaderComponent",
   data() {
     return {
+      isNavOpen: false,
       searchQuery: '',
       curElLang: "", // current Lang i18n for Element plus
       curLang: "", //current lang i18n for system
@@ -90,6 +103,11 @@ export default {
     };
   },
   methods: {
+    toggleNavbar() {
+      if (window.innerWidth < 992) {
+        this.isNavOpen = false; // Đóng navbar khi click vào item
+      }
+    },
     searchMovie() {
       if (this.searchQuery.trim()) {
         this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } });
