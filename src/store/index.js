@@ -5,5 +5,6 @@ import state from "./state"
 const store = createStore({
     state,
     mutations
+    
   })
 export default store
