@@ -96,33 +96,38 @@ export default {
       }
     },
     changeLanguage(keyLang) {
-      this.curLang = keyLang.title;
-      this.applyLanguage(); 
-      setLanguage(this.curLang);
-      this.$i18n.locale = this.curLang;
-      this.$store.state.curi18n.curLang = this.curLang;
-      this.showLang = false;
+        this.curLang = keyLang;
+        this.ChangeLang();
     },
-    applyLanguage() {
-      switch (this.curLang) {
-        case "en-US":
-          this.curElLang = en;
-          break;
-        case "vi-VN":
-          this.curElLang = vi;;// Default to Vietnamese
-          break;
-        case "zh-CN":
-          this.curElLang = cn;
-          break;
-        default:
-          this.curElLang = vi;
-          break;
-      }
+    ChangeLang() {
+        switch (this.curLang) {
+            case "en-US": 
+              this.curElLang = en; 
+              break;
+            case "vi-VN": 
+              this.curElLang = vi; 
+              break;
+            case "zh-CN": 
+              this.curElLang = cn; 
+              break;
+            default:
+                this.curElLang = vi;
+                break;
+        }
+        if (this.curLang) {
+            this.$i18n.locale = this.curLang
+            // Cookie
+            setLanguage(this.curLang)
+            // i18n store
+            this.$store.state.curi18n.curLang = this.curLang
+            this.$store.state.curi18n.curElLang = this.curElLang
+        }
+
     },
     InitLang() {
-      let currLang = getLanguage() || "vi-VN";
-      this.curLang = currLang;
-      this.applyLanguage();
+        let currLang = getLanguage();
+        this.curLang = currLang ? currLang : "vi-VN";
+        this.ChangeLang();
     },
   },
   created() {
