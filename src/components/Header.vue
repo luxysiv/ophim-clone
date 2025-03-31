@@ -27,8 +27,8 @@
         <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-form>
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." @keyup.enter="searchMovie"></b-form-input>
+        <b-nav-form  @submit.prevent="searchMovie">
+          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." v-model="searchQuery" @keyup.enter="searchMovie"></b-form-input>
           <b-button size="sm" class="my-2 my-sm-0" @click="searchMovie">Search</b-button>
         </b-nav-form>
 
