@@ -1,6 +1,6 @@
 <template>
   <div class="search-page">
-    <h2 class="text-center text-light mb-4">Kết quả tìm kiếm cho "{{ $route.query.keyword }}"</h2>
+    <h2 class="text-center text-light mb-4">{{$t('Kết quả tìm kiếm cho')}} "{{ $route.query.keyword }}"</h2>
     <hr/>
     <b-spinner v-if="loading" label="Loading..."></b-spinner>
     <div v-else>
@@ -36,10 +36,10 @@
                   </div>
                   <div class="action-buttons mt-3">
                     <b-button variant="outline-dark" class="me-2">
-                      <i class="fas fa-play me-2"></i>Xem
+                      <i class="fas fa-play me-2"></i>{{$t('Xem')}}
                     </b-button>
                     <b-button variant="outline-dark">
-                      <i class="fas fa-share me-2"></i>Chia sẻ
+                      <i class="fas fa-share me-2"></i>{{$t('Chia sẻ')}}
                     </b-button>
                   </div>
 
