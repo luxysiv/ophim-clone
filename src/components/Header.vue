@@ -52,42 +52,6 @@
   </b-navbar>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      searchQuery: '',
-      genres: [
-        { path: 'hanh-dong', name: 'Hành động' },
-        { path: 'hai-huoc', name: 'Hài hước' }
-      ],
-      countries: [
-        { path: 'trung-quoc', name: 'Trung Quốc' },
-        { path: 'han-quoc', name: 'Hàn Quốc' }
-      ],
-      languages: [
-        { title: 'vi', name: 'Tiếng Việt' },
-        { title: 'en', name: 'English' }
-      ]
-    };
-  },
-  methods: {
-    searchMovie() {
-      alert('Tìm kiếm: ' + this.searchQuery);
-    },
-    changeLanguage(lang) {
-      alert('Đổi ngôn ngữ sang: ' + lang);
-    }
-  }
-};
-</script>
-
-<style>
-.logo {
-  height: 40px;
-}
-</style>
-
 
 <script>
 import vi from 'element-plus/dist/locale/vi.mjs'
