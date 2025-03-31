@@ -104,16 +104,16 @@ export default {
     applyLanguage() {
       switch (this.curLang) {
         case "en-US":
-          Locale.use("en-US", enUS);
+          this.curElLang = enUS;
           break;
         case "vi-VN":
-          Locale.use("vi-VN", viVN);// Default to Vietnamese
+          this.curElLang = viVN;
           break;
         case "zh-CN":
-          Locale.use("zh-CN", cnZh);
+          this.curElLang = cnZh;
           break;
         default:
-          Locale.use("en-US", enUS); 
+          this.curElLang = viVN; // Default to Vietnamese
           break;
       }
     },
