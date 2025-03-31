@@ -101,12 +101,12 @@ export default {
       //showControls: false,
       showControls: [],
       sections: [
-        { title: "PHIM ĐỀ CỬ",id: 'danh-sach/moi-nhat',listMovie: [] },
-        { title: "PHIM THỊNH HÀNH", id: 'danh-sach/thinh-hanh',listMovie: []},
-        { title: "PHIM BỘ", id: 'danh-sach/phim-bo',listMovie: []},
-        { title: "PHIM PHIM LẺ", id: 'danh-sach/phim-le',listMovie: []},
-        { title: "PHIM HÀN QUỐC", id:'quoc-gia/han-quoc',listMovie: []},
-        { title: "PHIM TRUNG QUỐC", id:'quoc-gia/trung-quoc',listMovie: []},
+        { title: this.$t('PHIM ĐỀ CỬ'),id: 'danh-sach/moi-nhat',listMovie: [] },
+        { title: this.$t('PHIM THỊNH HÀNH'), id: 'danh-sach/thinh-hanh',listMovie: []},
+        { title: this.$t('PHIM BỘ'), id: 'danh-sach/phim-bo',listMovie: []},
+        { title: this.$t('PHIM LẺ'), id: 'danh-sach/phim-le',listMovie: []},
+        { title: this.$t('PHIM HÀN QUỐC'), id:'quoc-gia/han-quoc',listMovie: []},
+        { title: this.$t('PHIM TRUNG QUỐC'), id:'quoc-gia/trung-quoc',listMovie: []},
       ]
     };
   },
