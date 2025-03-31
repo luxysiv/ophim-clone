@@ -54,15 +54,17 @@
 </template>
 
 <script>
-import enUS from "vant/es/locale/lang/en-US";
-import cnZh from "vant/es/locale/lang/zh-CN";
-import viVN from "vant/es/locale/lang/vi-VN";
+import vi from 'element-plus/dist/locale/vi.mjs'
+import en from 'element-plus/dist/locale/en.mjs'
+import cn from 'element-plus/dist/locale/cn.mjs'
 import { getLanguage, setLanguage } from "@/utils/cookies";
 export default {
   name: "HeaderComponent",
   data() {
     return {
       searchQuery: '',
+      curElLang: "", // current Lang i18n for Element plus
+      curLang: "", //current lang i18n for system
       genres: [
         { name: this.$t('Hành động'), path: 'hanh-dong' },
         { name: this.$t('Cổ trang'), path: 'co-trang' },
@@ -104,16 +106,16 @@ export default {
     applyLanguage() {
       switch (this.curLang) {
         case "en-US":
-          this.curElLang = enUS;
+          this.curElLang = en;
           break;
         case "vi-VN":
-          this.curElLang = viVN;
+          this.curElLang = vi;;// Default to Vietnamese
           break;
         case "zh-CN":
-          this.curElLang = cnZh;
+          this.curElLang = cn;
           break;
         default:
-          this.curElLang = viVN; // Default to Vietnamese
+          this.curElLang = vi;
           break;
       }
     },
