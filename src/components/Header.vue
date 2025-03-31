@@ -7,7 +7,7 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav class="ml-auto">
+      <b-navbar-nav>
         <b-nav-item :active="$route.path === '/home'" to="/home">{{$t('Trang chủ')}}</b-nav-item>
         <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{$t('Phim Bộ')}}</b-nav-item>
         <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{$t('Phim Lẻ')}}</b-nav-item>
@@ -26,21 +26,14 @@
         
         <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
       </b-navbar-nav>
-
-      <b-navbar-nav class="ml-auto align-items-center">
-        <b-form inline class="search-form">
-          <b-input-group>
-            <b-form-input v-model="searchQuery" placeholder="Tìm kiếm phim..." @keyup.enter="searchMovie"></b-form-input>
-            <b-input-group-append>
-              <b-button variant="outline-light" @click="searchMovie">
-                <b-icon icon="search"></b-icon>
-              </b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-form>
+          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..."></b-form-input>
+          <b-button size="sm" class="my-2 my-sm-0" @click="searchMovie">Search</b-button>
+        </b-nav-form>
 
         <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
-          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
+          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.code)">
             {{ lang.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
