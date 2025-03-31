@@ -56,7 +56,7 @@
 <script>
 import vi from 'element-plus/dist/locale/vi.mjs'
 import en from 'element-plus/dist/locale/en.mjs'
-import cn from 'element-plus/dist/locale/cn.mjs'
+import cn from 'element-plus/dist/locale/zh-cn.mjs'
 import { getLanguage, setLanguage } from "@/utils/cookies";
 export default {
   name: "HeaderComponent",
