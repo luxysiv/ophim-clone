@@ -57,7 +57,7 @@ export default {
   name: "HeaderComponent",
   data() {
     return {
-      isNavOpen: false,
+      
       searchQuery: '',
       curElLang: "", // current Lang i18n for Element plus
       curLang: "", //current lang i18n for system
@@ -86,11 +86,7 @@ export default {
     };
   },
   methods: {
-    toggleNavbar() {
-      if (window.innerWidth < 992) {
-        this.isNavOpen = false; // Đóng navbar khi click vào item
-      }
-    },
+    
     searchMovie() {
       if (this.searchQuery.trim()) {
         this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } });
