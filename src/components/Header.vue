@@ -8,23 +8,23 @@
 
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item :active="$route.path === '/home'" to="/home">Trang chủ</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">Phim Bộ</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">Phim Lẻ</b-nav-item>
+        <b-nav-item :active="$route.path === '/home'" to="/home">{{$t('Trang chủ')}}</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{$t('Phim Bộ')}}</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{$t('Phim Lẻ')}}</b-nav-item>
         
-        <b-nav-item-dropdown text="Thể loại" right>
+        <b-nav-item-dropdown :text="$t('Thể loại')" right>
           <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{name: 'TheLoai', params:{path: genre.path}}">
             {{ genre.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item-dropdown text="Quốc gia" right>
+        <b-nav-item-dropdown :text="$t('Quốc gia')" right>
           <b-dropdown-item v-for="country in countries" :key="country.path" :to="{name: 'QuocGia', params:{path: country.path}}">
             {{ country.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
         
-        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">Sắp chiếu</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
       </b-navbar-nav>
 
       <b-navbar-nav class="ml-auto align-items-center">
@@ -39,13 +39,13 @@
           </b-input-group>
         </b-form>
 
-        <b-nav-item-dropdown text="Ngôn ngữ" right>
-          <b-dropdown-item v-for="lang in languages" :key="lang.code" @click="changeLanguage(lang.code)">
+        <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
+          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.code)">
             {{ lang.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
-        <b-nav-item href="/profile" title="Tài khoản">
+        <b-nav-item href="/profile" :title="$t('Tài khoản')">
           <b-icon icon="person-circle"></b-icon>
         </b-nav-item>
       </b-navbar-nav>
@@ -54,32 +54,36 @@
 </template>
 
 <script>
+import enUS from "vant/es/locale/lang/en-US";
+import cnZh from "vant/es/locale/lang/zh-CN";
+import viVN from "vant/es/locale/lang/vi-VN";
+import { getLanguage, setLanguage } from "@/utils/cookies";
 export default {
   name: "HeaderComponent",
   data() {
     return {
       searchQuery: '',
       genres: [
-        { name: 'Hành động', path: 'hanh-dong' },
-        { name: 'Cổ trang', path: 'co-trang' },
-        { name: 'Chiến tranh', path: 'chien-tranh' },
-        { name: 'Tình cảm', path: 'tinh-cam' },
-        { name: 'Hài hước', path: 'hai-huoc' },
-        { name: 'Âm nhạc', path: 'am-nhac' },
-        { name: 'Học đường', path: 'hoc-duong' }
+        { name: this.$t('Hành động'), path: 'hanh-dong' },
+        { name: this.$t('Cổ trang'), path: 'co-trang' },
+        { name: this.$t('Chiến tranh'), path: 'chien-tranh' },
+        { name: this.$t('Tình cảm'), path: 'tinh-cam' },
+        { name: this.$t('Hài hước'), path: 'hai-huoc' },
+        { name: this.$t('Âm nhạc'), path: 'am-nhac' },
+        { name: this.$t('Học đường'), path: 'hoc-duong' }
       ],
       countries: [
-        { name: 'Trung Quốc', path: 'trung-quoc' },
-        { name: 'Hàn Quốc', path: 'han-quoc' },
-        { name: 'Nhật Bản', path: 'nhat-ban' },
-        { name: 'Thái Lan', path: 'thai-lan' },
-        { name: 'Ấn Độ', path: 'an-do' },
-        { name: 'Anh', path: 'anh' }
+        { name: this.$t('Trung Quốc'), path: 'trung-quoc' },
+        { name: this.$t('Hàn Quốc'), path: 'han-quoc' },
+        { name: this.$t('Nhật Bản'), path: 'nhat-ban' },
+        { name: this.$t('Thái Lan'), path: 'thai-lan' },
+        { name: this.$t('Ấn Độ'), path: 'an-do' },
+        { name: this.$t('Anh'), path: 'anh' }
       ],
       languages: [
-        { name: 'Tiếng Việt', code: 'vi' },
-        { name: 'English', code: 'en' },
-        { name: '中国', code: 'zh' }
+        { name: "Tiếng việt", title: "vi-VN" },
+        { name: "English", title: "en-US" },
+        { name: "中国", title: "zh-CN" },
       ]
     };
   },
@@ -89,10 +93,39 @@ export default {
         this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } });
       }
     },
-    changeLanguage(langCode) {
-      console.log("Đổi ngôn ngữ sang: ", langCode);
-    }
-  }
+    changeLanguage(keyLang) {
+      this.curLang = keyLang.title;
+      this.applyLanguage(); 
+      setLanguage(this.curLang);
+      this.$i18n.locale = this.curLang;
+      this.$store.state.curi18n.curLang = this.curLang;
+      this.showLang = false;
+    },
+    applyLanguage() {
+      switch (this.curLang) {
+        case "en-US":
+          Locale.use("en-US", enUS);
+          break;
+        case "vi-VN":
+          Locale.use("vi-VN", viVN);// Default to Vietnamese
+          break;
+        case "zh-CN":
+          Locale.use("zh-CN", cnZh);
+          break;
+        default:
+          Locale.use("en-US", enUS); 
+          break;
+      }
+    },
+    InitLang() {
+      let currLang = getLanguage() || "vi-VN";
+      this.curLang = currLang;
+      this.applyLanguage();
+    },
+  },
+  created() {
+    this.InitLang(); // Initialize language when the component is created
+  },
 };
 </script>
 
