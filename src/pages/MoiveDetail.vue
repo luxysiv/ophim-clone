@@ -44,17 +44,17 @@
     <div class="movie-info text-left">
       <h1>{{ movie.title }}</h1>
       <p v-html="movie.description"></p>
-      <p><strong>Diễn viên: </strong>{{ movie.actors.join(", ") }}</p>
-      <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
-      <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
+      <p><strong>{{$t('Diễn viên:')}} </strong>{{ movie.actors.join(", ") }}</p>
+      <p><strong>{{$t('Đạo diễn:')}}</strong> {{ movie.director.join(", ") }}</p>
+      <p><strong>{{$t('Thể loại')}}:</strong> {{ movie.genre.name }}</p>
       <p>
-        <strong>Đánh giá:</strong> <el-rate v-model="movie.rating" disabled />
+        <strong>{{$t('Đánh giá:')}}</strong> <el-rate v-model="movie.rating" disabled />
       </p>
     </div>
 
     <!-- Phần 3: Đề xuất phimphim -->
     <div class="suggested-movies text-left">
-      <h1>Đề xuất cho bạn!</h1>
+      <h1>{{$t('Đề xuất cho bạn!')}}</h1>
       <div class="scroll-container movie-list" ref="movieList">
         <router-link
           v-for="suggested in suggestedMovies.slice(0, 8)"
@@ -99,9 +99,9 @@
 
     <!-- Phần 4: Binh luận -->
     <div class="comments">
-      <h2>Bình luận</h2>
-      <b-form-textarea v-model="newComment" placeholder="Viết bình luận..." />
-      <b-button @click="addComment">Gửi</b-button>
+      <h2>{{$t('Bình luận')}}</h2>
+      <b-form-textarea v-model="newComment" :placeholder="$t('Viết bình luận...')" />
+      <b-button @click="addComment">{{$t('Gửi')}}</b-button>
       <ul>
         <li v-for="(comment, index) in comments" :key="index">{{ comment }}</li>
       </ul>
