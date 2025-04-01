@@ -5,83 +5,68 @@
         <div>
           <CarouselPage/>
         </div>
+        
+        <!-- Danh mục phim -->
         <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-          <b-row align-h="start" class="text-left">
-          <b-col cols="3">
-            <h1 class="Title">{{ section.title }}</h1>
-          </b-col>
-          <b-col cols="2" class="text-left">
-            <router-link :to="{ name: '', params: { id: section.id } }">
-              Xem tất cả >>
-            </router-link>
-          </b-col>
-        </b-row>
-          <div
-            class="scroll-wrapper"
-            @mouseenter="showControls[sectionIndex] = true"
-            @mouseleave="showControls[sectionIndex] = false"
-          >
-            <button
-              aria-label="Cuộn sang trái"
-              v-if="showControls[sectionIndex]"
-              class="scroll-btn left"
-              @click="scrollLeft(sectionIndex)"
-            >
-              &lt;
-            </button>
-            <div class="scroll-container" :ref="`scrollContainer${sectionIndex}`">
-              <b-row class="flex-nowrap">
-                <b-col
-                  v-for="item in isLoading ? Array(8).fill({})  : section.listMovie.slice(0, 10)"
-                  :key="item._id"
-                  class="text-center"
-                >
-                  <b-skeleton
-                    v-if="isLoading"
-                    height="200px"
-                    width="250px"
-                    style="margin: 10px"
-                  ></b-skeleton>
-                  <router-link :to="{name: 'MovieDetail', params:{slug: item.slug}}" v-else>
-                    <b-card
-                      class="movie-card"
-                      no-body
-                      style="width: 250px; border: none; margin: 10px"
-                    >
-                     <div class="image-container">
-                      <b-card-img :src="getOptimizedImage(item.poster_url)" alt="Movie Image" height="200" width="250" class="movie-img" loading="lazy" />
-                      
-                     </div>
-                     <div class="overlay">
-                      <b-badge v-if="item.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ item.lang }}</b-badge>
-                      <b-badge v-else variant="warning" class="badge-top-left">{{ item.episode_current }}-{{ item.lang }}</b-badge>
-                    </div>
-                      <!-- Tiêu đề phim -->
-                      <b-card-body class="p-2 text-center movie-title">
-                        <b-card-title class="m-0 text-truncate" :title="item.name">
-                          {{ item.name }}
-                        </b-card-title>
-                      </b-card-body>
-                    </b-card>
+          <b-row align-h="start" class="category-header">
+            <b-col cols="auto">
+              <h2 class="category-title">{{ section.title }}</h2>
+            </b-col>
+            <b-col cols="auto">
+              <router-link :to="{ name: '', params: { id: section.id } }" class="view-all">
+                Xem tất cả >>
+              </router-link>
+            </b-col>
+          </b-row>
 
-                  </router-link>
-                </b-col>
-              </b-row>
-            </div>
-            <button
-              aria-label="Cuộn sang phải"
-              v-if="showControls[sectionIndex]"
-              class="scroll-btn right"
-              @click="scrollRight(sectionIndex)"
+          <!-- Hiển thị phim dạng lưới -->
+          <div class="movie-grid">
+            <b-col
+              v-for="(item, index) in isLoading ? Array(12).fill({}) : section.listMovie.slice(0, 12)"
+              :key="index"
+              class="movie-item"
             >
-              &gt;
-            </button>
+              <b-skeleton
+                v-if="isLoading"
+                height="200px"
+                width="100%"
+              ></b-skeleton>
+              <router-link :to="{ name: 'MovieDetail', params: { slug: item.slug } }" v-else>
+                <b-card class="movie-card" no-body>
+                  <div class="image-container">
+                    <b-card-img
+                      :src="getOptimizedImage(item.poster_url)"
+                      :alt="item.name"
+                      class="movie-img"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="overlay">
+                    <b-badge v-if="item.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">
+                      Full-{{ item.lang }}
+                    </b-badge>
+                    <b-badge v-else variant="warning" class="badge-top-left">
+                      {{ item.episode_current }}-{{ item.lang }}
+                    </b-badge>
+                  </div>
+                  <!-- Tiêu đề phim tối ưu SEO -->
+                  <b-card-body class="p-2 text-center">
+                    <h3 class="movie-title" aria-label="Tên phim {{ item.name }}">
+                      {{ item.name }}
+                    </h3>
+                  </b-card-body>
+                </b-card>
+              </router-link>
+            </b-col>
           </div>
         </div>
       </div>
     </template>
   </default-layout>
 </template>
+
+
+
 
 <script>
 import { ListMovieByCateHome,urlImage } from "@/model/api";
@@ -152,82 +137,38 @@ export default {
 </script>
 
 <style scoped>
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.movie-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .movie-card {
   position: relative;
   background-color: #1c1c1e;
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.2s;
+  width: 100%;
+  max-width: 280px;
 }
 
 .movie-card:hover {
   transform: scale(1.05);
 }
-.scroll-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
 
-.scroll-container {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  /* padding: 10px 0; */
-  scroll-behavior: smooth;
-}
-
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
-
-.scroll-btn {
-  position: absolute;
-  background: rgba(94, 92, 92, 0.7);
-  color: white;
-  border: none;
-  /* padding: 10px; */
-  cursor: pointer;
-  z-index: 10;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 20px;
-}
-
-.scroll-btn.left {
-  left: 0;
-}
-
-.scroll-btn.right {
-  right: 0;
-}
-
-.scroll-btn:hover {
-  background: rgba(105, 103, 103, 0.9);
-}
-.video-container {
-  width: 100%;
-  height: 600px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: black;
-}
-
-.custom-video {
-  width: 100%;
-  height: 600px;
-  object-fit: cover;
-}
-.Title{
-    font-weight: 700;
-    font-size: 24px;
-    margin: 15px 0;
-}
 .image-container {
   width: 100%;
   height: 200px;
-  overflow: hidden; /* Giữ ảnh trong khung */
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -237,60 +178,86 @@ export default {
   width: 100%;
   height: 100%;
   transition: transform 0.3s ease-in-out;
+  object-fit: cover;
 }
 
 .image-container:hover .movie-img {
-  transform: scale(1.1); /* Phóng to ảnh khi hover */
+  transform: scale(1.1);
 }
 
 .movie-title {
-  background: rgba(0, 0, 0, 0.7); /* Làm mờ nền đen */
+  font-size: 14px; /* Giảm kích thước chữ */
+  font-weight: 600;
   color: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 5px;
-  font-size: 20px;
-}
-h4{
-  font-size: 20px;
-}
-.overlay {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-  @media (max-width: 768px) {
-  .movie-title {
-    font-size: 16px;
-    padding: 3px;
-  }
-  .overlay {
-    top: 5px;
-    left: 5px;
-  }
-}
-  @media (max-width: 768px) {
-  .scroll-btn {
-    display: none;
-  }
-}
-  .scroll-container {
-  display: flex;
-  overflow-x: scroll;
-  white-space: nowrap;
-  scroll-behavior: smooth;
-  max-width: 100vw;
-}
-  .image-container {
-  width: 100%;
-  height: auto;
+  text-align: center;
+  margin-top: 5px;
+  line-height: 1.2;
+  
+  /* Giới hạn 2 dòng, nếu dài hơn sẽ hiển thị ... */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;  /* Chỉ hiển thị tối đa 2 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal; /* Cho phép xuống dòng nhưng vẫn bị giới hạn */
+  max-width: 100%;
 }
 
-.movie-img {
-  width: 100%;
-  height: auto;
+/* Responsive */
+@media (max-width: 1024px) {
+  .movie-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
 }
+
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Khoảng cách giữa tiêu đề và "Xem tất cả" */
+  margin: 20px 0;
+}
+
+.category-title {
+  font-size: 20px; /* Chuẩn SEO */
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  text-transform: capitalize; /* Giúp hiển thị đẹp hơn */
+}
+
+.view-all {
+  font-size: 16px; /* Không quá nhỏ, vẫn dễ đọc */
+  font-weight: 600;
+  color: #ffcc00; /* Màu nổi bật */
+  text-decoration: none;
+}
+
+.view-all:hover {
+  text-decoration: underline;
+  color: #ff9900;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .category-title {
+    font-size: 18px;
+  }
+  .view-all {
+    font-size: 14px;
+  }
+}
+
 
 
 
