@@ -30,6 +30,7 @@
                 v-if="isLoading"
                 height="200px"
                 width="100%"
+                animation="wave"
               ></b-skeleton>
               <router-link :to="{ name: 'MovieDetail', params: { slug: item.slug } }" v-else>
                 <b-card class="movie-card" no-body>
