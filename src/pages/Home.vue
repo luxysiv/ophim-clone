@@ -123,14 +123,14 @@ export default {
     );
     },
     getOptimizedImage(imagePath) {
-      return ${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100;
+      return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
     },
 
     scrollLeft(index) {
-      this.$refs[scrollContainer${index}][0].scrollBy({ left: -300, behavior: "smooth" });
+      this.$refs[`scrollContainer${index}`][0].scrollBy({ left: -300, behavior: "smooth" });
     },
     scrollRight(index) {
-      this.$refs[scrollContainer${index}][0].scrollBy({ left: 300, behavior: "smooth" });
+      this.$refs[`scrollContainer${index}`][0].scrollBy({ left: 300, behavior: "smooth" });
     },
   },
 };
