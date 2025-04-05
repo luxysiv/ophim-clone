@@ -1,50 +1,64 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="dark">
+  <b-navbar toggleable="lg" type="dark" variant="dark" class="main-navbar">
+    <!-- Logo -->
     <b-navbar-brand to="/">
       <img src="/vieon-logo.png" alt="VieON - Xem phim trực tuyến" class="logo" />
     </b-navbar-brand>
 
-    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+    <b-navbar-toggle target="nav-collapse" />
 
     <b-collapse id="nav-collapse" is-nav>
+      <!-- Menu chính bên trái -->
       <b-navbar-nav>
-        <b-nav-item :active="$route.path === '/home'" to="/home">{{$t('Trang chủ')}}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{$t('Phim Bộ')}}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{$t('Phim Lẻ')}}</b-nav-item>
-        
+        <b-nav-item :active="$route.path === '/home'" to="/home">{{ $t('Trang chủ') }}</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{ $t('Phim Bộ') }}</b-nav-item>
+        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{ $t('Phim Lẻ') }}</b-nav-item>
+
         <b-nav-item-dropdown :text="$t('Thể loại')" right>
-          <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{name: 'TheLoai', params:{path: genre.path}}">
+          <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{ name: 'TheLoai', params: { path: genre.path } }">
             {{ genre.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
         <b-nav-item-dropdown :text="$t('Quốc gia')" right>
-          <b-dropdown-item v-for="country in countries" :key="country.path" :to="{name: 'QuocGia', params:{path: country.path}}">
+          <b-dropdown-item v-for="country in countries" :key="country.path" :to="{ name: 'QuocGia', params: { path: country.path } }">
             {{ country.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
-        
-        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{$t('Sắp chiếu')}}</b-nav-item>
+
+        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{ $t('Sắp chiếu') }}</b-nav-item>
       </b-navbar-nav>
-      <b-navbar-nav class="ml-auto">
-        <b-nav-form  @submit.prevent="searchMovie">
-          <b-form-input size="sm" class="mr-sm-2" placeholder="Tìm kiếm phim..." v-model="searchQuery" @keyup.enter="searchMovie"></b-form-input>
-          <b-button size="sm" class="my-2 my-sm-0" @click="searchMovie">Search</b-button>
+
+      <!-- Bên phải -->
+      <b-navbar-nav class="ml-auto align-items-center">
+        <!-- Tìm kiếm -->
+        <b-nav-form @submit.prevent="searchMovie">
+          <b-form-input
+            size="sm"
+            class="search-input mr-2"
+            placeholder="Tìm kiếm phim..."
+            v-model="searchQuery"
+            @keyup.enter="searchMovie"
+          />
+          <b-button size="sm" variant="success" @click="searchMovie">Search</b-button>
         </b-nav-form>
 
+        <!-- Chọn ngôn ngữ -->
         <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
           <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
             {{ lang.name }}
           </b-dropdown-item>
         </b-nav-item-dropdown>
 
+        <!-- Tài khoản -->
         <b-nav-item href="/profile" :title="$t('Tài khoản')">
-          <b-icon icon="person-circle"></b-icon>
+          <b-icon icon="person-circle" font-scale="1.2" />
         </b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
 </template>
+
 
 
 
@@ -134,13 +148,57 @@ export default {
 </script>
 
 <style scoped>
-.custom-navbar {
-  background: linear-gradient(to right, #242424, #444);
-  padding: 10px 20px;
+.main-navbar {
+  background-color: #333 !important;
+  padding: 10px 16px;
+  border-bottom: 1px solid #333;
+  box-shadow: 0 2px 8px rgba(75, 74, 74, 0.6); /* <- Đổ bóng ở đây */
+  z-index: 1000;
+  position: sticky;
+  top: 0;
 }
 
 .logo {
-  height: 40px;
+  height: 38px;
+  color: #fff;
 }
 
+:deep(.navbar-nav .nav-link) {
+  color: #fff !important;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 12px;
+}
+
+:deep(.navbar-nav .nav-link:hover) {
+  color: #00e165 !important;
+}
+
+.search-input {
+  background-color: #222;
+  border: none;
+  color: #fff;
+  max-width: 180px;
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+.search-input {
+  background-color: #222;
+  border: none;
+  color: #fff;
+  max-width: 200px;
+}
+
+:deep(.form-inline) {
+  display: flex;
+  align-items: center;
+}
+
+:deep(.form-inline .btn) {
+  margin-left: 8px;
+}
 </style>
+
+

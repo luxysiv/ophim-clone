@@ -16,7 +16,7 @@ export default
     'Học đường': 'Học đường',
     'Trung Quốc': 'Trung Quốc',
     'Hàn Quốc': 'Hàn Quốc',
-    'Nhật Bản': 'JaNhật Bảnpan',
+    'Nhật Bản': 'Nhật Bản',
     'Thái Lan': 'Thái Lan',
     'Ấn Độ': 'Ấn Độ',
     'Anh': 'Anh',
