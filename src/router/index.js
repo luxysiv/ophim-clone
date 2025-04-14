@@ -47,6 +47,12 @@ const routes =[
             props: true
         },
         {
+            path: '/:path',
+            name: "PhimNew",
+            component: () => import("@/pages/PhimNew/PhimNew.vue"),
+            props: true
+        },
+        {
             path: '/quoc-gia/:path',
             name: "QuocGia",
             component: () => import("@/pages/QuocGia/QuocGia.vue"),

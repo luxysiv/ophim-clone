@@ -13,7 +13,12 @@
               <h2 class="category-title">{{ section.title }}</h2>
             </b-col>
             <b-col cols="auto">
-              <router-link :to="{ name: '', params: { id: section.id } }" class="view-all">
+              <router-link
+                :to="section.name === 'QuocGia' || section.name === 'PhimNew'
+                  ? { name: section.name, params: { path: section.id.split('/')[1] } }
+                  : { name: section.name }"
+                class="view-all"
+              >
                 Xem tất cả >>
               </router-link>
             </b-col>
@@ -87,12 +92,12 @@ export default {
       //showControls: false,
       showControls: [],
       sections: [
-        { title: this.$t('PHIM ĐỀ CỬ'),id: 'danh-sach/moi-nhat',listMovie: [] },
-        { title: this.$t('PHIM THỊNH HÀNH'), id: 'danh-sach/thinh-hanh',listMovie: []},
-        { title: this.$t('PHIM BỘ'), id: 'danh-sach/phim-bo',listMovie: []},
-        { title: this.$t('PHIM LẺ'), id: 'danh-sach/phim-le',listMovie: []},
-        { title: this.$t('PHIM HÀN QUỐC'), id:'quoc-gia/han-quoc',listMovie: []},
-        { title: this.$t('PHIM TRUNG QUỐC'), id:'quoc-gia/trung-quoc',listMovie: []},
+        { title: this.$t('PHIM ĐỀ CỬ'),id: 'danh-sach/moi-nhat',name: 'PhimNew',listMovie: [] },
+        { title: this.$t('PHIM THỊNH HÀNH'), id: 'danh-sach/thinh-hanh',name: 'PhimNew',listMovie: []},
+        { title: this.$t('PHIM BỘ'), id: 'danh-sach/phim-bo',name: 'PhimBo',listMovie: []},
+        { title: this.$t('PHIM LẺ'), id: 'danh-sach/phim-le',name: 'PhimLe',listMovie: []},
+        { title: this.$t('PHIM HÀN QUỐC'), id:'quoc-gia/han-quoc',name: 'QuocGia',listMovie: []},
+        { title: this.$t('PHIM TRUNG QUỐC'), id:'quoc-gia/trung-quoc',name: 'QuocGia',listMovie: []},
       ]
     };
   },

@@ -4,21 +4,21 @@
     <hr/>
     <b-spinner v-if="loading" label="Loading..."></b-spinner>
     <div v-else>
-      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" style="margin: 10px 0;">
+      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" style="margin: 15px 0;">
         <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
           <b-row no-gutters>
-            <b-col md="3">
+            <b-col md="4">
               <b-card-img 
                 :src="getOptimizedImage(movie.poster_url)"
-                alt="Movie Image"
+                :alt="movie.name"
                 class="movie-image rounded-0"
                 loading="lazy"
-                style="width: 100%; height: auto;">
+                style="width: 100%; height: 100%;border-radius: 5px;">
                 
                 </b-card-img>
             </b-col>
-            <b-col md="9">
-              <b-card-body :title="movie.name" style="color: black; float:left;">
+            <b-col md="8">
+              <b-card-body :title="movie.name" style="color: white; float:left;">
                 <b-card-text>
                   <div>
                     <div class="genre-section mb-2">
@@ -35,10 +35,10 @@
                     <p class="text-muted description-text">{{ movie.description }}</p>
                   </div>
                   <div class="action-buttons mt-3">
-                    <b-button variant="outline-dark" class="me-2">
+                    <b-button variant="outline-light" class="me-2">
                       <i class="fas fa-play me-2"></i>{{$t('Xem')}}
                     </b-button>
-                    <b-button variant="outline-dark">
+                    <b-button variant="outline-light">
                       <i class="fas fa-share me-2"></i>{{$t('Chia sẻ')}}
                     </b-button>
                   </div>
@@ -256,5 +256,14 @@ export default {
 .action-buttons {
   display: flex;
   justify-content: flex-start;
+}
+.overflow-hidden {
+  background-color: #111218;
+  color: #fff;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.overflow-hidden:hover {
+  transform: scale(1.01);
+  box-shadow: 0 5px 12px rgba(255, 255, 255, 0.05);
 }
 </style>
