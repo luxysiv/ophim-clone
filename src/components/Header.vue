@@ -1,80 +1,244 @@
 <template>
-  <b-navbar toggleable="lg" type="dark" variant="dark" class="main-navbar">
+  <v-app-bar
+    app
+    color="info"
+    dark
+    flat
+    class="main-navbar"
+  >
     <!-- Logo -->
-    <b-navbar-brand to="/">
-      <img src="/vieon-logo.png" alt="VieON - Xem phim trực tuyến" class="logo" />
-    </b-navbar-brand>
+    <v-app-bar-nav-icon @click="drawer = !drawer" />
+    <v-img
+      src="/vieon-logo.png"
+      alt="VieON"
+      max-height="38"
+      contain
+      class="mx-4"
+    ></v-img>
 
-    <b-navbar-toggle target="nav-collapse" />
+    <!-- Menu chính -->
+    <v-toolbar-items class="hidden-sm-and-down">
+      <v-btn
+        text
+        :to="{ path: '/home' }"
+        :class="{ 'text-green': $route.path === '/home' }"
+      >
+        {{ $t('Trang chủ') }}
+      </v-btn>
+      <v-btn
+        text
+        :to="{ path: '/phim-bo' }"
+        :class="{ 'text-green': $route.path === '/phim-bo' }"
+      >
+        {{ $t('Phim Bộ') }}
+      </v-btn>
+      <v-btn
+        text
+        :to="{ path: '/phim-le' }"
+        :class="{ 'text-green': $route.path === '/phim-le' }"
+      >
+        {{ $t('Phim Lẻ') }}
+      </v-btn>
 
-    <b-collapse id="nav-collapse" is-nav>
-      <!-- Menu chính bên trái -->
-      <b-navbar-nav>
-        <b-nav-item :active="$route.path === '/home'" to="/home">{{ $t('Trang chủ') }}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-bo'" to="/phim-bo">{{ $t('Phim Bộ') }}</b-nav-item>
-        <b-nav-item :active="$route.path === '/phim-le'" to="/phim-le">{{ $t('Phim Lẻ') }}</b-nav-item>
+      <!-- Dropdown Thể loại -->
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn text v-bind="props">
+            {{ $t('Thể loại') }}
+            <v-icon right>mdi-menu-down</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="genre in genres"
+            :key="genre.path"
+            :to="{ name: 'TheLoai', params: { path: genre.path } }"
+          >
+            <v-list-item-title>{{ genre.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
-        <b-nav-item-dropdown :text="$t('Thể loại')" right>
-          <b-dropdown-item v-for="genre in genres" :key="genre.path" :to="{ name: 'TheLoai', params: { path: genre.path } }">
-            {{ genre.name }}
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
+      <!-- Dropdown Quốc gia -->
+      <v-menu>
+        <template #activator="{ props }">
+          <v-btn text v-bind="props">
+            {{ $t('Quốc gia') }}
+            <v-icon right>mdi-menu-down</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="country in countries"
+            :key="country.path"
+            :to="{ name: 'QuocGia', params: { path: country.path } }"
+          >
+            <v-list-item-title>{{ country.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
-        <b-nav-item-dropdown :text="$t('Quốc gia')" right>
-          <b-dropdown-item v-for="country in countries" :key="country.path" :to="{ name: 'QuocGia', params: { path: country.path } }">
-            {{ country.name }}
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
+      <v-btn
+        text
+        :to="{ path: '/phim-sap-chieu' }"
+        :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
+      >
+        {{ $t('Sắp chiếu') }}
+      </v-btn>
+    </v-toolbar-items>
 
-        <b-nav-item :active="$route.path === '/phim-sap-chieu'" to="/phim-sap-chieu">{{ $t('Sắp chiếu') }}</b-nav-item>
-      </b-navbar-nav>
+    <!-- Search + Language + Profile -->
+    <v-spacer />
+    <v-text-field
+      v-model="searchQuery"
+      class="search-input"
+      placeholder="Tìm kiếm phim..."
+      hide-details
+      dense
+      @keyup.enter="searchMovie"
+      prepend-inner-icon="mdi-magnify"
+      single-line
+      flat
+      variant="solo-filled"
+    ></v-text-field>
+    <v-btn icon @click="searchMovie">
+      <v-icon>mdi-magnify</v-icon>
+    </v-btn>
 
-      <!-- Bên phải -->
-      <b-navbar-nav class="ml-auto align-items-center">
-        <!-- Tìm kiếm -->
-        <b-nav-form @submit.prevent="searchMovie">
-          <b-form-input
-            size="sm"
-            class="search-input mr-2"
-            placeholder="Tìm kiếm phim..."
-            v-model="searchQuery"
-            @keyup.enter="searchMovie"
-          />
-          <b-button size="sm" variant="success" @click="searchMovie">Search</b-button>
-        </b-nav-form>
+    <!-- Ngôn ngữ -->
+    <v-menu offset-y>
+      <template #activator="{ props }">
+        <v-btn icon v-bind="props" title="Ngôn ngữ">
+          <v-icon>mdi-translate</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="lang in languages"
+          :key="lang.title"
+          @click="changeLanguage(lang.title)"
+        >
+          <v-list-item-title>{{ lang.name }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
 
-        <!-- Chọn ngôn ngữ -->
-        <b-nav-item-dropdown :text="$t('Ngôn ngữ')" right>
-          <b-dropdown-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
-            {{ lang.name }}
-          </b-dropdown-item>
-        </b-nav-item-dropdown>
+    <!-- Tài khoản -->
+    <v-btn icon :to="{ path: '/profile' }" title="Tài khoản">
+      <v-icon>mdi-account-circle</v-icon>
+    </v-btn>
+  </v-app-bar>
 
-        <!-- Tài khoản -->
-        <b-nav-item href="/profile" :title="$t('Tài khoản')">
-          <b-icon icon="person-circle" font-scale="1.2" />
-        </b-nav-item>
-      </b-navbar-nav>
-    </b-collapse>
-  </b-navbar>
+<!-- DRAWER CHO MOBILE -->
+<v-navigation-drawer
+  v-model="drawer"
+  app
+  temporary
+  class="d-md-none"
+>
+  <v-list nav dense>
+    <!-- Mục chính -->
+    <v-list-item
+      :to="{ path: '/home' }"
+      :class="{ 'text-green': $route.path === '/home' }"
+    >
+      <v-list-item-title>{{ $t('Trang chủ') }}</v-list-item-title>
+    </v-list-item>
+
+    <v-list-item
+      :to="{ path: '/phim-bo' }"
+      :class="{ 'text-green': $route.path === '/phim-bo' }"
+    >
+      <v-list-item-title>{{ $t('Phim Bộ') }}</v-list-item-title>
+    </v-list-item>
+
+    <v-list-item
+      :to="{ path: '/phim-le' }"
+      :class="{ 'text-green': $route.path === '/phim-le' }"
+    >
+      <v-list-item-title>{{ $t('Phim Lẻ') }}</v-list-item-title>
+    </v-list-item>
+
+    <!-- THỂ LOẠI (submenu) -->
+    <v-expansion-panels multiple>
+      <v-expansion-panel>
+        <v-expansion-panel-title>
+          {{ $t('Thể loại') }}
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-list dense>
+            <v-list-item
+              v-for="genre in genres"
+              :key="genre.path"
+              :to="{ name: 'TheLoai', params: { path: genre.path } }"
+              @click="drawer = false"
+            >
+              <v-list-item-title>{{ genre.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
+      <!-- QUỐC GIA (submenu) -->
+      <v-expansion-panel>
+        <v-expansion-panel-title>
+          {{ $t('Quốc gia') }}
+        </v-expansion-panel-title>
+        <v-expansion-panel-text>
+          <v-list dense>
+            <v-list-item
+              v-for="country in countries"
+              :key="country.path"
+              :to="{ name: 'QuocGia', params: { path: country.path } }"
+              @click="drawer = false"
+            >
+              <v-list-item-title>{{ country.name }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+      
+
+    <!-- Sắp chiếu -->
+    <v-list-item
+      :to="{ path: '/phim-sap-chieu' }"
+      :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
+    >
+      <v-list-item-title>{{ $t('Sắp chiếu') }}</v-list-item-title>
+    </v-list-item>
+      <!-- Divider -->
+    <v-divider class="my-2"></v-divider>
+
+    </v-expansion-panels>
+
+    
+
+    <!-- Profile -->
+    <v-list-item :to="{ path: '/profile' }">
+      <v-list-item-icon><v-icon>mdi-account-circle</v-icon></v-list-item-icon>
+      <v-list-item-title>{{ $t('Tài khoản') }}</v-list-item-title>
+    </v-list-item>
+  </v-list>
+</v-navigation-drawer>
+
+
+
 </template>
 
-
-
-
 <script>
-import vi from 'element-plus/dist/locale/vi.mjs'
-import en from 'element-plus/dist/locale/en.mjs'
-import cn from 'element-plus/dist/locale/zh-cn.mjs'
+import vi from 'element-plus/dist/locale/vi.mjs';
+import en from 'element-plus/dist/locale/en.mjs';
+import cn from 'element-plus/dist/locale/zh-cn.mjs';
 import { getLanguage, setLanguage } from "@/utils/cookies";
+
 export default {
-  name: "HeaderComponent",
+  name: "HeaderVuetify",
   data() {
     return {
-      
+      drawer: false,
       searchQuery: '',
-      curElLang: "", // current Lang i18n for Element plus
-      curLang: "", //current lang i18n for system
+      curElLang: '',
+      curLang: '',
       genres: [
         { name: this.$t('Hành động'), path: 'hanh-dong' },
         { name: this.$t('Cổ trang'), path: 'co-trang' },
@@ -82,7 +246,7 @@ export default {
         { name: this.$t('Tình cảm'), path: 'tinh-cam' },
         { name: this.$t('Hài hước'), path: 'hai-huoc' },
         { name: this.$t('Âm nhạc'), path: 'am-nhac' },
-        { name: this.$t('Học đường'), path: 'hoc-duong' }
+        { name: this.$t('Học đường'), path: 'hoc-duong' },
       ],
       countries: [
         { name: this.$t('Trung Quốc'), path: 'trung-quoc' },
@@ -90,115 +254,66 @@ export default {
         { name: this.$t('Nhật Bản'), path: 'nhat-ban' },
         { name: this.$t('Thái Lan'), path: 'thai-lan' },
         { name: this.$t('Ấn Độ'), path: 'an-do' },
-        { name: this.$t('Anh'), path: 'anh' }
+        { name: this.$t('Anh'), path: 'anh' },
       ],
       languages: [
-        { name: "Tiếng việt", title: "vi-VN" },
+        { name: "Tiếng Việt", title: "vi-VN" },
         { name: "English", title: "en-US" },
         { name: "中国", title: "zh-CN" },
       ]
     };
   },
   methods: {
-    
     searchMovie() {
       if (this.searchQuery.trim()) {
         this.$router.push({ name: "SearchMovie", query: { keyword: this.searchQuery } });
       }
     },
     changeLanguage(keyLang) {
-        this.curLang = keyLang;
-        this.ChangeLang();
+      this.curLang = keyLang;
+      this.ChangeLang();
     },
     ChangeLang() {
-        switch (this.curLang) {
-            case "en-US": 
-              this.curElLang = en; 
-              break;
-            case "vi-VN": 
-              this.curElLang = vi; 
-              break;
-            case "zh-CN": 
-              this.curElLang = cn; 
-              break;
-            default:
-                this.curElLang = vi;
-                break;
-        }
-        if (this.curLang) {
-            this.$i18n.locale = this.curLang
-            // Cookie
-            setLanguage(this.curLang)
-            // i18n store
-            this.$store.state.curi18n.curLang = this.curLang
-            this.$store.state.curi18n.curElLang = this.curElLang
-        }
+      switch (this.curLang) {
+        case "en-US": this.curElLang = en; break;
+        case "vi-VN": this.curElLang = vi; break;
+        case "zh-CN": this.curElLang = cn; break;
+        default: this.curElLang = vi; break;
+      }
 
+      if (this.curLang) {
+        this.$i18n.locale = this.curLang;
+        setLanguage(this.curLang);
+        this.$store.state.curi18n.curLang = this.curLang;
+        this.$store.state.curi18n.curElLang = this.curElLang;
+      }
     },
     InitLang() {
-        let currLang = getLanguage();
-        this.curLang = currLang ? currLang : "vi-VN";
-        this.ChangeLang();
-    },
+      const currLang = getLanguage();
+      this.curLang = currLang || "vi-VN";
+      this.ChangeLang();
+    }
   },
   created() {
-    this.InitLang(); // Initialize language when the component is created
-  },
+    this.InitLang();
+  }
 };
 </script>
 
 <style scoped>
 .main-navbar {
-  background-color: #333 !important;
-  padding: 10px 16px;
-  border-bottom: 1px solid #333;
-  box-shadow: 0 2px 8px rgba(75, 74, 74, 0.6); /* <- Đổ bóng ở đây */
-  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(75, 74, 74, 0.6);
   position: sticky;
   top: 0;
+  z-index: 1000;
 }
 
-.logo {
-  height: 38px;
-  color: #fff;
+.search-input {
+  max-width: 200px;
+  background-color: #222;
+  color: white;
 }
-
-:deep(.navbar-nav .nav-link) {
-  color: #fff !important;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 8px 12px;
-}
-
-:deep(.navbar-nav .nav-link:hover) {
+.text-green {
   color: #00e165 !important;
 }
-
-.search-input {
-  background-color: #222;
-  border: none;
-  color: #fff;
-  max-width: 180px;
-}
-
-.search-input::placeholder {
-  color: #aaa;
-}
-.search-input {
-  background-color: #222;
-  border: none;
-  color: #fff;
-  max-width: 200px;
-}
-
-:deep(.form-inline) {
-  display: flex;
-  align-items: center;
-}
-
-:deep(.form-inline .btn) {
-  margin-left: 8px;
-}
 </style>
-
-

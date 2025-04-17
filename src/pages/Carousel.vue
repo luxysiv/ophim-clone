@@ -1,28 +1,18 @@
 <template>
   <div class="row" style="width: 100%; height: 450px">
-    <b-carousel
-      id="carousel-1"
-      v-model="slide"
-      :interval="4000"
-      controls
-      indicators
-      background="#ababab"
-      img-width="1024"
-      img-height="450"
-      style="text-shadow: 1px 1px 2px #333"
-      @sliding-start="onSlideStart"
-      @sliding-end="onSlideEnd"
-      v-if="videoList.length > 0"
-    >
-      <!-- Lặp qua videoList và tạo mỗi b-carousel-slide -->
-      <b-carousel-slide
-        v-for="(item, key) in videoList"
-        :key="key"
-        :caption="'Slide ' + (key + 1)"
-        :text="'Description for slide ' + (key + 1)"
-        :img-src="item.url"
-      />
-    </b-carousel>
+    <v-carousel
+    height="450"
+    show-arrows="hover"
+    cycle
+    hide-delimiter-background
+  >
+    <v-carousel-item
+      v-for="(item,i) in videoList"
+      :key="i"
+      :src="item.url"
+      cover
+    ></v-carousel-item>
+  </v-carousel>
   </div>
 </template>
 
