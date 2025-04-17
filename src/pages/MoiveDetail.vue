@@ -1,113 +1,122 @@
 <template>
   <div class="movie-detail">
-    <!-- Phần 1: Video phim -->
-    <iframe
+    <!-- Video -->
+    <div v-html="generateEmbedHtml(movie.videoUrl)"></div>
+    <!-- <iframe
       :src="movie.videoUrl"
-      autoplay
-      muted
       width="100%"
-      height="600px"
+      height="600"
+      loading="lazy"
       allowfullscreen
       frameborder="0"
-      style="border: 1px solid #ccc"
-    >
-      Your browser does not support the video tag.
-    </iframe>
-    <!-- Tập phim -->
-    <b-card class="bg-light text-dark">
-      <b-card-header class="d-flex align-items-center">
-        <strong class="text-dark me-2">{{ movie.title }}</strong>
-        <b-badge variant="danger">Tập {{ movie.page }}</b-badge>
-      </b-card-header>
-      <b-card-body class="text-left">
-        <b-button-group class="d-flex flex-wrap justify-content">
-          <div
+      sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
+      style="border: 1px solid #ccc; background: #000"
+    ></iframe> -->
+
+    <!-- Danh sách tập phim -->
+    <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
+      <v-card-title class="d-flex align-center">
+        <span class="text-h6">{{ movie.title }}</span>
+        <v-chip class="ml-2" color="red" text-color="white">Tập {{ movie.page }}</v-chip>
+      </v-card-title>
+      <v-card-text>
+        <v-row>
+          <v-col
             v-for="(episode, index) in movie.pageMovie"
             :key="index"
-            class="episode-button-wrapper"
-            style="width: 80px; height: 40px; margin: 10px 20px"
+            cols="auto"
+            class="pa-2"
           >
-            <b-button
-              variant="dark"
-              class="episode-button"
-              style="margin: 10px 20px; width: 100%; height: 100%"
-              @click="playEpisode(episode)"
-            >
+            <v-btn color="primary" @click="playEpisode(episode)">
               {{ episode.slug }}
-            </b-button>
-          </div>
-        </b-button-group>
-      </b-card-body>
-    </b-card>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
 
-    <!-- Phần 2: Thông tin phim -->
-    <div class="movie-info text-left">
-      <h1>{{ movie.title }}</h1>
-      <p v-html="movie.description"></p>
-      <p><strong>{{$t('Diễn viên:')}} </strong>{{ movie.actors.join(", ") }}</p>
-      <p><strong>{{$t('Đạo diễn:')}}</strong> {{ movie.director.join(", ") }}</p>
-      <p><strong>{{$t('Thể loại')}}:</strong> {{ movie.genre.name }}</p>
+    <!-- Thông tin phim -->
+    <div class="movie-info my-4">
+      <h1 class="text-white">{{ movie.title }}</h1>
+      <p v-html="movie.description" class="text-grey-lighten-2"></p>
+      <p><strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}</p>
+      <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
+      <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
       <p>
-        <strong>{{$t('Đánh giá:')}}</strong> <el-rate v-model="movie.rating" disabled />
+        <strong>Đánh giá:</strong>
+        <v-rating v-model="movie.rating" readonly density="compact" color="yellow" />
       </p>
     </div>
 
-    <!-- Phần 3: Đề xuất phimphim -->
-    <div class="suggested-movies text-left">
-      <h1>{{$t('Đề xuất cho bạn!')}}</h1>
-      <div class="scroll-container movie-list" ref="movieList">
+    <!-- Đề xuất phim -->
+    <div class="suggested-movies my-8">
+      <h2 class="text-h5 text-white mb-4">Đề xuất cho bạn!</h2>
+      <div class="d-flex overflow-x-auto scroll-container" ref="movieList">
         <router-link
           v-for="suggested in suggestedMovies.slice(0, 8)"
           :key="suggested.id"
           :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-          class="text-decoration-none"
+          class="movie-card-link"
         >
-        <b-card no-body class="movie-card">
-          <b-card-img :src="getOptimizedImage(suggested.poster_url)" alt="Movie Image" class="movie-image" loading="lazy" />
-          <div class="overlay">
-              <b-badge v-if="suggested.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ suggested.lang }}</b-badge>
-              <b-badge v-else variant="warning" class="badge-top-left">{{ suggested.episode_current }}-{{ suggested.lang }}</b-badge>
-            </div>
-            <b-card-body class="p-2 text-center movie-title">
-              <b-card-title class="m-0 text-truncate" :title="suggested.name">
-                {{ suggested.name }}
-              </b-card-title>
-            </b-card-body>
-        </b-card>
-          <!-- <b-img
-            width="250"
-            height="200"
-            :src="urlImage + suggested.poster_url"
-            :alt="suggested.origin_name"
-            lazy
-          />
-          <b-card-body class="p-2 text-center movie-title">
-              <b-card-title class="m-0 text-truncate" :title="suggested.name">
-                {{ suggested.name }}
-              </b-card-title>
-            </b-card-body> -->
-          <!-- <p>{{ suggested.title }}</p> -->
+          <v-card width="250" class="ma-2" color="grey-darken-3" theme="dark">
+            <v-img
+              :src="getOptimizedImage(suggested.poster_url)"
+              height="300"
+              cover
+              class="rounded"
+            />
+            <v-chip
+              v-if="suggested.episode_current === 'Tập 0'"
+              color="yellow"
+              class="position-absolute top-0 left-0 ma-2"
+              label
+              small
+            >
+              Full - {{ suggested.lang }}
+            </v-chip>
+            <v-chip
+              v-else
+              color="yellow"
+              class="position-absolute top-0 left-0 ma-2"
+              label
+              small
+            >
+              {{ suggested.episode_current }} - {{ suggested.lang }}
+            </v-chip>
+            <v-card-text class="text-truncate text-white">
+              {{ suggested.name }}
+            </v-card-text>
+          </v-card>
         </router-link>
       </div>
-       <!-- Scroll Buttons -->
-    <div class="scroll-buttons">
-      <div class="scroll-button" @click="scrollLeft">←</div>
-      <div class="scroll-button" @click="scrollRight">→</div>
-    </div>
     </div>
 
-
-    <!-- Phần 4: Binh luận -->
-    <div class="comments">
-      <h2>{{$t('Bình luận')}}</h2>
-      <b-form-textarea v-model="newComment" :placeholder="$t('Viết bình luận...')" />
-      <b-button @click="addComment">{{$t('Gửi')}}</b-button>
-      <ul>
-        <li v-for="(comment, index) in comments" :key="index">{{ comment }}</li>
-      </ul>
+    <!-- Bình luận -->
+    <div class="comments my-8">
+      <h2 class="text-white mb-4">Bình luận</h2>
+      <v-textarea
+        v-model="newComment"
+        label="Viết bình luận..."
+        variant="outlined"
+        color="primary"
+        auto-grow
+        class="mb-2"
+      />
+      <v-btn color="primary" @click="addComment">Gửi</v-btn>
+      <v-list lines="one">
+        <v-list-item
+          v-for="(comment, index) in comments"
+          :key="index"
+          class="text-white"
+        >
+          {{ comment }}
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
+
+
 
 <script>
 import { MoveInfor, ListMovieByCate, urlImage } from "@/model/api";
@@ -200,12 +209,6 @@ export default {
         this.newComment = "";
       }
     },
-    playEpisode(episode) {
-      this.isLoading = true
-      this.movie.title = episode.filename;
-      this.movie.videoUrl = episode.link_embed;
-      this.movie.page = episode.slug;
-    },
 
     scrollLeft() {
       const container = this.$refs.movieList;
@@ -218,151 +221,58 @@ export default {
       container.scrollLeft += 250; // Adjust the scroll distance as needed
     },
 
+    playEpisode(episode) {
+      this.isLoading = true;
+      this.movie.title = episode.filename;
+      this.movie.videoUrl = episode.link_embed;
+      this.movie.page = episode.slug;
+    },
+    generateEmbedHtml(url) {
+      return `<iframe src="${url}" width="100%" height="600" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+    }
 
   },
 };
 </script>
 
 <style scoped>
-.movie-video video {
-  width: 100%;
-  max-height: 600px;
+.movie-detail {
+  padding: 20px;
+  background: #121212;
+  color: #fff;
 }
 
-.movie-info {
-  text-align: left;
-  margin-top: 20px;
-}
-
-.suggestion-list {
-  display: flex;
-  gap: 15px;
-}
-
-.suggestion-card {
-  flex: 0 0 250px;
-}
-
-.comment-list {
-  list-style: none;
-  padding: 0;
-}
-
-.comment-list li {
-  background: #f1f1f1;
-  padding: 10px;
-  margin-bottom: 5px;
-}
-.suggested-movies {
-  text-align: center;
-}
-
-.movie-slider {
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.movie-list {
-  display: flex;
-  overflow: hidden;
-  width: 100%; /* hoặc một giá trị cố định nếu bạn muốn giới hạn chiều rộng */
-  transition: transform 0.3s ease;
-}
-
-.movie-card {
-  margin-right: 22px;
-  text-align: center;
-  flex-shrink: 0; /* Không co lại khi không gian bị hạn chế */
-}
-.suggested-movies {
-  position: relative;
+.movie-info p {
+  margin-bottom: 8px;
 }
 
 .scroll-container {
-  display: flex;
-  overflow-x: scroll;
+  scroll-behavior: smooth;
   gap: 16px;
-  padding-bottom: 8px;
 }
 
-.movie-card {
-  width: 250px;
-  height: 250px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  background-color: #1c1c1e;
-  border-radius: 8px;
+.movie-card-link {
+  text-decoration: none;
+  color: inherit;
+  flex-shrink: 0;
+}
+
+.text-truncate {
   overflow: hidden;
-  transition: transform 0.2s;
-}
-.movie-card:hover {
-  transform: scale(1.05);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.movie-card img {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-}
-
-.movie-card p {
-  margin-top: 8px;
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.scroll-buttons {
+.position-absolute {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  visibility: hidden;
 }
 
-.scroll-container:hover + .scroll-buttons,
-.scroll-buttons:hover {
-  visibility: visible;
+.top-0 {
+  top: 0;
 }
 
-.scroll-button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  padding: 8px;
-  cursor: pointer;
-  border-radius: 50%;
-  font-size: 18px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.scroll-button:hover {
-  background-color: rgba(0, 0, 0, 0.7);
-}
-
-
-.movie-title {
-  background: rgba(0, 0, 0, 0.7); /* Làm mờ nền đen */
-  color: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 5px;
-  font-size: 20px;
-}
-h4{
-  font-size: 20px;
-}
-.overlay {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+.left-0 {
+  left: 0;
 }
 </style>
+

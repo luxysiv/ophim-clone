@@ -1,11 +1,10 @@
 <template>
-  <default-layout>
-    <template #default>
+  
       <div style="width: 100%">
         <CarouselPage />
 
         <!-- Danh mục phim -->
-        <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+        <div v-for="(section, sectionIndex) in sections" :key="sectionIndex" >
           <v-row class="category-header" align="center" no-gutters>
             <v-col cols="auto">
               <h2 class="category-title">{{ section.title }}</h2>
@@ -23,54 +22,51 @@
           </v-row>
 
           <!-- Hiển thị phim dạng lưới -->
-          <v-row class="movie-grid" dense>
-            <v-col
-              v-for="(item, index) in isLoading ? Array(12).fill({}) : section.listMovie.slice(0, 12)"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="4"
-              lg="2"
-              class="movie-item"
-            >
+          
+            <v-row no-gutters >
+              <v-col
+                v-for="(item, index) in isLoading ? Array(12).fill({}) : section.listMovie.slice(0, 12)"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="4"
+                lg="2"
+                style="padding: 10px;"
+              >
               <v-skeleton-loader
                 v-if="isLoading"
                 type="image"
-                height="200"
+                height="250"
               />
               <router-link :to="{ name: 'MovieDetail', params: { slug: item.slug } }" v-else>
-                <v-card class="movie-card" flat>
-                  <div class="image-container">
-                    <v-img
-                      :src="getOptimizedImage(item.poster_url)"
-                      :alt="item.name"
-                      class="movie-img"
-                      height="200"
-                      cover
-                      lazy-src
-                    ></v-img>
-                    <v-badge
-                      :content="item.episode_current === 'Tập 0' ? `Full-${item.lang}` : `${item.episode_current}-${item.lang}`"
-                      color="warning"
-                      class="badge-top-left"
-                      floating
-                      offset-x="10"
-                      offset-y="10"
-                    ></v-badge>
-                  </div>
-                  <v-card-text class="p-2 text-center">
-                    <h3 class="movie-title" aria-label="Tên phim {{ item.name }}">
-                      {{ item.name }}
-                    </h3>
-                  </v-card-text>
-                </v-card>
+                <v-card
+                  class="mx-auto bg-dark text-white"
+                  max-width="344"
+                >
+                <v-img
+                :src="getOptimizedImage(item.poster_url)"
+                :alt="`Poster phim ${item.name}`"
+                class="movie-img"
+                height="250"
+                cover
+                lazy-src
+                />
+                <v-card-subtitle style="color: #ffcc00;">
+                  {{item.episode_current === 'Tập 0' ? `Full-${item.lang}` : `${item.episode_current}-${item.lang}`}}
+                </v-card-subtitle>
+                <v-card-title class="movie-title">
+                  {{ item.name }}
+                </v-card-title>
+
+
+              </v-card>
               </router-link>
-            </v-col>
-          </v-row>
+                
+              </v-col>
+            </v-row>
+         
         </div>
       </div>
-    </template>
-  </default-layout>
 </template>
 
 
@@ -121,6 +117,14 @@ export default {
     },
     getOptimizedImage(imagePath) {
       return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+    },
+    onImageLoad(index) {
+      this.$nextTick(() => {
+        const imgRef = this.$refs['img_' + index];
+        if (imgRef && imgRef.$el) {
+          imgRef.$el.classList.add('loaded');
+        }
+      });
     }
   }
 };
@@ -157,17 +161,18 @@ export default {
   font-weight: 600;
   color: white;
   line-height: 1.2;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: normal;
+  white-space: nowrap;             
+  overflow: hidden;                
+  text-overflow: ellipsis;       
 }
-
-.movie-grid{
-  background-color: #333;
+a{
+  text-decoration: none;
+  list-style: none;
 }
-
+.v-card:hover {
+  transform: scale(1.03);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 20px rgba(255, 204, 0, 0.2);
+}
 
 </style>

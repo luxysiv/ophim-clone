@@ -1,77 +1,98 @@
 <template>
-  <div class="movie-series container mt-4">
-    <h2 class="text-warning">{{ titlePage}}</h2>
-    <!-- <b-breadcrumb :items="breadcrumbItems" class="mb-3" /> -->
-    <hr/>
-    <b-spinner v-if="loading" label="Loading..."></b-spinner>
-    <b-row v-else>
-      <b-col md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
-        <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
-          <b-card no-body class="movie-card">
-            <b-card-img :src="getOptimizedImage(movie.poster_url)" alt="Movie Image" class="movie-image" loading="lazy" />
-            <div class="overlay">
-              <b-badge v-if="movie.episode_current == 'Tập 0'" variant="warning" class="badge-top-left">Full-{{ movie.lang }}</b-badge>
-              <b-badge v-else variant="warning" class="badge-top-left">{{ movie.episode_current }}-{{ movie.lang }}</b-badge>
-            </div>
-            <b-card-body class="p-2 text-center movie-title">
-              <b-card-title class="m-0 text-truncate" :title="movie.name">
-                {{ movie.name }}
-              </b-card-title>
-            </b-card-body>
-          </b-card>
-        </router-link>
-      </b-col>
-    </b-row>
+  <v-container class="mt-4">
+    <h2 class="text-warning">{{ titlePage }}</h2>
+    <v-divider class="my-4" />
     
-    <b-pagination v-model="currentPage" :total-rows="totalMovies" :per-page="moviesPerPage" class="justify-content-center mt-3" />
-  </div>
+    <v-row justify="center" v-if="loading">
+      <v-progress-circular indeterminate color="primary" size="40" />
+    </v-row>
+
+    <v-row v-else>
+      <v-col cols="12" md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
+        <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
+          <v-card class="movie-card">
+            <v-img
+              :src="getOptimizedImage(movie.poster_url)"
+              height="180"
+              class="movie-image"
+              cover
+              lazy-src
+            >
+              <template #default>
+                <div class="overlay">
+                  <v-chip
+                    size="small"
+                    color="warning"
+                    class="badge-top-left"
+                    label
+                    text-color="black"
+                  >
+                    {{ movie.episode_current === 'Tập 0' ? 'Full-' + movie.lang : movie.episode_current + '-' + movie.lang }}
+                  </v-chip>
+                </div>
+              </template>
+            </v-img>
+            <v-card-text class="text-center movie-title">
+              <span class="text-truncate d-block" :title="movie.name">
+                {{ movie.name }}
+              </span>
+            </v-card-text>
+          </v-card>
+        </router-link>
+      </v-col>
+    </v-row>
+
+    <v-pagination
+      v-model="currentPage"
+      :length="Math.ceil(totalMovies / moviesPerPage)"
+      class="mt-4 d-flex justify-center"
+      color="warning"
+    />
+  </v-container>
 </template>
 
 <script>
-import {urlImage,ListMovieByCate} from '@/model/api'
+import { urlImage, ListMovieByCate } from '@/model/api'
+
 export default {
   name: 'PhimLe',
-  data(){
-    return{
+  data() {
+    return {
       loading: true,
-      currentPage:1,
-      moviesPerPage:20,
-      totalMovies:100,
-      movies:[],
+      currentPage: 1,
+      moviesPerPage: 20,
+      totalMovies: 100,
+      movies: [],
       path: 'phim-le',
-      urlImage:urlImage,
+      urlImage,
       titlePage: '',
     }
   },
-  mounted(){
-    this.ListMovie();
+  mounted() {
+    this.ListMovie()
   },
-  methods:{
-    ListMovie(){
-      ListMovieByCate(this.path+`?page=${this.currentPage}`,(result) =>{
-      if(result.status == 'success'){
-        this.movies = result.data.items
-        this.titlePage = result.data.titlePage
-        this.loading = false
-      }
-      console.log(result)
-    }, (err) =>{
-      console.log(err)
-    })
+  methods: {
+    ListMovie() {
+      ListMovieByCate(`${this.path}?page=${this.currentPage}`, (result) => {
+        if (result.status === 'success') {
+          this.movies = result.data.items
+          this.titlePage = result.data.titlePage
+          this.loading = false
+        }
+      }, (err) => {
+        console.log(err)
+      })
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
-    },
-
+      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+    }
   },
-  watch:{
-    currentPage(newpage){
+  watch: {
+    currentPage() {
       this.loading = true
-      this.currentPage = newpage
-      this.ListMovie();
+      this.ListMovie()
     }
   }
-
 }
 </script>
 
@@ -90,7 +111,6 @@ export default {
 
 .movie-image {
   width: 100%;
-  height: 180px;
   object-fit: cover;
 }
 
@@ -98,6 +118,7 @@ export default {
   position: absolute;
   top: 10px;
   left: 10px;
+  z-index: 1;
 }
 
 .badge-top-left {
@@ -106,15 +127,12 @@ export default {
 }
 
 .movie-title {
-  background: rgba(0, 0, 0, 0.7); /* Làm mờ nền đen */
+  background: rgba(0, 0, 0, 0.7);
   color: white;
   position: absolute;
   bottom: 0;
   width: 100%;
   padding: 5px;
-  font-size: 20px;
-}
-h4{
-  font-size: 20px;
+  font-size: 16px;
 }
 </style>
