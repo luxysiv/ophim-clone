@@ -42,8 +42,8 @@
     </v-card>
 
     <!-- Thông tin phim -->
-    <v-container class="my-6">
-      <v-card class="pa-6 text-left" color="grey-darken-4" rounded="lg" elevation="4">
+    
+      <v-card class="pa-6 text-left" color="grey-darken-4" variant="flat" rounded="lg" theme="dark">
         <v-card-title class="text-white text-h4 mb-4">
           {{ movie.title }}
         </v-card-title>
@@ -72,7 +72,7 @@
           </div>
         </v-card-text>
       </v-card>
-    </v-container>
+    
 
 
     <!-- Đề xuất phim -->
