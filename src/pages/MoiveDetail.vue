@@ -139,6 +139,7 @@ export default {
         rating: 5,
         categoris: "",
       },
+      isTrailer: false,
       urlImage: urlImage,
       suggestedMovies: [],
       comments: [],
@@ -170,11 +171,11 @@ export default {
             this.movie.director = result.movie.director;
             if(result.movie.status == "trailer"){
               this.movie.videoUrl = result.movie.trailer_url
-              
+              this.isTrailer = true
             }
             else{
               this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
-              
+              this.isTrailer = false;
             }
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
@@ -236,7 +237,14 @@ export default {
       this.movie.page = episode.slug;
     },
     generateEmbedHtml(url) {
-      return `<iframe src="${url}" width="100%" height="600" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+      if (this.isTrailer) {
+        return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
+      }
+      else{
+        return `<iframe src="${url}" width="100%" height="600" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
+        
+      }
+      
     }
 
   },
