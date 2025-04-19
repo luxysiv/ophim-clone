@@ -27,7 +27,7 @@
             <div class="d-flex align-center mb-3">
               <strong class="mr-2">Đánh giá:</strong>
               <v-rating
-                :model-value="4" <!-- giả sử tạm -->
+                :model-value="4"
                 readonly
                 density="compact"
                 size="20"
