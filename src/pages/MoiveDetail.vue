@@ -1,5 +1,10 @@
 <template>
   <div class="movie-detail">
+    <v-breadcrumbs :items="items">
+      <template v-slot:divider>
+        <v-icon icon="mdi-chevron-right"></v-icon>
+      </template>
+    </v-breadcrumbs>
     <!-- Video -->
     <div v-html="generateEmbedHtml(movie.videoUrl)"></div>
     <!-- <iframe
@@ -25,6 +30,7 @@
             v-for="(episode, index) in movie.pageMovie"
             :key="index"
             cols="auto"
+            
             class="pa-2"
           >
             <v-btn color="primary" @click="playEpisode(episode)">
@@ -42,9 +48,15 @@
       <p><strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}</p>
       <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
       <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
-      <p>
-        <strong>Đánh giá:</strong>
-        <v-rating v-model="movie.rating" readonly density="compact" color="yellow" />
+      <p class="d-flex align-center">
+        <strong class="mr-2">Đánh giá:</strong>
+        <v-rating
+          readonly
+          :length="5"
+          :size="32"
+          :model-value="movie.rating"
+          active-color="warning"
+        />
       </p>
     </div>
 
@@ -125,6 +137,7 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      items:[],
       isLoading: true,
       movie: {
         title: "",
