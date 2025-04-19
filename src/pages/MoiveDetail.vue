@@ -28,7 +28,7 @@
             class="pa-2"
           >
             <v-btn color="primary" @click="playEpisode(episode)">
-              {{ episode.slug }}
+              {{ episode.slug ? episode.slug: "Trailer" }}
             </v-btn>
           </v-col>
         </v-row>
