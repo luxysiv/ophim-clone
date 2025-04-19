@@ -2,7 +2,7 @@
   <v-app id="app">
     <v-main>
       <router-view />
-      <el-backtop :right="100" :bottom="100" />
+      <el-backtop :right="60" :bottom="60" />
     </v-main>
   </v-app>
 </template>
