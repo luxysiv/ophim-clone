@@ -1,41 +1,46 @@
 <template>
   <div class="row" style="width: 100%; height: 450px">
     <v-carousel
-    height="450"
-    show-arrows="hover"
-    cycle
-    hide-delimiter-background
-  >
+      progress="primary"
+      hide-delimiters
+      >
     <v-carousel-item
-      v-for="(item,i) in videoList"
+      v-for="(item,i) in videoList.slice(0,4)"
       :key="i"
-      :src="item.url"
+      :src="urlImage+item.poster_url"
       cover
-    ></v-carousel-item>
+    >
+    <v-sheet
+        height="100%"
+      >
+        <div class="d-flex fill-height justify-center align-center">
+          <div class="text-h2">
+            {{ item.name }} Slide
+          </div>
+        </div>
+      </v-sheet>
+      
+    </v-carousel-item>
   </v-carousel>
   </div>
 </template>
 
 <script>
+import { urlImage } from "@/model/api";
 export default {
   name: "CarouselPage",
   data() {
     return {
-      slide: 0,
-      videoList: [
-        { url: "https://picsum.photos/1024/480/?image=52" },
-        { url: "https://picsum.photos/1024/480/?image=54" },
-        { url: "https://picsum.photos/1024/480/?image=58" },
-      ],
+      urlImage: urlImage
+      videoList: [],
     };
   },
-  methods: {
-    onSlideStart() {
-      console.log("Slide starting...");
-    },
-    onSlideEnd() {
-      console.log("Slide ended...");
-    },
+  mounted() {
+    fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1')
+      .then(response => response.json())
+      .then(data => {
+        this.videoList = data.items;
+      });
   },
 };
 </script>
