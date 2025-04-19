@@ -10,7 +10,7 @@
       <v-carousel-item
         v-for="(item, i) in videoList"
         :key="i"
-        :src="urlImage + item.poster_url"
+        :src="pathImage + item.poster_url"
         cover
       >
         <!-- Overlay thông tin -->
@@ -50,13 +50,13 @@
 </template>
 
 <script>
-import { urlImage, ListMovieByCate } from "@/model/api";
+import { ListMovieByCate } from "@/model/api";
 
 export default {
   name: "CarouselPage",
   data() {
     return {
-      urlImage: urlImage,
+      pathImage: "",
       videoList: [],
       path: "phim-moi-cap-nhat",
     };
@@ -69,6 +69,7 @@ export default {
        ListMovieByCate(`${this.path}?page=1`, (result) => {
         if (result.status === 'success') {
           this.videoList = result.data.items.slice(0.5)
+          this.pathImage = result.data.pathImage
         }
       }, (err) => {
         console.log(err)
