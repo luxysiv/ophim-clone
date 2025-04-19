@@ -61,7 +61,7 @@ export default {
       path: "phim-moi-cap-nhat",
     };
   },
-  mounted() {
+  created() {
     this.ListMovie();
   },
   methods: {
@@ -69,6 +69,7 @@ export default {
       ListMovieByCate(`${this.path}?page=1`, (result) => {
         if (result.status === "success") {
           this.videoList = result.items;
+          console.log(this.videoList)
         }
       }, (err) => {
         console.log(err);
