@@ -163,14 +163,18 @@ export default {
         slug,
         (result) => {
           if (result.status == true) {
-            if(result.movie.status == "trailer"){
-              this.movie.videoUrl = result.movie.trailer_url
-            }
+            
             this.movie.title = result.movie.name;
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
             this.movie.director = result.movie.director;
-            this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
+            if(result.movie.status == "trailer"){
+              this.movie.videoUrl = result.movie.trailer_url
+            }
+            else{
+              this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
+              
+            }
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
