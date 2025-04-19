@@ -5,7 +5,7 @@
       hide-delimiters
       progress="primary"
       cycle
-      interval="6000"
+      interval="10000"
     >
       <v-carousel-item
         v-for="(item, i) in videoList"
@@ -23,17 +23,6 @@
             <h2 class="text-h4 font-weight-bold mb-2">{{ item.name }}</h2>
             <p class="mb-1"><strong>Năm:</strong> {{ item.year }}</p>
             <p class="mb-1"><strong>Thể loại:</strong> {{ item.category.map(cat => cat.name).join(', ') }}</p>
-
-            <div class="d-flex align-center mb-3">
-              <strong class="mr-2">Đánh giá:</strong>
-              <v-rating
-                :model-value="4"
-                readonly
-                density="compact"
-                size="20"
-                active-color="amber"
-              />
-            </div>
 
             <v-btn
               color="red-accent-3"
@@ -67,6 +56,7 @@ export default {
   methods: {
     ListMovie() {
        ListMovieByCate(`${this.path}?page=1`, (result) => {
+         console.log(result)
         if (result.status === 'success') {
           this.videoList = result.data.items.slice(0.5)
           this.pathImage = result.data.pathImage
