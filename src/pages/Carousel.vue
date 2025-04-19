@@ -66,14 +66,14 @@ export default {
   },
   methods: {
     ListMovie() {
-      ListMovieByCate(`${this.path}?page=1`, (result) => {
-        if (result.status === "success") {
-          this.videoList = result.items;
-          console.log(this.videoList)
+       ListMovieByCate(`${this.path}?page=1`, (result) => {
+          console.log(result)
+        if (result.status === 'success') {
+          this.videoList = result.items
         }
       }, (err) => {
-        console.log(err);
-      });
+        console.log(err)
+      })
     },
     goToDetail(slug) {
       this.$router.push({ name: 'movie-detail', params: { slug } });
