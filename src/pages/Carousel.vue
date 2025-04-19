@@ -45,7 +45,7 @@ export default {
   name: "CarouselPage",
   data() {
     return {
-      pathImage: "",
+      pathImage: "https://img.ophim.live/uploads/movies/",
       videoList: [],
       path: "phim-moi-cap-nhat",
     };
@@ -58,8 +58,8 @@ export default {
        ListMovieByCate(`${this.path}?page=1`, (result) => {
          console.log(result)
         if (result.status === 'success') {
-          this.videoList = result.data.items.slice(0.5)
-          this.pathImage = result.data.pathImage
+          this.videoList = result.data.items.slice(0,5)
+          
         }
       }, (err) => {
         console.log(err)
