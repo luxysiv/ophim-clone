@@ -42,23 +42,38 @@
     </v-card>
 
     <!-- Thông tin phim -->
-    <div class="movie-info my-4">
-      <h1 class="text-white">{{ movie.title }}</h1>
-      <p v-html="movie.description" class="text-grey-lighten-2"></p>
-      <p><strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}</p>
-      <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
-      <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
-      <p class="d-flex align-center">
-        <strong class="mr-2">Đánh giá:</strong>
-        <v-rating
-          readonly
-          :length="5"
-          :size="32"
-          :model-value="movie.rating"
-          active-color="warning"
-        />
-      </p>
-    </div>
+    <v-container class="my-6">
+      <v-card class="pa-6 text-left" color="grey-darken-4" rounded="lg" elevation="4">
+        <v-card-title class="text-white text-h4 mb-4">
+          {{ movie.title }}
+        </v-card-title>
+    
+        <v-card-text class="text-grey-lighten-2 text-left" v-html="movie.description" />
+    
+        <v-card-text class="text-white text-left">
+          <p class="mb-2">
+            <strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}
+          </p>
+          <p class="mb-2">
+            <strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}
+          </p>
+          <p class="mb-2">
+            <strong>Thể loại:</strong> {{ movie.genre.name }}
+          </p>
+          <div class="d-flex align-center">
+            <strong class="mr-2">Đánh giá:</strong>
+            <v-rating
+              readonly
+              :length="5"
+              :size="28"
+              :model-value="movie.rating"
+              active-color="yellow-darken-2"
+            />
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-container>
+
 
     <!-- Đề xuất phim -->
     <div class="suggested-movies my-8">
