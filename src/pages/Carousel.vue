@@ -67,9 +67,8 @@ export default {
   methods: {
     ListMovie() {
        ListMovieByCate(`${this.path}?page=1`, (result) => {
-          console.log(result)
         if (result.status === 'success') {
-          this.videoList = result.items
+          this.videoList = result.data.items.slice(0.5)
         }
       }, (err) => {
         console.log(err)
