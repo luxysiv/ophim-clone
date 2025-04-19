@@ -8,7 +8,7 @@
       interval="6000"
     >
       <v-carousel-item
-        v-for="(item, i) in videoList.slice(0, 5)"
+        v-for="(item, i) in videoList"
         :key="i"
         :src="urlImage + item.poster_url"
         cover
