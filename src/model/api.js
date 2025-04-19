@@ -29,7 +29,7 @@ export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.li
  export const MoveInfor= (params, success, error) => http.GetNew(`${URLInfor}${params}`, {}  , success, error)
 
  // the loai phim
- export const Categoris= (params, success, error) => http.GetNew(`${urlCategoris}`, ""  , success, error)
+ export const Categoris= (params,success, error) => http.GetNew(`${urlCategoris}`,params  , success, error)
 
  // danh sach phim theo the loai phim
  export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris}${params}`, {}  , success, error)
@@ -40,7 +40,7 @@ export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.li
     
  
  // quoc gia
- export const City= (params, success, error) => http.GetNew(`${urlCity}`, ""  , success, error)
+ export const City= (params, success, error) => http.GetNew(`${urlCity}`, params  , success, error)
 
  // the loai phim
  export const CityDetail= (params, success, error) => http.GetNew(`${urlCity}${params}`, {}  , success, error)

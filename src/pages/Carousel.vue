@@ -1,17 +1,22 @@
 <template>
   <v-container fluid class="pa-0">
     <v-carousel
+      v-if="videoList.length"
       height="450"
       hide-delimiters
       progress="primary"
+      show-arrows="hover"
       cycle
       interval="10000"
     >
       <v-carousel-item
-        v-for="(item, i) in videoList"
-        :key="i"
+        v-for="(item) in videoList"
+        :key="item._id"
+      >
+      <v-img
         :src="pathImage + item.poster_url"
         cover
+        height="100%"
       >
         <!-- Overlay thông tin -->
         <v-sheet
@@ -33,6 +38,8 @@
             </v-btn>
           </div>
         </v-sheet>
+
+      </v-img>
       </v-carousel-item>
     </v-carousel>
   </v-container>
@@ -56,10 +63,8 @@ export default {
   methods: {
     ListMovie() {
        ListMovieByCate(`${this.path}?page=1`, (result) => {
-         console.log(result)
         if (result.status === 'success') {
-          this.videoList = result.data.items.slice(0,5)
-          
+          this.videoList = result.data.items.slice(1,6)
         }
       }, (err) => {
         console.log(err)
