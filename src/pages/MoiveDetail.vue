@@ -44,7 +44,7 @@
     <!-- Thông tin phim -->
     
       <v-card class="pa-6 text-left" color="grey-darken-4" variant="flat" rounded="lg" theme="dark">
-        <v-card-title class="text-white text-h4 mb-4">
+        <v-card-title class="text-white mb-4">
           {{ movie.title }}
         </v-card-title>
     
