@@ -137,7 +137,18 @@ export default {
   name: "MovieDetail",
   data() {
     return {
-      items:[],
+      items:[
+        {
+          title: 'Home',
+          disabled: false,
+          href: '/home',
+        },
+        {
+          title: this.slug,
+          disabled: true,
+          
+        },
+      ],
       isLoading: true,
       movie: {
         title: "",
