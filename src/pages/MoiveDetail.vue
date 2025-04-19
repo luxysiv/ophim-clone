@@ -167,7 +167,7 @@ export default {
       isLoading: true,
       movie: {
         title: "",
-        valueRate: 5,
+        valueRate: 4.5,
         description: "",
         videoUrl: "",
         actors: [],
