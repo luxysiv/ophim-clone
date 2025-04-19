@@ -26,22 +26,31 @@
 </template>
 
 <script>
-import { urlImage } from "@/model/api";
+import { urlImage,ListMovieByCate } from "@/model/api";
 export default {
   name: "CarouselPage",
   data() {
     return {
       urlImage: urlImage
       videoList: [],
+      path: 'phim-moi-cap-nhat'
     };
   },
   mounted() {
-    fetch('https://ophim1.com/danh-sach/phim-moi-cap-nhat?page=1')
-      .then(response => response.json())
-      .then(data => {
-        this.videoList = data.items;
-      });
+    this.ListMovie()
   },
+  methods:{
+    ListMovie() {
+      ListMovieByCate(`${path}?page=1`, (result) => {
+        if (result.status === 'success') {
+          this.videoList = data.items;
+        }
+      }, (err) => {
+        console.log(err)
+      })
+    },
+  }
+  
 };
 </script>
 
