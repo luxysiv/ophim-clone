@@ -170,6 +170,9 @@ export default {
             this.movie.director = result.movie.director;
             if(result.movie.status == "trailer"){
               this.movie.videoUrl = result.movie.trailer_url
+              generateEmbedHtml(url) {
+                return `<video width="100%" height="600" autoplay muted><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video>`;
+              }
             }
             else{
               this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
