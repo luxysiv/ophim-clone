@@ -169,7 +169,7 @@ export default {
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
             this.movie.director = result.movie.director;
-            if(result.movie.status == "trailer"){
+            if(result.movie.status == "trailer" && result.episodes[0].server_data[0].link_embed == ""){
               this.movie.videoUrl = result.movie.trailer_url
               this.isTrailer = true
             }
