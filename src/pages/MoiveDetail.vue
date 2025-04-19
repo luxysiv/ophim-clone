@@ -163,6 +163,9 @@ export default {
         slug,
         (result) => {
           if (result.status == true) {
+            if(result.movie.status == "trailer"){
+              this.movie.videoUrl = result.movie.trailer_url
+            }
             this.movie.title = result.movie.name;
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
