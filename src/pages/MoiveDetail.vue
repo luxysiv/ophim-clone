@@ -238,7 +238,27 @@ export default {
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
-        return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
+        const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/);
+        if (youtubeMatch) {
+          const videoId = youtubeMatch[1];
+          return `
+            <iframe width="100%" height="600"
+              src="https://www.youtube.com/embed/${videoId}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy">
+            </iframe>
+          `;
+        } else {
+          // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
+          return `
+            <video width="100%" height="600" controls>
+              <source src="${url}" type="video/mp4">
+              Trình duyệt của bạn không hỗ trợ video.
+            </video>
+          `;
+        }
+        //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
       }
       else{
         return `<iframe src="${url}" width="100%" height="600" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
