@@ -125,20 +125,19 @@
     <v-spacer />
     <v-text-field
       v-model="searchQuery"
-      class="search-input"
-      placeholder="Tìm kiếm phim..."
-      hide-details
-      dense
+      append-inner-icon="mdi-magnify"
+      density="compact"
+      label="Search templates"
       @keyup.enter="searchMovie"
-      prepend-inner-icon="mdi-magnify"
-      single-line
-      flat
       variant="solo-filled"
+      hide-details
+      single-line
+      @click:append-inner="searchMovie"
     ></v-text-field>
-    <v-btn icon @click="searchMovie">
-      <v-icon>mdi-magnify</v-icon>
+    <!-- Theme -->
+    <v-btn icon title="Theme" @click="changeTheme">
+      <v-icon>mdi-white-balance-sunny</v-icon>
     </v-btn>
-
     <!-- Ngôn ngữ -->
     <v-menu offset-y>
       <template #activator="{ props }">
@@ -270,7 +269,14 @@ export default {
       ],
     };
   },
+  inject: ['currentTheme', 'setTheme'],
   methods: {
+    changeTheme(){
+      const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark'
+      this.setTheme(newTheme)
+
+      
+    },
     getTheLoai() {
       Categoris(
         {},
