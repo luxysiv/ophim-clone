@@ -142,7 +142,6 @@ export default {
 }
 
 .movie-title {
-  color: white;
   position: absolute;
   bottom: 0;
   width: 100%;
