@@ -109,6 +109,7 @@ export default {
   overflow: hidden;
   transition: transform 0.2s;
 }
+  
 
 .movie-card:hover {
   transform: scale(1.05);
