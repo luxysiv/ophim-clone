@@ -1,5 +1,5 @@
 <template>
-  <v-theme-provider class="pa-10" :theme="theme" with-background>
+  <v-theme-provider :theme="theme" with-background>
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
         <router-view />
