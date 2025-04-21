@@ -197,7 +197,6 @@ export default {
 .category-title {
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
   margin: 0;
   text-transform: capitalize;
 }
