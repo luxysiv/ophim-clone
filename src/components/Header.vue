@@ -352,8 +352,8 @@ export default {
 
 <style scoped>
 .main-navbar {
-  box-shadow: 0 2px 8px rgba(75, 74, 74, 0.6);
-  position: sticky;
+  background-color: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(10px);
   top: 0;
   z-index: 1000;
 }
