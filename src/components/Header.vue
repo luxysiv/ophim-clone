@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar app color="info" dark flat class="main-navbar">
+  <v-app-bar class="main-navbar">
     <!-- Logo -->
     <v-app-bar-nav-icon @click="drawer = !drawer" />
     <v-img
