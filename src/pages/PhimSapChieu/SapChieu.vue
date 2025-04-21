@@ -109,7 +109,6 @@ export default {
 <style scoped>
 .movie-card {
   position: relative;
-  background-color: #1c1c1e;
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.2s;
@@ -137,7 +136,6 @@ export default {
 }
 
 .movie-title {
-  background: rgba(0, 0, 0, 0.7);
   color: white;
   position: absolute;
   bottom: 0;
