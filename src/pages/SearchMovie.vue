@@ -171,13 +171,11 @@ export default {
 
 <style scoped>
 .search-page {
-  background-color: #1a1a1a;
   min-height: 100vh;
   padding: 2rem 0;
 }
 
 .movie-card {
-  background-color: #2d2d2d;
   border: none;
   border-radius: 8px;
   transition: transform 0.2s;
