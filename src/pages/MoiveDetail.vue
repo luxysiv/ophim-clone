@@ -313,8 +313,7 @@ export default {
 <style scoped>
 .movie-detail {
   padding: 20px;
-  background: #121212;
-  color: #fff;
+
 }
 
 .movie-info p {
