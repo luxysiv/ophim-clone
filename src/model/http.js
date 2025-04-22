@@ -21,7 +21,8 @@ function Post(url, params, success, error) {
         headers: {
             'content-type': 'application/json;charset=UTF-8'
         },
-        data: params
+        data: params,
+        withCredentials: true
       })
         .then((dat)=>{
             success(dat)
@@ -104,15 +105,6 @@ function GetNonSession(url, params, success, error) {
 
 
 
-// function instance() {
-//     axios.create({
-//         baseURL: "/api", // Dùng proxy
-//         timeout: 10000,
-//         headers: {
-//         "Content-Type": "application/json",
-//         },
-//     });
-// }
 function GetNew(url, params, success, error) {
     axios.create({
         baseURL: "/api", // Dùng proxy

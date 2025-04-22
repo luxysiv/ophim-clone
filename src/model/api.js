@@ -23,7 +23,12 @@ let urlCity = "https://ophim1.com/v1/api/quoc-gia/"
 // tim kiem
 let urlSearch = "https://ophim1.com/v1/api/tim-kiem"
 
+
+// api login
+let urlAccount = "https://apiwebphim.onrender.com/api/auth"
+
 export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.live/uploads/movies/"
+
  export const ListmovieNew= (params, success, error) => http.GetNew(`${URL}`, params, success, error)
  export const ListmovieInfor= (params, success, error) => http.GetNew(`${URLInfor}`, params, success, error)
  export const MoveInfor= (params, success, error) => http.GetNew(`${URLInfor}${params}`, {}  , success, error)
@@ -48,3 +53,9 @@ export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.li
  
  // tim kiem phim
  export const Search= (params, success, error) => http.GetNew(`${urlSearch}`, params  , success, error)
+
+// api login
+ export const Login = (params, success, error) => http.Post(`${urlAccount}/login`, params,success, error)
+
+ // api login
+ export const Register = (params, success, error) => http.Post(`${urlAccount}/register`, params,success, error)

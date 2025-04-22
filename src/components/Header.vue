@@ -127,7 +127,7 @@
       v-model="searchQuery"
       append-inner-icon="mdi-magnify"
       density="compact"
-      label="Search templates"
+      label="Tìm kiếm phim"
       @keyup.enter="searchMovie"
       variant="solo-filled"
       hide-details
@@ -157,9 +157,22 @@
     </v-menu>
 
     <!-- Tài khoản -->
-    <v-btn icon :to="{ path: '/profile' }" title="Tài khoản">
-      <v-icon>mdi-account-circle</v-icon>
-    </v-btn>
+    <v-menu offset-y>
+      <template #activator="{ props }">
+        <v-btn icon v-bind="props" title="Tài khoản">
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item @click="Register()">
+          <v-list-item-title>Đăng ký</v-list-item-title>
+        </v-list-item>
+        <v-list-item @click="Login()">
+          <v-list-item-title>Đăng nhập</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    
   </v-app-bar>
 
   <!-- DRAWER CHO MOBILE -->
@@ -238,12 +251,89 @@
       </v-expansion-panels>
 
       <!-- Profile -->
-      <v-list-item :to="{ path: '/profile' }">
-        <v-list-item-icon><v-icon>mdi-account-circle</v-icon></v-list-item-icon>
-        <v-list-item-title>{{ $t("Tài khoản") }}</v-list-item-title>
-      </v-list-item>
+      <v-expansion-panels multiple>
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <v-list-item-icon><v-icon>mdi-account-circle</v-icon> Tài khoản</v-list-item-icon>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-list>
+              <v-list-item @click="Register()">
+                <v-list-item-title>Đăng ký</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="Login()">
+                <v-list-item-title>Đăng nhập</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+      
     </v-list>
   </v-navigation-drawer>
+
+  <!-- Dialog Đăng nhập -->
+<v-dialog v-model="dialogLogin" max-width="450px" transition="dialog-bottom-transition">
+  <v-card class="pa-6 rounded-xl" elevation="10">
+    <v-card-title class="text-h5 text-center mb-4">Đăng nhập</v-card-title>
+    <v-card-text>
+      <v-text-field
+        v-model="loginForm.email"
+        label="Email"
+        variant="outlined"
+        prepend-inner-icon="mdi-email-outline"
+        class="mb-4"
+      />
+      <v-text-field
+        v-model="loginForm.password"
+        label="Mật khẩu"
+        type="password"
+        variant="outlined"
+        prepend-inner-icon="mdi-lock-outline"
+      />
+    </v-card-text>
+    <v-card-actions class="justify-end">
+      <v-btn text @click="dialogLogin = false">Hủy</v-btn>
+      <v-btn color="primary" @click="handleLogin">Đăng nhập</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+<!-- Dialog Đăng ký -->
+<v-dialog v-model="dialogRegister" max-width="450px" transition="dialog-bottom-transition">
+  <v-card class="pa-6 rounded-xl" elevation="10">
+    <v-card-title class="text-h5 text-center mb-4">Đăng ký</v-card-title>
+    <v-card-text>
+      <v-text-field
+        v-model="registerForm.name"
+        label="Họ tên"
+        variant="outlined"
+        prepend-inner-icon="mdi-account-outline"
+        class="mb-4"
+      />
+      <v-text-field
+        v-model="registerForm.email"
+        label="Email"
+        variant="outlined"
+        prepend-inner-icon="mdi-email-outline"
+        class="mb-4"
+      />
+      <v-text-field
+        v-model="registerForm.password"
+        label="Mật khẩu"
+        type="password"
+        variant="outlined"
+        prepend-inner-icon="mdi-lock-outline"
+      />
+    </v-card-text>
+    <v-card-actions class="justify-end">
+      <v-btn text @click="dialogRegister = false">Hủy</v-btn>
+      <v-btn color="success" @click="handleRegister">Đăng ký</v-btn>
+    </v-card-actions>
+  </v-card>
+</v-dialog>
+
+
 </template>
 
 <script>
@@ -251,7 +341,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris, City } from "@/model/api";
+import { Categoris, City,Login } from "@/model/api";
 export default {
   name: "HeaderVuetify",
   data() {
@@ -267,6 +357,10 @@ export default {
         { name: "English", title: "en-US" },
         { name: "中国", title: "zh-CN" },
       ],
+      dialogLogin: false,
+      dialogRegister: false,
+      loginForm: { email: '', password: '' },
+      registerForm: { name: '', email: '', password: '' },
     };
   },
   inject: ['currentTheme', 'setTheme'],
@@ -274,8 +368,6 @@ export default {
     changeTheme(){
       const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark'
       this.setTheme(newTheme)
-
-      
     },
     getTheLoai() {
       Categoris(
@@ -343,6 +435,26 @@ export default {
       this.curLang = currLang || "vi-VN";
       this.ChangeLang();
     },
+    Login() {
+      this.dialogLogin = true;
+    },
+    Register() {
+      this.dialogRegister = true;
+    },
+    handleLogin(){
+      Login(this.loginForm,(dat) =>{
+        if(dat.status == 200){
+          dat.data.token
+        }
+        console.log(dat)
+        this.dialogLogin = false;
+      },(err) =>{
+        console.log(err)
+      })
+    },
+    handleRegister(){
+      this.dialogRegister = false;
+    }
   },
   created() {
     this.InitLang();
