@@ -444,7 +444,7 @@ export default {
     handleLogin(){
       Login(this.loginForm,(dat) =>{
         if(dat.status == 200){
-          dat.data.token
+          this.$store.commit()
         }
         console.log(dat)
         this.dialogLogin = false;
