@@ -37,7 +37,8 @@
       <!-- Dropdown Thể loại -->
       <v-menu offset-y>
         <template #activator="{ props }">
-          <v-btn text v-bind="props" @click="getTheLoai">
+          <v-btn text v-bind="props" @click="getTheLoai" :loading="loadingTheLoai"
+          :disabled="loadingTheLoai">
             {{ $t("Thể loại") }}
             <v-icon right>mdi-menu-down</v-icon>
           </v-btn>
@@ -76,7 +77,8 @@
       <!-- Dropdown Quốc gia -->
       <v-menu offset-y>
         <template #activator="{ props }">
-          <v-btn text v-bind="props" @click="getQuocGia">
+          <v-btn text v-bind="props" @click="getQuocGia" :loading="loadingQuocGia"
+          :disabled="loadingQuocGia">
             {{ $t("Quốc gia") }}
             <v-icon right>mdi-menu-down</v-icon>
           </v-btn>
@@ -156,19 +158,35 @@
       </v-list>
     </v-menu>
 
+
     <!-- Tài khoản -->
-    <v-menu offset-y>
+    <v-menu offset-y v-if="account == ''">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Tài khoản">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
       </template>
       <v-list>
+        <v-list-item @click="Login()">
+          <v-list-item-title>Đăng nhập</v-list-item-title>
+        </v-list-item>
         <v-list-item @click="Register()">
           <v-list-item-title>Đăng ký</v-list-item-title>
         </v-list-item>
-        <v-list-item @click="Login()">
-          <v-list-item-title>Đăng nhập</v-list-item-title>
+      </v-list>
+    </v-menu>
+    <v-menu offset-y v-else>
+      <template #activator="{ props }">
+        <v-btn v-bind="props" variant="text">
+        <span>
+          {{ account }}
+        </span>
+      </v-btn>
+      </template>
+      <v-list>
+        
+        <v-list-item @click="Logout()">
+          <v-list-item-title>Đăng xuất</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -203,7 +221,8 @@
       <!-- THỂ LOẠI (submenu) -->
       <v-expansion-panels multiple>
         <v-expansion-panel>
-          <v-expansion-panel-title @click="getTheLoai">
+          <v-expansion-panel-title @click="getTheLoai" :loading="loadingTheLoai"
+          :disabled="loadingTheLoai">
             {{ $t("Thể loại") }}
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -222,7 +241,8 @@
 
         <!-- QUỐC GIA (submenu) -->
         <v-expansion-panel>
-          <v-expansion-panel-title @click="getQuocGia">
+          <v-expansion-panel-title @click="getQuocGia" :loading="loadingQuocGia"
+          :disabled="loadingQuocGia">
             {{ $t("Quốc gia") }}
           </v-expansion-panel-title>
           <v-expansion-panel-text>
@@ -251,19 +271,39 @@
       </v-expansion-panels>
 
       <!-- Profile -->
-      <v-expansion-panels multiple>
+      <v-expansion-panels multiple v-if="account == ''">
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-list-item-icon><v-icon>mdi-account-circle</v-icon> Tài khoản</v-list-item-icon>
           </v-expansion-panel-title>
           <v-expansion-panel-text>
             <v-list>
-              <v-list-item @click="Register()">
-                <v-list-item-title>Đăng ký</v-list-item-title>
-              </v-list-item>
               <v-list-item @click="Login()">
                 <v-list-item-title>Đăng nhập</v-list-item-title>
               </v-list-item>
+              <v-list-item @click="Register()">
+                <v-list-item-title>Đăng ký</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-expansion-panel-text>
+        </v-expansion-panel>
+      </v-expansion-panels>
+
+      <v-expansion-panels multiple v-else>
+        <v-expansion-panel>
+          <v-expansion-panel-title>
+            <v-list-item-icon><v-icon>mdi-account-circle</v-icon> 
+              <span>
+                {{ account }}
+              </span>
+        </v-list-item-icon>
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <v-list>
+              <v-list-item @click="Logout()">
+                <v-list-item-title>Đăng xuất</v-list-item-title>
+              </v-list-item>
+              
             </v-list>
           </v-expansion-panel-text>
         </v-expansion-panel>
@@ -279,22 +319,26 @@
     <v-card-text>
       <v-text-field
         v-model="loginForm.email"
+        :readonly="loading"
         label="Email"
         variant="outlined"
         prepend-inner-icon="mdi-email-outline"
         class="mb-4"
+        clearable
       />
       <v-text-field
         v-model="loginForm.password"
+        :readonly="loading"
         label="Mật khẩu"
         type="password"
         variant="outlined"
         prepend-inner-icon="mdi-lock-outline"
+        
       />
     </v-card-text>
     <v-card-actions class="justify-end">
       <v-btn text @click="dialogLogin = false">Hủy</v-btn>
-      <v-btn color="primary" @click="handleLogin">Đăng nhập</v-btn>
+      <v-btn color="primary" @click="handleLogin" :loading="loading">Đăng nhập</v-btn>
     </v-card-actions>
   </v-card>
 </v-dialog>
@@ -310,6 +354,7 @@
         variant="outlined"
         prepend-inner-icon="mdi-account-outline"
         class="mb-4"
+        clearable
       />
       <v-text-field
         v-model="registerForm.email"
@@ -317,6 +362,7 @@
         variant="outlined"
         prepend-inner-icon="mdi-email-outline"
         class="mb-4"
+        clearable
       />
       <v-text-field
         v-model="registerForm.password"
@@ -324,6 +370,7 @@
         type="password"
         variant="outlined"
         prepend-inner-icon="mdi-lock-outline"
+        clearable
       />
     </v-card-text>
     <v-card-actions class="justify-end">
@@ -332,7 +379,9 @@
     </v-card-actions>
   </v-card>
 </v-dialog>
-
+<v-snackbar v-model="mess" :timeout="3000" :color="color">
+  {{ Message }}
+</v-snackbar>
 
 </template>
 
@@ -346,7 +395,14 @@ export default {
   name: "HeaderVuetify",
   data() {
     return {
+      loadingQuocGia: false,
+      loadingTheLoai: false,
       drawer: false,
+      loading: false,
+      mess: false,
+      Message: "",
+      color: '',
+      account: localStorage.getItem('name') ? "" : ""  ,
       searchQuery: "",
       curElLang: "",
       curLang: "",
@@ -370,28 +426,34 @@ export default {
       this.setTheme(newTheme)
     },
     getTheLoai() {
+      this.loadingTheLoai = true
       Categoris(
         {},
         (dat) => {
           if (dat.status == "success") {
             this.genres = dat.data.items;
+            this.loadingTheLoai = false
           }
         },
         (err) => {
           console.log(err);
+          this.loadingTheLoai = false
         }
       );
     },
     getQuocGia() {
+      this.loadingQuocGia = true
       City(
         {},
         (dat) => {
           if (dat.status == "success") {
             this.countries = dat.data.items;
+            this.loadingQuocGia = false
           }
         },
         (err) => {
           console.log(err);
+          this.loadingQuocGia = false
         }
       );
     },
@@ -442,18 +504,38 @@ export default {
       this.dialogRegister = true;
     },
     handleLogin(){
+      this.loading = true
       Login(this.loginForm,(dat) =>{
-        if(dat.status == 200){
-          this.$store.commit()
-        }
         console.log(dat)
-        this.dialogLogin = false;
+        if(dat.status == 200){
+          this.$store.commit("setEmpInfor",dat.data.user)
+          localStorage.setItem("name", dat.data.user.username);
+          this.account = localStorage.getItem('name')
+          this.Message = "Đăng nhập thành công",
+          this.color = 'success'
+          this.mess = true
+          this.loading = false
+          this.dialogLogin = false;
+        }
+        else{
+          this.Message = dat.response.data.message
+          this.color = 'error'
+          this.mess = true
+          this.loading = false
+        }
       },(err) =>{
-        console.log(err)
+        this.Message = err.response.data.message
+          this.color = 'error'
+          this.mess = true
+          this.loading = false
       })
     },
     handleRegister(){
       this.dialogRegister = false;
+    },
+    Logout(){
+      localStorage.removeItem('name');
+      this.account = ''
     }
   },
   created() {
