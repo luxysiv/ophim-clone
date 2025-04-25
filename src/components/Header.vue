@@ -2,7 +2,6 @@
   <v-app-bar class="main-navbar">
     <!-- Logo -->
     <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
-    
     <v-img
     :src="imageLogo"
     alt="Phim360"
