@@ -1,14 +1,19 @@
 <template>
   <v-app-bar class="main-navbar">
     <!-- Logo -->
-    <v-app-bar-nav-icon @click="drawer = !drawer" />
+    <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
+    
     <v-img
-      src="/vieon-logo.png"
-      alt="VieON"
-      max-height="38"
-      contain
-      class="mx-4"
-    ></v-img>
+    :src="imageLogo"
+    alt="Phim360"
+    contain
+    class="mx-4"
+    cover
+    style="cursor: pointer;"
+    @click="goHome"
+  ></v-img>
+    
+    
 
     <!-- Menu chính -->
     <v-toolbar-items class="hidden-sm-and-down">
@@ -391,10 +396,12 @@ import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
 import { Categoris, City,Login } from "@/model/api";
+import imageLogo from '@/assets/Logo.png';
 export default {
   name: "HeaderVuetify",
   data() {
     return {
+      imageLogo: imageLogo,
       loadingQuocGia: false,
       loadingTheLoai: false,
       drawer: false,
@@ -420,6 +427,7 @@ export default {
     };
   },
   inject: ['currentTheme', 'setTheme'],
+  
   methods: {
     changeTheme(){
       const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark'
@@ -532,6 +540,9 @@ export default {
     },
     handleRegister(){
       this.dialogRegister = false;
+    },
+    goHome(){
+      this.$router.push('/home')
     },
     Logout(){
       localStorage.removeItem('name');
