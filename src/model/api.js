@@ -59,3 +59,9 @@ export const urlImage = "https://ophim17.cc/_next/image?url=https://img.ophim.li
 
  // api login
  export const Register = (params, success, error) => http.Post(`${urlAccount}/register`, params,success, error)
+
+ // add comment
+ export const AddComment = (params, success, error) => http.Post(`${urlAccount}/addcomment`, params,success, error)
+
+ // get comment
+ export const GetComments = (params, success, error) => http.GetNew(`${urlAccount}/getcomments`, params,success, error)

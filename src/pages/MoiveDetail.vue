@@ -121,34 +121,59 @@
     </div>
 
     <!-- Bình luận -->
-    <div class="comments my-8">
-      <h2 class="text-white mb-4">Bình luận</h2>
-      <v-textarea
+   
+    <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2">
+      <!-- Tiêu đề -->
+      <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ Bình luận</h2>
+
+      <!-- Ô nhập bình luận -->
+      <v-text-field
         v-model="newComment"
-        label="Viết bình luận..."
+        placeholder="Thêm bình luận..."
         variant="outlined"
-        color="primary"
-        auto-grow
-        class="mb-2"
-      />
-      <v-btn color="primary" @click="addComment()">Gửi</v-btn>
-      <v-list lines="one">
-        <v-list-item
-          v-for="(comment, index) in comments"
-          :key="index"
-          class="text-white"
-        >
-          {{ comment }}
-        </v-list-item>
-      </v-list>
-    </div>
+        color="blue"
+        class="rounded-xl mb-4"
+        density="comfortable"
+        hide-details
+        append-inner-icon="mdi-send"
+        
+        @click:append-inner="submitComment"
+        :rules="[v => !!v || 'Bình luận không được để trống']"
+      ></v-text-field>
+
+      <!-- Danh sách bình luận -->
+      <v-divider class="mb-4" color="grey darken-3"></v-divider>
+      <div
+        v-for="(comment, index) in comments"
+        :key="index"
+        class="d-flex align-start mb-5"
+      >
+        <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+          <v-icon color="white">mdi-account</v-icon>
+        </v-avatar>
+
+        <div class="flex-grow-1">
+          <div class="d-flex align-center mb-1">
+            <span class="text-blue-lighten-3 font-weight-medium me-2">{{ comment.username }}</span>
+            <v-chip size="x-small" color="grey-darken-4" text-color="grey-lighten-1" variant="flat">
+              {{ comment.time }}
+            </v-chip>
+          </div>
+          <div class="text-white text-body-2">{{ comment.content }}</div>
+          <div class="text-caption mt-2 text-grey-lighten-1" style="cursor: pointer;">Phản hồi</div>
+        </div>
+      </div>
+    </v-card>
   </div>
+  <v-snackbar v-model="mess" :timeout="3000" :color="color">
+      {{ Message }}
+    </v-snackbar>
 </template>
 
 
 
 <script>
-import { MoveInfor, ListMovieByCate, urlImage } from "@/model/api";
+import { MoveInfor, ListMovieByCate, urlImage, GetComments,AddComment } from "@/model/api";
 
 export default {
   name: "MovieDetail",
@@ -167,6 +192,9 @@ export default {
         },
       ],
       isLoading: true,
+      Message: "",
+      color: "",
+      mess: false,
       movie: {
         title: "",
         valueRate: 4.5,
@@ -180,6 +208,7 @@ export default {
         rating: 5,
         categoris: "",
       },
+      idMovie: "",
       isTrailer: false,
       urlImage: urlImage,
       suggestedMovies: [],
@@ -205,7 +234,7 @@ export default {
         slug,
         (result) => {
           if (result.status == true) {
-            
+            this.idMovie = result.movie._id;
             this.movie.title = result.movie.name;
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
@@ -224,7 +253,8 @@ export default {
             }
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false  
-            
+            this.GetComment();
+
           }
           console.log(result);
         },
@@ -255,13 +285,49 @@ export default {
 
     addComment() {
       var account = localStorage.getItem('name');
+      var data = {
+            movieId: this.idMovie,
+            userId: this.$store.state.empInfor.id,
+            username: account,
+            content: this.newComment
+        }
       if(account == null || account == ""){
-        this.$route.push('/login')
+        this.$router.push('/login')
       }
       if (this.newComment.trim()) {
-        this.comments.push(this.newComment);
+        AddComment(data, (dat) =>{
+          if(dat.status == 201){
+            this.Message = dat.data.message;
+            this.color = "success";
+            this.mess = true;
+            this.GetComment()
+
+          }
+        },(err) =>{
+            this.Message = err.response.data.message;
+            this.color = "error";
+            this.mess = true;
+        })
         this.newComment = "";
       }
+    },
+    GetComment(){
+      if (!this.idMovie) return;
+  GetComments(
+    { movieId: this.idMovie },
+    (res) => {
+      if (Array.isArray(res)) {
+        this.comments = res.map(c => ({
+          username: c.username,
+          content: c.content,
+          createdAt: c.createdAt
+        }));
+      }
+    },
+    (err) => {
+      console.error("Lỗi lấy bình luận:", err);
+    }
+  );
     },
 
     scrollLeft() {
@@ -354,5 +420,6 @@ export default {
 .left-0 {
   left: 0;
 }
+
 </style>
 
