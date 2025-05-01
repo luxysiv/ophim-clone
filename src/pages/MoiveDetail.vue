@@ -137,7 +137,7 @@
         hide-details
         append-inner-icon="mdi-send"
         
-        @click:append-inner="submitComment"
+        @click:append-inner="addComment"
         :rules="[v => !!v || 'Bình luận không được để trống']"
       ></v-text-field>
 
