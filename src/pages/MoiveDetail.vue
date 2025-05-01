@@ -48,7 +48,9 @@
           {{ movie.title }}
         </v-card-title>
     
-        <v-card-text class="text-grey-lighten-2 text-left" v-html="movie.description" />
+        <v-card-text class="text-grey-lighten-2 text-left">
+          <div v-html="movie.description"></div>
+        </v-card-text>
     
         <v-card-text class="text-white text-left">
           <p class="mb-2">
@@ -129,7 +131,7 @@
         auto-grow
         class="mb-2"
       />
-      <v-btn color="primary" @click="addComment">Gửi</v-btn>
+      <v-btn color="primary" @click="addComment()">Gửi</v-btn>
       <v-list lines="one">
         <v-list-item
           v-for="(comment, index) in comments"
@@ -252,6 +254,10 @@ export default {
     },
 
     addComment() {
+      var account = localStorage.getItem('name');
+      if(account == null || account == ""){
+        this.$route.push('/login')
+      }
       if (this.newComment.trim()) {
         this.comments.push(this.newComment);
         this.newComment = "";

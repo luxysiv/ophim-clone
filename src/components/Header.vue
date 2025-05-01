@@ -164,7 +164,7 @@
 
 
     <!-- Tài khoản -->
-    <v-menu offset-y v-if="account == ''">
+    <v-menu offset-y v-if="!account">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Tài khoản">
           <v-icon>mdi-account-circle</v-icon>
@@ -275,7 +275,7 @@
       </v-expansion-panels>
 
       <!-- Profile -->
-      <v-expansion-panels multiple v-if="account == ''">
+      <v-expansion-panels multiple v-if="!account">
         <v-expansion-panel>
           <v-expansion-panel-title>
             <v-list-item-icon><v-icon>mdi-account-circle</v-icon> Tài khoản</v-list-item-icon>
@@ -394,7 +394,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris, City,Login } from "@/model/api";
+import { Categoris, City } from "@/model/api";
 import imageLogo from '@/assets/Logo.png';
 export default {
   name: "HeaderVuetify",
@@ -408,7 +408,7 @@ export default {
       mess: false,
       Message: "",
       color: '',
-      account: localStorage.getItem('name') ? "" : ""  ,
+      account: '',
       searchQuery: "",
       curElLang: "",
       curLang: "",
@@ -426,7 +426,9 @@ export default {
     };
   },
   inject: ['currentTheme', 'setTheme'],
-  
+  mounted(){
+    this.account = localStorage.getItem('name')
+  },
   methods: {
     changeTheme(){
       const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark'
@@ -505,40 +507,16 @@ export default {
       this.ChangeLang();
     },
     Login() {
-      this.dialogLogin = true;
+      this.$router.push('/login')
     },
     Register() {
-      this.dialogRegister = true;
+      this.$router.push('/register')
     },
     handleLogin(){
-      this.loading = true
-      Login(this.loginForm,(dat) =>{
-        console.log(dat)
-        if(dat.status == 200){
-          this.$store.commit("setEmpInfor",dat.data.user)
-          localStorage.setItem("name", dat.data.user.username);
-          this.account = localStorage.getItem('name')
-          this.Message = "Đăng nhập thành công",
-          this.color = 'success'
-          this.mess = true
-          this.loading = false
-          this.dialogLogin = false;
-        }
-        else{
-          this.Message = dat.response.data.message
-          this.color = 'error'
-          this.mess = true
-          this.loading = false
-        }
-      },(err) =>{
-        this.Message = err.response.data.message
-          this.color = 'error'
-          this.mess = true
-          this.loading = false
-      })
+      this.$router.push('/login')
     },
     handleRegister(){
-      this.dialogRegister = false;
+      this.$router.push('/register')
     },
     goHome(){
       this.$router.push('/home')
@@ -549,6 +527,8 @@ export default {
     }
   },
   created() {
+    this.account = localStorage.getItem('name') || "";
+    console.log(this.account)
     this.InitLang();
   },
 };

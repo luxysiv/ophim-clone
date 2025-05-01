@@ -2,6 +2,22 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 
 const routes =[
     {
+        path: '/login',
+        name: "LoginPage",
+        component: () => import("@/components/Login")
+    },
+    {
+        path: '/register',
+        name: "RegisterPage",
+        component: () => import("@/components/Register")
+    },
+    {
+        path: '/Error',
+        name: "ErrorPage",
+        component: () => import("@/pages/Error.vue")
+    },
+    {
+        
         path: '',
         name: "Layout",
         redirect: '/home',
@@ -47,7 +63,7 @@ const routes =[
             props: true
         },
         {
-            path: '/:path',
+            path: '/:path(phim-moi|phim-hot)',
             name: "PhimNew",
             component: () => import("@/pages/PhimNew/PhimNew.vue"),
             props: true
@@ -58,10 +74,16 @@ const routes =[
             component: () => import("@/pages/QuocGia/QuocGia.vue"),
             props: true
         },
+        {
+            path: '/:catchAll(.*)',
+            redirect: '/Error'
+          }
+        
         ]
     }
-]
+    
 
+]
 
 
 
@@ -77,4 +99,13 @@ const router = createRouter({
     history: createWebHashHistory(process.env.BASE_URL),
     routes
   })
+
+  router.beforeEach((to, from, next) => {
+    if (to.matched.length === 0) {
+      next('/Error')
+    } else {
+      next()
+    }
+  })
+
 export default router

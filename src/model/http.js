@@ -4,7 +4,7 @@ import axios from "axios";
 function InitAxiosForSession()  
 {
     axios.defaults.timeout = 300000;
-    axios.defaults.withCredentials = true // allow use server api with  Session
+    axios.defaults.withCredentials = false // allow use server api with  Session
 }
 function InitAxiosForNoNSession()  
 {
