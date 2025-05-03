@@ -141,11 +141,11 @@
       @click:append-inner="searchMovie"
     ></v-text-field>
     <!-- Theme -->
-    <v-btn icon title="Theme" @click="changeTheme">
+    <v-btn icon title="Theme" @click="changeTheme" class="hidden-sm-and-down">
       <v-icon>mdi-white-balance-sunny</v-icon>
     </v-btn>
     <!-- Ngôn ngữ -->
-    <v-menu offset-y>
+    <v-menu offset-y class="hidden-sm-and-down">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Ngôn ngữ">
           <v-icon>mdi-translate</v-icon>
@@ -164,7 +164,7 @@
 
 
     <!-- Tài khoản -->
-    <v-menu offset-y v-if="!account">
+    <v-menu offset-y v-if="!account" class="hidden-sm-and-down">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Tài khoản">
           <v-icon>mdi-account-circle</v-icon>
@@ -179,7 +179,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-menu offset-y v-else>
+    <v-menu offset-y v-else class="hidden-sm-and-down">
       <template #activator="{ props }">
         <v-btn v-bind="props" variant="text">
         <span>
@@ -273,7 +273,32 @@
         <!-- Divider -->
         <v-divider class="my-2"></v-divider>
       </v-expansion-panels>
+      <!-- Theme (chuyển theme) -->
+<v-list-item @click="changeTheme">
+  <v-list-item-icon>
+    <v-icon>mdi-white-balance-sunny</v-icon>
+  </v-list-item-icon>
+  <v-list-item-title>Đổi giao diện</v-list-item-title>
+</v-list-item>
 
+<!-- Ngôn ngữ -->
+<v-expansion-panels multiple>
+  <v-expansion-panel>
+    <v-expansion-panel-title>
+      <v-list-item-icon><v-icon>mdi-translate</v-icon> Ngôn ngữ</v-list-item-icon>
+    </v-expansion-panel-title>
+    <v-expansion-panel-text>
+      <v-list dense>
+        <v-list-item
+          v-for="lang in languages"
+          :key="lang.title"
+          @click="changeLanguage(lang.title)"
+        >
+          <v-list-item-title>{{ lang.name }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-expansion-panel-text>
+  </v-expansion-panel>
       <!-- Profile -->
       <v-expansion-panels multiple v-if="!account">
         <v-expansion-panel>
