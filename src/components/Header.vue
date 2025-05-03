@@ -139,6 +139,8 @@
       variant="solo-filled"
       hide-details
       single-line
+      clearable
+      class="ml-5"
       @click:append-inner="searchMovie"
     ></v-text-field>
     <!-- Theme -->
@@ -146,7 +148,7 @@
       <v-icon>mdi-white-balance-sunny</v-icon>
     </v-btn>
     <!-- Ngôn ngữ -->
-    <v-menu offset-y v-show="$vuetify.display.mdAndUp">
+    <v-menu offset-y v-if="$vuetify.display.mdAndUp">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Ngôn ngữ">
           <v-icon>mdi-translate</v-icon>
@@ -165,7 +167,7 @@
 
 
     <!-- Tài khoản -->
-    <v-menu offset-y v-if="!account" v-show="$vuetify.display.mdAndUp">
+    <v-menu offset-y v-if="!account && $vuetify.display.mdAndUp">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Tài khoản">
           <v-icon>mdi-account-circle</v-icon>
@@ -180,7 +182,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-menu offset-y v-else class="hidden-sm-and-down">
+    <v-menu offset-y v-else-if="$vuetify.display.mdAndUp">
       <template #activator="{ props }">
         <v-btn v-bind="props" variant="text">
         <span>
@@ -275,12 +277,12 @@
         <v-divider class="my-2"></v-divider>
       </v-expansion-panels>
       <!-- Theme (chuyển theme) -->
-<v-list-item @click="changeTheme">
-  <v-list-item-icon>
-    <v-icon>mdi-white-balance-sunny</v-icon>
-  </v-list-item-icon>
-  <v-list-item-title>Đổi giao diện</v-list-item-title>
-</v-list-item>
+      <v-list-item @click="changeTheme">
+        <v-list-item-icon>
+          <v-icon>mdi-white-balance-sunny</v-icon>
+        </v-list-item-icon>
+        <v-list-item-title>Đổi giao diện</v-list-item-title>
+      </v-list-item>
 
 <!-- Ngôn ngữ -->
 <v-expansion-panels multiple>
@@ -298,8 +300,9 @@
           <v-list-item-title>{{ lang.name }}</v-list-item-title>
         </v-list-item>
       </v-list>
-    </v-expansion-panel-text>
+     </v-expansion-panel-text>
   </v-expansion-panel>
+  </v-expansion-panels>
       <!-- Profile -->
       <v-expansion-panels multiple v-if="!account">
         <v-expansion-panel>
@@ -341,6 +344,7 @@
       
     </v-list>
   </v-navigation-drawer>
+
 
   <!-- Dialog Đăng nhập -->
 <v-dialog v-model="dialogLogin" max-width="450px" transition="dialog-bottom-transition">
