@@ -142,11 +142,11 @@
       @click:append-inner="searchMovie"
     ></v-text-field>
     <!-- Theme -->
-    <v-btn icon title="Theme" @click="changeTheme" class="hidden-sm-and-down">
+    <v-btn icon title="Theme" @click="changeTheme" v-show="$vuetify.display.mdAndUp">
       <v-icon>mdi-white-balance-sunny</v-icon>
     </v-btn>
     <!-- Ngôn ngữ -->
-    <v-menu offset-y class="hidden-sm-and-down">
+    <v-menu offset-y v-show="$vuetify.display.mdAndUp">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Ngôn ngữ">
           <v-icon>mdi-translate</v-icon>
@@ -165,7 +165,7 @@
 
 
     <!-- Tài khoản -->
-    <v-menu offset-y v-if="!account" class="hidden-sm-and-down">
+    <v-menu offset-y v-if="!account" v-show="$vuetify.display.mdAndUp">
       <template #activator="{ props }">
         <v-btn icon v-bind="props" title="Tài khoản">
           <v-icon>mdi-account-circle</v-icon>
