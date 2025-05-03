@@ -1,5 +1,8 @@
 <template>
-  <div class="movie-detail">
+  <v-col cols="12" class="text-center" v-if="isLoading">
+        <v-progress-circular indeterminate color="primary" size="50" />
+      </v-col>
+  <div class="movie-detail" v-else>
     <v-breadcrumbs :items="items">
       <template v-slot:divider>
         <v-icon icon="mdi-chevron-right"></v-icon>

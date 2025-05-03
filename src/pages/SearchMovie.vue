@@ -1,120 +1,94 @@
 <template>
-  <div class="search-page">
-    <h2 class="text-center text-light mb-4">{{$t('Kết quả tìm kiếm cho')}} "{{ $route.query.keyword }}"</h2>
-    <hr/>
-    <b-spinner v-if="loading" label="Loading..."></b-spinner>
-    <div v-else>
-      <b-card no-body class="overflow-hidden" v-for="movie in movies" :key="movie.id" style="margin: 15px 0;">
-        <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
-          <b-row no-gutters>
-            <b-col md="4">
-              <b-card-img 
-                :src="getOptimizedImage(movie.poster_url)"
-                :alt="movie.name"
-                class="movie-image rounded-0"
-                loading="lazy"
-                style="width: 100%; height: 100%;border-radius: 5px;">
-                
-                </b-card-img>
-            </b-col>
-            <b-col md="8">
-              <b-card-body :title="movie.name" style="color: white; float:left;">
-                <b-card-text>
-                  <div>
-                    <div class="genre-section mb-2">
-                      <div v-for="(genre, index) in movie.category" :key="index" class="text-light genre-item">
-                        {{ genre.name }}
-                      </div>
-                    </div>
+  <v-container class="search-page" fluid>
+    <v-row justify="center" class="mb-6">
+      <v-col cols="12">
+        <h2 class="text-center ">
+          {{ $t('Kết quả tìm kiếm cho') }} "{{ $route.query.keyword }}"
+        </h2>
+        <v-divider class="my-4" />
+      </v-col>
+    </v-row>
 
-                    <div class="meta-info mb-3">
-                      <el-rate class="text-dark" v-model="valueRate" disabled />
-                      <span class="text-light me-3">{{ movie.year }}</span>
-                      <!-- <span class="text-light">{{ movie.episode_current }} tập</span> -->
-                    </div>
-                    <p class="text-muted description-text">{{ movie.description }}</p>
-                  </div>
-                  <div class="action-buttons mt-3">
-                    <b-button variant="outline-light" class="me-2">
-                      <i class="fas fa-play me-2"></i>{{$t('Xem')}}
-                    </b-button>
-                    <b-button variant="outline-light">
-                      <i class="fas fa-share me-2"></i>{{$t('Chia sẻ')}}
-                    </b-button>
-                  </div>
+    <v-row justify="center">
+      <v-col cols="12" class="text-center" v-if="loading">
+        <v-progress-circular indeterminate color="primary" size="50" />
+      </v-col>
 
-                </b-card-text>
-              </b-card-body>
-            </b-col>
-          </b-row>
-          
-        </router-link>
-      </b-card>
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalMovies"
-        :per-page="moviesPerPage"
-        class="justify-content-center mt-3"
-        @change="fetchMovies"
-      />
+      <v-col cols="12" v-else>
+        <v-alert v-if="movies.length === 0"  class="text-center">
+          Không tìm thấy phim nào với từ khóa "<strong>{{ $route.query.keyword }}</strong>".
+          <br />
+          <router-link to="/home">
+            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+          </router-link>
+        </v-alert>
 
-    <b-alert v-if="movies.length < 0" variant="warning" show class="text-center text-dark">
-      Không tìm thấy phim nào khớp với từ khóa "<strong>{{ $route.query.keyword }}</strong>".
-    </b-alert>
-    </div>
-    <!--<b-row v-else>
-      <b-col v-for="movie in movies" :key="movie.id" md="12" class="mb-4">
-        <router-link :to="{ name: 'MovieDetail', params: { slug: movie.slug } }" class="text-decoration-none">
-          <b-card no-body class="movie-card d-flex flex-row">
-            <div class="position-relative">
-              <b-card-img
-                :src="getOptimizedImage(movie.poster_url)"
-                alt="Movie Image"
-                class="movie-image"
-                loading="lazy"
-                @error="setDefaultImage"
-              ></b-card-img>
-              <div class="rating-badge bg-warning text-dark">
-                {{ movie.quality }}
-              </div>
-            </div>
-            
-            <b-card-body class="d-flex flex-column justify-content-between">
-              <div>
-                <h3 class="text-light mb-3">{{ movie.name }}</h3>
-                
-                <div class="genre-section mb-2">
-                  <div v-for="(genre, index) in movie.category" :key="index" class="text-light genre-item">
+        <v-card
+          v-for="movie in movies"
+          :key="movie.id"
+          class="mb-5 overflow-hidden movie-card"
+        >
+          <router-link
+            :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+            class="text-decoration-none"
+          >
+            <v-row>
+              <v-col cols="12" md="4">
+                <v-img
+                  :src="getOptimizedImage(movie.poster_url)"
+                  :alt="movie.name"
+                  aspect-ratio="16/9"
+                  class="movie-image"
+                  cover
+                />
+              </v-col>
+              <v-col cols="12" md="8" class="pa-4">
+                <h3>{{ movie.name }}</h3>
+                <div class="genre-section mb-3">
+                  <v-chip
+                    v-for="(genre, index) in movie.category"
+                    :key="index"
+                    class="ma-1"
+                    color="grey-darken-3"
+                    label
+                  >
                     {{ genre.name }}
-                  </div>
+                  </v-chip>
                 </div>
 
-                <div class="meta-info mb-3">
-                  <el-rate class="text-light" v-model="valueRate" disabled />
-                  <span class="text-light me-3">{{ movie.year }}</span>
+                <div class="meta-info mb-2 d-flex align-center flex-wrap">
+                  <v-rating v-model="valueRate" readonly size="20" class="me-3" />
+                  <span class="me-3">{{ movie.year }}</span>
                 </div>
 
-                <p class="text-muted description-text">{{ movie.description }}</p>
-              </div>
+                <p class=" text-body-2 description-text">
+                  {{ movie.description }}
+                </p>
 
-              <div class="action-buttons mt-3">
-                <b-button variant="outline-light" class="me-2">
-                  <i class="fas fa-play me-2"></i>Xem
-                </b-button>
-                <b-button variant="outline-light">
-                  <i class="fas fa-share me-2"></i>Chia sẻ
-                </b-button>
-              </div>
-            </b-card-body>
-          </b-card>
-        </router-link>
-      </b-col>
-    </b-row> -->
+                <div class="action-buttons mt-4">
+                  <v-btn variant="outlined" color="primary" class="me-2">
+                    <v-icon start>mdi-play</v-icon>{{ $t('Xem') }}
+                  </v-btn>
+                  <v-btn variant="outlined" color="primary">
+                    <v-icon start>mdi-share</v-icon>{{ $t('Chia sẻ') }}
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
+          </router-link>
+        </v-card>
 
-      <!-- Phân trang -->
-      
-  </div>
+        <v-pagination
+          v-model="currentPage"
+          :length="Math.ceil(totalMovies / moviesPerPage)"
+          class="my-4 justify-center"
+          @update:modelValue="fetchMovies"
+        />
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
+
 
 <script>
 import {Search,urlImage} from '@/model/api'
@@ -136,6 +110,7 @@ export default {
     "$route.query.keyword": {
       immediate: true,
       handler(query) {
+        document.title = `Kết quả tìm kiếm: ${query}`;
         this.loading = true
         this.path = query
         this.SearchMovie(query);
@@ -152,11 +127,19 @@ export default {
     SearchMovie(query){
         Search({keyword: query,page: this.currentPage}, (result) =>{
           if(result.status == 'success'){
-            this.movies = result.data.items.sort((a, b) => {
-              return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
-            });
-            this.loading = false
+            if(result.data.items.length == 0){
+              this.movies =[]
+              this.loading = false
+              
+            }
+            else{
+              this.movies = result.data.items.sort((a, b) => {
+                return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
+              });
+              this.loading = false
+            }
           }
+          
         console.log(result)
       },(err) =>{
         console.log(err)
@@ -173,6 +156,7 @@ export default {
 .search-page {
   min-height: 100vh;
   padding: 2rem 0;
+  padding: 3rem 1rem;
 }
 
 .movie-card {
@@ -184,12 +168,16 @@ export default {
 .movie-card:hover {
   transform: translateY(-3px);
 }
-
+.movie-image-loaded {
+  opacity: 1;
+}
 .movie-image {
   width: 440px;
   height: 250px;
   object-fit: cover;
   border-radius: 8px 0 0 8px;
+  transition: opacity 0.5s ease-in;
+  opacity: 1;
 }
 
 .rating-badge {
@@ -209,10 +197,12 @@ export default {
 
 
 .genre-item {
-  background-color: #837676;
   border-radius: 5px;
   font-size: 0.9rem;
   opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
 }
 
 .meta-info {

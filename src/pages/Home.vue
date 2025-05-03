@@ -33,10 +33,12 @@
             ? Array(12).fill({})
             : section.listMovie.slice(0, 12)"
           :key="index"
-          cols="12"
-          sm="6"
-          md="4"
+          cols="4"
+          xs="4"
+          sm="4"
+          md="3"
           lg="2"
+          xl="2"
           style="padding: 10px"
         >
           <v-skeleton-loader v-if="isLoading" type="image" height="250" />
