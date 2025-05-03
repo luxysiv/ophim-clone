@@ -1,4 +1,5 @@
 <template>
+  <div>
   <v-app-bar class="main-navbar">
     <!-- Logo -->
     <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
@@ -411,7 +412,7 @@
 <v-snackbar v-model="mess" :timeout="3000" :color="color">
   {{ Message }}
 </v-snackbar>
-
+</div>
 </template>
 
 <script>
