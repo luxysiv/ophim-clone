@@ -102,7 +102,7 @@ export default {
       sections: [
         {
           title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/phim-online",
+          id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
           listMovie: [],
         },
