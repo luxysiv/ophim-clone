@@ -10,22 +10,13 @@
     </v-breadcrumbs>
     <!-- Video -->
     <div v-html="generateEmbedHtml(movie.videoUrl)"></div>
-    <!-- <iframe
-      :src="movie.videoUrl"
-      width="100%"
-      height="600"
-      loading="lazy"
-      allowfullscreen
-      frameborder="0"
-      sandbox="allow-same-origin allow-scripts allow-presentation allow-popups"
-      style="border: 1px solid #ccc; background: #000"
-    ></iframe> -->
+    
 
     <!-- Danh sách tập phim -->
     <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
       <v-card-title class="d-flex align-center">
         <span class="text-h6">{{ movie.title }}</span>
-        <v-chip class="ml-2" color="red" text-color="white">Tập {{ movie.page }}</v-chip>
+        <v-chip class="ml-2" color="red" text-color="white">{{ movie.page }}</v-chip>
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -236,9 +227,11 @@ export default {
       MoveInfor(
         slug,
         (result) => {
+          console.log(result);
           if (result.status == true) {
+            this.movie.page = result.movie.episode_current
             this.idMovie = result.movie._id;
-            this.movie.title = result.movie.name;
+            this.movie.title = result.movie.origin_name;
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
             this.movie.director = result.movie.director;
@@ -247,8 +240,17 @@ export default {
               this.isTrailer = true
             }
             else{
-              this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
-              this.isTrailer = false;
+              if(this.movie.page == "Full"){
+                this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
+                this.isTrailer = false;
+
+              }
+              else{
+
+                var tap = this.movie.page.split("Tập ")[1].trim();
+                this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                this.isTrailer = false;
+              }
             }
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
@@ -259,7 +261,7 @@ export default {
             this.GetComment();
 
           }
-          console.log(result);
+          
         },
         (err) => {
           console.log(err);
@@ -290,6 +292,7 @@ export default {
       var account = localStorage.getItem('name');
       var data = {
             movieId: this.idMovie,
+            episode: this.movie.page,
             userId: this.$store.state.empInfor.id,
             username: account,
             content: this.newComment
@@ -317,7 +320,7 @@ export default {
     GetComment(){
       if (!this.idMovie) return;
   GetComments(
-    { movieId: this.idMovie },
+    { movieId: this.idMovie, episode: this.movie.page },
     (res) => {
       if (Array.isArray(res)) {
         this.comments = res.map(c => ({
@@ -348,7 +351,9 @@ export default {
       this.isLoading = true;
       this.movie.title = episode.filename;
       this.movie.videoUrl = episode.link_embed;
-      this.movie.page = episode.slug;
+      this.movie.page = "Tập "+ episode.slug;
+      this.GetComment()
+      this.isLoading = false
     },
     generateEmbedHtml(url) {
       if (this.isTrailer) {

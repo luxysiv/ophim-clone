@@ -49,7 +49,7 @@
                     v-for="(genre, index) in movie.category"
                     :key="index"
                     class="ma-1"
-                    color="grey-darken-3"
+                    
                     label
                   >
                     {{ genre.name }}

@@ -76,7 +76,7 @@
       </v-col>
     </v-row>
 
-    <v-snackbar v-model="mess" :timeout="3000" :color="color">
+    <v-snackbar v-model="mess" :timeout="5000" :color="color">
       {{ Message }}
     </v-snackbar>
   </v-container>

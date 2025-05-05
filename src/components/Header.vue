@@ -558,7 +558,6 @@ export default {
   },
   created() {
     this.account = localStorage.getItem('name') || "";
-    console.log(this.account)
     this.InitLang();
   },
 };
