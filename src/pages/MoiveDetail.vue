@@ -17,6 +17,7 @@
       <v-card-title class="d-flex align-center">
         <span class="text-h6">{{ movie.title }}</span>
         <v-chip class="ml-2" color="red" text-color="white">{{ movie.page }}</v-chip>
+        <v-chip class="ml-2" color="red" text-color="white" v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')">Tập 1</v-chip>
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -28,7 +29,7 @@
             class="pa-2"
           >
             <v-btn color="primary" @click="playEpisode(episode)">
-              {{ episode.slug ? episode.slug: "Trailer" }}
+              {{ episode.name ? episode.name: "Trailer" }}
             </v-btn>
           </v-col>
         </v-row>
@@ -240,7 +241,7 @@ export default {
               this.isTrailer = true
             }
             else{
-              if(this.movie.page == "Full"){
+              if(this.movie.page == "Full" || this.movie.page.toUpperCase().includes('HOÀN TẤT')){
                 this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
                 this.isTrailer = false;
 
