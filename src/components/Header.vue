@@ -130,19 +130,60 @@
 
     <!-- Search + Language + Profile -->
     <v-spacer />
-    <v-text-field
-      v-model="searchQuery"
-      append-inner-icon="mdi-magnify"
-      density="compact"
-      label="Tìm kiếm phim"
-      @keyup.enter="searchMovie"
-      variant="solo-filled"
-      hide-details
-      single-line
-      clearable
-      class="ml-5"
-      @click:append-inner="searchMovie"
-    ></v-text-field>
+    
+<v-menu
+    v-model="menuVisible"
+    :close-on-content-click="false"
+    :open-on-click="false"
+    :open-on-focus="false"
+    @keyup.enter="searchMovie"
+    offset-y
+  >
+    <template #activator="{ props }">
+      <v-text-field
+        v-bind="props"
+        v-model="searchQuery"
+        placeholder="Tên phim"
+        append-inner-icon="mdi-magnify"
+        @keyup.enter="searchMovie"
+        @click:append-inner="searchMovie"
+        @update:model-value="onInput"
+        clearable
+        solo
+        rounded
+        hide-details
+        density="comfortable"
+      />
+    </template>
+
+    <v-list v-if="movieSuggestions.length" style="
+              min-width: 100%;
+              max-height: 250px;
+              overflow-y: auto;
+              background-color: #1e1e1e;
+              color: white;
+              border-radius: 8px;
+            ">
+      <v-list-item
+        v-for="(item, index) in movieSuggestions"
+        :key="index"
+        @click="selectSuggestion(item)"
+      >
+        <v-list-item-title>{{ item.name }}</v-list-item-title>
+      </v-list-item>
+    </v-list>
+    <v-list v-else style="
+      min-width: 100%;
+      background-color: #1e1e1e;
+      color: white;
+      border-radius: 8px;
+    ">
+  <v-list-item>
+    <v-list-item-title>Không tìm thấy kết quả</v-list-item-title>
+  </v-list-item>
+</v-list>
+  </v-menu>
+
     <!-- Theme -->
     <v-btn icon title="Theme" @click="changeTheme" v-show="$vuetify.display.mdAndUp">
       <v-icon>mdi-white-balance-sunny</v-icon>
@@ -346,73 +387,6 @@
   </v-navigation-drawer>
 
 
-  <!-- Dialog Đăng nhập -->
-<v-dialog v-model="dialogLogin" max-width="450px" transition="dialog-bottom-transition">
-  <v-card class="pa-6 rounded-xl" elevation="10">
-    <v-card-title class="text-h5 text-center mb-4">Đăng nhập</v-card-title>
-    <v-card-text>
-      <v-text-field
-        v-model="loginForm.email"
-        :readonly="loading"
-        label="Email"
-        variant="outlined"
-        prepend-inner-icon="mdi-email-outline"
-        class="mb-4"
-        clearable
-      />
-      <v-text-field
-        v-model="loginForm.password"
-        :readonly="loading"
-        label="Mật khẩu"
-        type="password"
-        variant="outlined"
-        prepend-inner-icon="mdi-lock-outline"
-        
-      />
-    </v-card-text>
-    <v-card-actions class="justify-end">
-      <v-btn text @click="dialogLogin = false">Hủy</v-btn>
-      <v-btn color="primary" @click="handleLogin" :loading="loading">Đăng nhập</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
-
-<!-- Dialog Đăng ký -->
-<v-dialog v-model="dialogRegister" max-width="450px" transition="dialog-bottom-transition">
-  <v-card class="pa-6 rounded-xl" elevation="10">
-    <v-card-title class="text-h5 text-center mb-4">Đăng ký</v-card-title>
-    <v-card-text>
-      <v-text-field
-        v-model="registerForm.name"
-        label="Họ tên"
-        variant="outlined"
-        prepend-inner-icon="mdi-account-outline"
-        class="mb-4"
-        clearable
-      />
-      <v-text-field
-        v-model="registerForm.email"
-        label="Email"
-        variant="outlined"
-        prepend-inner-icon="mdi-email-outline"
-        class="mb-4"
-        clearable
-      />
-      <v-text-field
-        v-model="registerForm.password"
-        label="Mật khẩu"
-        type="password"
-        variant="outlined"
-        prepend-inner-icon="mdi-lock-outline"
-        clearable
-      />
-    </v-card-text>
-    <v-card-actions class="justify-end">
-      <v-btn text @click="dialogRegister = false">Hủy</v-btn>
-      <v-btn color="success" @click="handleRegister">Đăng ký</v-btn>
-    </v-card-actions>
-  </v-card>
-</v-dialog>
 <v-snackbar v-model="mess" :timeout="3000" :color="color">
   {{ Message }}
 </v-snackbar>
@@ -424,7 +398,7 @@ import vi from "element-plus/dist/locale/vi.mjs";
 import en from "element-plus/dist/locale/en.mjs";
 import cn from "element-plus/dist/locale/zh-cn.mjs";
 import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris, City } from "@/model/api";
+import { Categoris, City,Search } from "@/model/api";
 import imageLogo from '@/assets/Logo.png';
 export default {
   name: "HeaderVuetify",
@@ -439,9 +413,12 @@ export default {
       Message: "",
       color: '',
       account: '',
-      searchQuery: "",
+      searchQuery: '',
       curElLang: "",
       curLang: "",
+      searchInput: '',
+      movieSuggestions: [],
+      menuVisible: false,
       genres: [],
       countries: [],
       languages: [
@@ -497,11 +474,13 @@ export default {
       );
     },
     searchMovie() {
-      if (this.searchQuery.trim()) {
+      if (this.searchQuery) {
         this.$router.push({
           name: "SearchMovie",
           query: { keyword: this.searchQuery },
         });
+        this.searchQuery = ''
+        this.menuVisible = false;
       }
     },
     changeLanguage(keyLang) {
@@ -554,7 +533,37 @@ export default {
     Logout(){
       localStorage.removeItem('name');
       this.account = ''
-    }
+    },
+    onInput(value) {
+      if (!value || typeof value !== 'string' || value.trim().length < 2) {
+        this.movieSuggestions = [];
+        this.menuVisible = false;
+        return;
+      }
+
+      this.fetchMovieSuggestions(value.trim());
+    },
+    fetchMovieSuggestions(keyword) {
+      try {
+        Search(
+          { keyword },
+          (dat) => {
+            this.movieSuggestions = dat.data.items || [];
+            this.menuVisible = this.movieSuggestions.length > 0;
+          },
+          (err) => {
+            console.error('Lỗi khi gọi API:', err);
+          }
+        );
+      } catch (err) {
+        console.error('Lỗi ngoài ý muốn:', err);
+      }
+    },
+    selectSuggestion(item) {
+      this.searchQuery = item.name;
+      this.menuVisible = false;
+      this.searchMovie();
+    },
   },
   created() {
     this.account = localStorage.getItem('name') || "";
@@ -584,4 +593,5 @@ a.router-link-active,
 a:hover {
   color: #00e165 !important;
 }
+
 </style>
