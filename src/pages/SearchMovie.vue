@@ -23,15 +23,16 @@
           </router-link>
         </v-alert>
 
-        <v-card
-          v-for="movie in movies"
+        <router-link
+        v-for="movie in movies"
           :key="movie.id"
+          :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
+          class="text-decoration-none"
+        >
+        <v-card
+        
           class="mb-5 overflow-hidden movie-card"
         >
-          <router-link
-            :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
-            class="text-decoration-none"
-          >
             <v-row>
               <v-col cols="12" md="4">
                 <v-img
@@ -43,7 +44,7 @@
                 />
               </v-col>
               <v-col cols="12" md="8" class="pa-4">
-                <h3>{{ movie.name }}</h3>
+                <h3 >{{ movie.name }}</h3>
                 <div class="genre-section mb-3">
                   <v-chip
                     v-for="(genre, index) in movie.category"
@@ -75,14 +76,13 @@
                 </div>
               </v-col>
             </v-row>
-          </router-link>
         </v-card>
+          </router-link>
 
         <v-pagination
           v-model="currentPage"
           :length="Math.ceil(totalMovies / moviesPerPage)"
           class="my-4 justify-center"
-          @update:modelValue="fetchMovies"
         />
       </v-col>
     </v-row>

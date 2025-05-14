@@ -150,20 +150,19 @@
         @update:model-value="onInput"
         clearable
         solo
-        rounded
         hide-details
         density="comfortable"
       />
     </template>
 
     <v-list v-if="movieSuggestions.length" style="
-              min-width: 100%;
-              max-height: 250px;
-              overflow-y: auto;
-              background-color: #1e1e1e;
-              color: white;
-              border-radius: 8px;
-            ">
+      min-width: 100%;
+      max-height: 250px;
+      overflow-y: auto;
+      background-color: #1e1e1e;
+      color: white;
+      border-radius: 8px;
+    ">
       <v-list-item
         v-for="(item, index) in movieSuggestions"
         :key="index"
@@ -548,7 +547,7 @@ export default {
         Search(
           { keyword },
           (dat) => {
-            this.movieSuggestions = dat.data.items || [];
+            this.movieSuggestions = dat.data.items.sort((a,b) => b.year-a.year) || [];
             this.menuVisible = this.movieSuggestions.length > 0;
           },
           (err) => {
