@@ -2,11 +2,13 @@
   <div style="width: 100%">
     <CarouselPage />
 
-    <!-- Danh mục phim -->
     <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
-          <h2 class="category-title">{{ section.title }}</h2>
+          <h2 class="category-title">
+            <v-icon size="20" color="#ffcc00" class="mr-1">mdi-filmstrip</v-icon>
+            {{ section.title }}
+          </h2>
         </v-col>
         <v-col cols="auto">
           <router-link
@@ -25,14 +27,12 @@
         </v-col>
       </v-row>
 
-      <!-- Hiển thị phim dạng lưới -->
-
-      <v-row no-gutters>
+      <v-row no-gutters tag="transition-group" name="fade-scale" class="movie-list">
         <v-col
           v-for="(item, index) in isLoading
             ? Array(12).fill({})
             : section.listMovie.slice(0, 12)"
-          :key="index"
+          :key="item.slug || index"
           cols="4"
           xs="4"
           sm="4"
@@ -53,7 +53,6 @@
                 class="movie-img"
                 height="250"
                 cover
-                lazy-src
               >
                 <template #default>
                   <v-btn
@@ -70,16 +69,24 @@
                   </v-btn>
                 </template>
               </v-img>
-              <v-card-subtitle style="color: #ffcc00">
+
+              <v-card-subtitle class="episode-lang">
                 {{
                   item.episode_current === "Tập 0"
-                    ? `Full-${item.lang}`
-                    : `${item.episode_current}-${item.lang}`
+                    ? `Full - ${item.lang}`
+                    : `${item.episode_current} - ${item.lang}`
                 }}
               </v-card-subtitle>
-              <v-card-title class="movie-title">
-                {{ item.name }}
-              </v-card-title>
+
+              <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+
+              <v-card-text class="movie-info">
+                <div class="text-grey text-truncate">
+                  <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
+                  {{ item.origin_name }} ({{ item.year }})
+                </div>
+                
+              </v-card-text>
             </v-card>
           </router-link>
         </v-col>
@@ -87,6 +94,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import { ListMovieByCateHome, urlImage } from "@/model/api";
@@ -100,41 +108,53 @@ export default {
       isLoading: true,
       favoriteMovies: [],
       sections: [
-        {
-          title: this.$t("PHIM ĐỀ CỬ"),
-          id: "danh-sach/phim-moi-cap-nhat?page=2",
-          name: "PhimNew",
-          listMovie: [],
-        },
+        
         {
           title: this.$t("PHIM THỊNH HÀNH"),
           id: "danh-sach/thinh-hanh",
           name: "PhimNew",
           listMovie: [],
+          content: ''
+        },
+        {
+          title: this.$t("PHIM ĐỀ CỬ"),
+          id: "danh-sach/phim-moi-cap-nhat?page=2",
+          name: "PhimNew",
+          listMovie: [],
+          content: ''
+
         },
         {
           title: this.$t("PHIM BỘ"),
           id: "danh-sach/phim-bo",
           name: "PhimBo",
           listMovie: [],
+          content: ''
+
         },
         {
           title: this.$t("PHIM LẺ"),
           id: "danh-sach/phim-le",
           name: "PhimLe",
           listMovie: [],
+          content: ''
+
         },
         {
           title: this.$t("PHIM HÀN QUỐC"),
           id: "quoc-gia/han-quoc",
           name: "QuocGia",
           listMovie: [],
+          content: ''
+
         },
         {
           title: this.$t("PHIM TRUNG QUỐC"),
           id: "quoc-gia/trung-quoc",
           name: "QuocGia",
           listMovie: [],
+          content: ''
+
         },
       ],
     };
@@ -154,6 +174,10 @@ export default {
         (result) => {
           if (result.status === "success") {
             section.listMovie = result.data.items;
+            
+             if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
             this.isLoading = false;
           }
         },
@@ -165,6 +189,42 @@ export default {
     getOptimizedImage(imagePath) {
       return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
     },
+    // Chuan SEO
+    updateMetaTags(seo) {
+    document.title = seo.titleHead || 'Phim hay'
+
+    const removeOldMeta = (key, attr = 'name') => {
+      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
+      old.forEach(tag => tag.remove())
+    }
+
+    const setMeta = (key, content, attr = 'name') => {
+      if (!content) return
+      const meta = document.createElement('meta')
+      meta.setAttribute(attr, key)
+      meta.setAttribute('content', content)
+      document.head.appendChild(meta)
+    }
+
+    // Xóa cũ
+    removeOldMeta('description')
+    removeOldMeta('og:title', 'property')
+    removeOldMeta('og:description', 'property')
+    removeOldMeta('og:type', 'property')
+    removeOldMeta('og:image', 'property')
+
+    // Thêm mới
+    setMeta('description', seo.descriptionHead)
+    setMeta('og:title', seo.titleHead, 'property')
+    setMeta('og:description', seo.descriptionHead, 'property')
+    setMeta('og:type', seo.og_type || 'website', 'property')
+
+    if (Array.isArray(seo.og_image)) {
+      seo.og_image.forEach(img => {
+        setMeta('og:image', img, 'property')
+      })
+    }
+  },
     onImageLoad(index) {
       this.$nextTick(() => {
         const imgRef = this.$refs["img_" + index];
@@ -238,5 +298,48 @@ a {
   left: 8px;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.5);
+}
+.fade-scale-enter-active,
+.fade-scale-leave-active {
+  transition: all 0.4s ease;
+}
+.fade-scale-enter-from,
+.fade-scale-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+.v-img img {
+  transition: opacity 0.5s ease-in-out;
+}
+.v-img img[lazy='loaded'] {
+  opacity: 1 !important;
+}
+.v-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.v-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(255, 204, 0, 0.35);
+}
+.movie-info {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.episode-lang {
+  color: #ffcc00;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  line-height: 1.2;
+  margin-top: -8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

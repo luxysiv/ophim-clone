@@ -73,47 +73,57 @@
 
 
     <!-- Đề xuất phim -->
-    <div class="suggested-movies my-8">
-      <h2 class="text-h5 text-white mb-4">Đề xuất cho bạn!</h2>
-      <div class="d-flex overflow-x-auto scroll-container" ref="movieList">
-        <router-link
-          v-for="suggested in suggestedMovies.slice(0, 8)"
+<div class="suggested-movies my-8">
+  <h2 class="text-h5 text-white mb-4">🎬 Đề xuất cho bạn!</h2>
+  <div class="carousel-wrapper" style="display: flex; align-items: center;">
+    <button class="nav-btn left" @click="scrollLeft">&#9664;</button>
+    <div class="suggested-slide-wrapper" ref="slideWrapper">
+      <div class="suggested-slide">
+        <div
+          class="movie-card"
+          v-for="suggested in suggestedMovies"
           :key="suggested.id"
-          :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-          class="movie-card-link"
         >
-          <v-card width="250" class="ma-2" color="grey-darken-3" theme="dark">
-            <v-img
-              :src="getOptimizedImage(suggested.poster_url)"
-              height="300"
-              cover
-              class="rounded"
-            />
-            <v-chip
-              v-if="suggested.episode_current === 'Tập 0'"
-              color="yellow"
-              class="position-absolute top-0 left-0 ma-2"
-              label
-              small
-            >
-              Full - {{ suggested.lang }}
-            </v-chip>
-            <v-chip
-              v-else
-              color="yellow"
-              class="position-absolute top-0 left-0 ma-2"
-              label
-              small
-            >
-              {{ suggested.episode_current }} - {{ suggested.lang }}
-            </v-chip>
-            <v-card-text class="text-truncate text-white">
-              {{ suggested.name }}
-            </v-card-text>
-          </v-card>
-        </router-link>
+          <router-link
+            :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+            class="text-decoration-none"
+          >
+            <div class="card-inner">
+              <div class="card-image-wrapper">
+                <img
+                  :src="getOptimizedImage(suggested.poster_url)"
+                  class="card-image"
+                  alt="Poster"
+                />
+                <div class="card-hover-overlay">
+                  <p class="card-title">{{ suggested.name }}</p>
+                </div>
+              </div>
+
+              <div class="card-info">
+                <span class="episode-chip">
+                  {{ suggested.episode_current }} - {{ suggested.lang }}
+                </span>
+                <div class="origin">{{ suggested.origin_name }}</div>
+                <div class="meta">
+                  {{ suggested.year }} | {{ suggested.category[0]?.name || 'N/A' }}
+                </div>
+              </div>
+            </div>
+          </router-link>
+        </div>
       </div>
     </div>
+    <button class="nav-btn right" @click="scrollRight">&#9654;</button>
+  </div>
+</div>
+
+
+
+
+
+
+
 
     <!-- Bình luận -->
    
@@ -236,6 +246,9 @@ export default {
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
             this.movie.director = result.movie.director;
+            // if (result.data.seoOnPage) {
+            //   this.updateMetaTags(result.data.seoOnPage)
+            // }
             if(result.movie.status == "trailer" && result.episodes[0].server_data[0].link_embed == ""){
               this.movie.videoUrl = result.movie.trailer_url
               this.isTrailer = true
@@ -247,12 +260,12 @@ export default {
 
               }
               else{
-
                 var tap = this.movie.page.split("Tập ")[1].trim();
                 this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
                 this.isTrailer = false;
               }
             }
+            console.log(this.movie.videoUrl)
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
@@ -272,6 +285,42 @@ export default {
     getOptimizedImage(imagePath) {
       return `${this.urlImage+encodeURIComponent(imagePath)}&w=384&q=100`;
     },
+    // Chuản SEO
+    updateMetaTags(seo) {
+    document.title = seo.titleHead || 'Phim hay'
+
+    const removeOldMeta = (key, attr = 'name') => {
+      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
+      old.forEach(tag => tag.remove())
+    }
+
+    const setMeta = (key, content, attr = 'name') => {
+      if (!content) return
+      const meta = document.createElement('meta')
+      meta.setAttribute(attr, key)
+      meta.setAttribute('content', content)
+      document.head.appendChild(meta)
+    }
+
+    // Xóa cũ
+    removeOldMeta('description')
+    removeOldMeta('og:title', 'property')
+    removeOldMeta('og:description', 'property')
+    removeOldMeta('og:type', 'property')
+    removeOldMeta('og:image', 'property')
+
+    // Thêm mới
+    setMeta('description', seo.descriptionHead)
+    setMeta('og:title', seo.titleHead, 'property')
+    setMeta('og:description', seo.descriptionHead, 'property')
+    setMeta('og:type', seo.og_type || 'website', 'property')
+
+    if (Array.isArray(seo.og_image)) {
+      seo.og_image.forEach(img => {
+        setMeta('og:image', img, 'property')
+      })
+    }
+  },
     ListMovieByCate() {
       ListMovieByCate(
         this.movie.categoris,
@@ -338,14 +387,16 @@ export default {
     },
 
     scrollLeft() {
-      const container = this.$refs.movieList;
-      container.scrollLeft -= 250; // Adjust the scroll distance as needed
+      const container = this.$refs.slideWrapper;
+      if (container) {
+        container.scrollBy({ left: -220, behavior: 'smooth' });
+      }
     },
-    
-    // Scroll the container to the right
     scrollRight() {
-      const container = this.$refs.movieList;
-      container.scrollLeft += 250; // Adjust the scroll distance as needed
+      const container = this.$refs.slideWrapper;
+      if (container) {
+        container.scrollBy({ left: 220, behavior: 'smooth' });
+      }
     },
 
     playEpisode(episode) {
@@ -429,6 +480,135 @@ export default {
 .left-0 {
   left: 0;
 }
+.suggested-slide-wrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+
+.suggested-slide {
+  display: flex;
+  gap: 16px;
+  transition: transform 0.3s ease-in-out;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.movie-card {
+  flex: 0 0 auto;
+  width: 200px;
+  background-color: #2e2e2e;
+  border-radius: 12px;
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+.card-inner {
+  position: relative;
+}
+
+.card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.movie-card:hover .card-image {
+  transform: scale(1.05);
+}
+
+.card-hover-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  text-align: center;
+  padding: 8px;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+
+.movie-card:hover .card-hover-overlay {
+  transform: translateY(0);
+}
+
+.card-title {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-info {
+  padding: 12px;
+  color: #ccc;
+}
+
+.episode-chip {
+  display: inline-block;
+  background-color: #ffd600;
+  color: black;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.origin {
+  font-weight: bold;
+  color: #fff;
+}
+
+.meta {
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+/* Nút điều hướng trái phải */
+.nav-btn {
+  background-color: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  font-size: 24px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.nav-btn:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+.nav-btn.left {
+  margin-right: 8px;
+}
+
+.nav-btn.right {
+  margin-left: 8px;
+}
+
+
 
 </style>
 

@@ -45,7 +45,7 @@
                 />
               </v-col>
               <v-col cols="12" md="8" class="pa-4">
-                <h3>{{ movie.name }}</h3>
+                <h3 class="text-left">{{ movie.name }}</h3>
                 <div class="genre-section mb-3">
                   <v-chip
                     v-for="(genre, index) in movie.category"
@@ -68,7 +68,7 @@
                 </div>
 
                 <p class="text-body-2 description-text">
-                  {{ movie.description }}
+                  Miêu tả: {{ movie.origin_name }}
                 </p>
 
                 <div class="action-buttons mt-4">
@@ -153,6 +153,9 @@ export default {
               this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
+              if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
               this.loading = false;
             }
           }
@@ -167,6 +170,41 @@ export default {
     getOptimizedImage(imagePath) {
       return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
     },
+    updateMetaTags(seo) {
+    document.title = seo.titleHead || 'Phim hay'
+
+    const removeOldMeta = (key, attr = 'name') => {
+      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
+      old.forEach(tag => tag.remove())
+    }
+
+    const setMeta = (key, content, attr = 'name') => {
+      if (!content) return
+      const meta = document.createElement('meta')
+      meta.setAttribute(attr, key)
+      meta.setAttribute('content', content)
+      document.head.appendChild(meta)
+    }
+
+    // Xóa cũ
+    removeOldMeta('description')
+    removeOldMeta('og:title', 'property')
+    removeOldMeta('og:description', 'property')
+    removeOldMeta('og:type', 'property')
+    removeOldMeta('og:image', 'property')
+
+    // Thêm mới
+    setMeta('description', seo.descriptionHead)
+    setMeta('og:title', seo.titleHead, 'property')
+    setMeta('og:description', seo.descriptionHead, 'property')
+    setMeta('og:type', seo.og_type || 'website', 'property')
+
+    if (Array.isArray(seo.og_image)) {
+      seo.og_image.forEach(img => {
+        setMeta('og:image', img, 'property')
+      })
+    }
+  }
     
   },
 };
