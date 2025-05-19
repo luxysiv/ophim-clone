@@ -9,7 +9,10 @@
       </template>
     </v-breadcrumbs>
     <!-- Video -->
-    <div v-html="generateEmbedHtml(movie.videoUrl)"></div>
+      <div class="video-wrapper"  v-html="generateEmbedHtml(movie.videoUrl)"></div>
+
+
+    
     
 
     <!-- Danh sách tập phim -->
@@ -74,7 +77,7 @@
 
     <!-- Đề xuất phim -->
 <div class="suggested-movies my-8">
-  <h2 class="text-h5 text-white mb-4">🎬 Đề xuất cho bạn!</h2>
+  <h2 class="text-h5 mb-4">🎬 Đề xuất cho bạn!</h2>
   <div class="carousel-wrapper" style="display: flex; align-items: center;">
     <button class="nav-btn left" @click="scrollLeft">&#9664;</button>
     <div class="suggested-slide-wrapper" ref="slideWrapper">
@@ -432,8 +435,17 @@ export default {
         //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
       }
       else{
-        return `<iframe src="${url}" width="100%" height="600" frameborder="0" allowfullscreen loading="lazy"></iframe>`;
-        
+        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%;  overflow: hidden;">
+      <iframe
+        src="${url}"
+        frameborder="0"
+        class="w-full h-full"
+        loading="eager"
+        allowfullscreen
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 80%;"
+      ></iframe>
+    </div>`;
+      
       }
       
     }
@@ -443,6 +455,22 @@ export default {
 </script>
 
 <style scoped>
+.video-wrapper {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
+  background-color: black;
+  position: relative;
+  z-index: 10;
+}
+
+.video-wrapper iframe,
+.video-wrapper video {
+  width: 100%;
+  height: calc(100vw * 9 / 16); /* Tỷ lệ 16:9 */
+  display: block;
+  border: none;
+}
+
 .movie-detail {
   padding: 20px;
 
