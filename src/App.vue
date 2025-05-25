@@ -28,6 +28,18 @@ export default {
       localStorage.setItem('theme', newVal)
     }
   },
+  created() {
+  const expireAt = localStorage.getItem("expireAt");
+  const now = new Date().getTime();
+
+  if (expireAt && now > parseInt(expireAt)) {
+    // Đã hết hạn → xóa dữ liệu
+    localStorage.removeItem("name");
+    localStorage.removeItem("expireAt");
+    this.$store.commit("setEmpInfor", null);
+
+  }
+},
   methods: {
     setTheme(newTheme) {
       this.theme = newTheme

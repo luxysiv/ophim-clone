@@ -10,7 +10,7 @@
       show-arrows="hover"
       cycle
       interval="9000"
-      class="custom-carousel"
+      class="custom-carousel responsive-carousel"
     >
       <v-carousel-item
         v-for="(item) in videoList"
@@ -109,6 +109,11 @@ export default {
   filter: brightness(0.85);
   transition: filter 0.4s ease;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  filter: brightness(0.75) ;
+  transition: all 0.4s ease;
 }
 
 .carousel-image:hover {
@@ -132,6 +137,7 @@ export default {
   /* Giới hạn chiều cao overlay */
   max-height: 180px;
   box-sizing: border-box;
+  animation: fadeSlideUp 0.8s ease-out;
  
 }
 
@@ -199,4 +205,50 @@ export default {
 .custom-carousel:hover .v-carousel__controls__next {
   opacity: 1;
 }
+@media (max-width: 600px) {
+  .responsive-carousel {
+    height: 350px !important;
+  }
+
+  .overlay-info {
+    max-height: none;
+    padding: 16px;
+  }
+
+  .short-desc {
+    max-height: none;
+  }
+}
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.overlay-info h2 {
+  opacity: 0;
+  animation: fadeSlideUp 0.3s ease-out 0.1s forwards;
+}
+
+.overlay-info .info-row {
+  opacity: 0;
+  animation: fadeSlideUp 0.3s ease-out 0.2s forwards;
+}
+
+.overlay-info .short-desc {
+  opacity: 0;
+  animation: fadeSlideUp 0.3s ease-out 0.3s forwards;
+}
+
+.overlay-info .watch-now-btn {
+  opacity: 0;
+  animation: fadeSlideUp 0.3s ease-out 0.4s forwards;
+}
+
+
 </style>

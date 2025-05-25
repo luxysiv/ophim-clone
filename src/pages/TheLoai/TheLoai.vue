@@ -8,6 +8,7 @@
     </v-row>
 
     <v-row v-else>
+     
       <v-col cols="12" md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
         <router-link
           :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
@@ -45,17 +46,22 @@
               <span class="text-truncate d-block" :title="movie.name">
                 {{ movie.name }}
               </span>
+              <div class="d-flex justify-center mt-1" style="font-size: 13px; color: #ffc107;">
+                {{ movie.year || 'Năm ?' }}
+              </div>
             </v-card-text>
           </v-card>
         </router-link>
       </v-col>
+      
     </v-row>
 
     <v-pagination
       v-model="currentPage"
       :length="Math.ceil(totalMovies / moviesPerPage)"
       class="mt-4 d-flex justify-center"
-      color="warning"
+      color="yellow darken-2"
+      size="large"
     />
   </v-container>
 </template>
@@ -139,10 +145,12 @@ export default {
     currentPage() {
       this.loading = true
       this.ListMovie(this.path)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     path(newPath) {
       this.loading = true
       this.ListMovie(newPath)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     },
   },
 }
@@ -190,5 +198,59 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.movie-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+.movie-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.3s ease;
+}
+
+.movie-card:hover .movie-image {
+  filter: brightness(1.1);
+}
+
+.overlay {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+}
+
+.badge-top-left {
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.movie-title {
+  color: white;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 8px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+  font-size: 18px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: all 0.4s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
 }
 </style>

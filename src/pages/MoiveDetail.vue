@@ -10,11 +10,6 @@
     </v-breadcrumbs>
     <!-- Video -->
       <div class="video-wrapper"  v-html="generateEmbedHtml(movie.videoUrl)"></div>
-
-
-    
-    
-
     <!-- Danh sách tập phim -->
     <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
       <v-card-title class="d-flex align-center">
@@ -435,7 +430,7 @@ export default {
         //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
       }
       else{
-        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%;  overflow: hidden;">
+        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
       <iframe
         src="${url}"
         frameborder="0"
@@ -469,6 +464,8 @@ export default {
   height: calc(100vw * 9 / 16); /* Tỷ lệ 16:9 */
   display: block;
   border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .movie-detail {
@@ -635,7 +632,6 @@ export default {
 .nav-btn.right {
   margin-left: 8px;
 }
-
 
 
 </style>

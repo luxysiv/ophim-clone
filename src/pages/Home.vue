@@ -310,6 +310,7 @@ a {
 }
 .v-img img {
   transition: opacity 0.5s ease-in-out;
+  
 }
 .v-img img[lazy='loaded'] {
   opacity: 1 !important;
@@ -333,13 +334,43 @@ a {
 }
 
 .movie-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* hiện 2 dòng */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 40px;
   font-size: 14px;
   font-weight: bold;
-  color: white;
   line-height: 1.2;
+  color: white;
   margin-top: -8px;
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: normal;
+}
+@media (max-width: 400px) {
+  .v-img {
+    height: 180px !important;
+  }
+
+  .movie-title {
+    font-size: 12px;
+  }
+
+  .movie-info {
+    font-size: 11px;
+  }
+
+  .episode-lang {
+    font-size: 11px;
+  }
+}
+.v-img {
+  height: 250px;
+}
+
+@media (max-width: 600px) {
+  .v-img {
+    height: 180px;
+  }
 }
 </style>
