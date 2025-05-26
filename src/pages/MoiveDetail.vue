@@ -452,15 +452,16 @@ export default {
 <style scoped>
 .video-wrapper {
   width: 100vw;
+  max-height: 700px;
   margin-left: calc(-50vw + 50%);
   background-color: black;
-  position: relative;
   z-index: 10;
 }
 
 .video-wrapper iframe,
 .video-wrapper video {
   width: 100%;
+  height: auto;
   height: calc(100vw * 9 / 16); /* Tỷ lệ 16:9 */
   display: block;
   border: none;
@@ -469,7 +470,7 @@ export default {
 }
 
 .movie-detail {
-  padding: 20px;
+  padding: 12px 0;
 
 }
 

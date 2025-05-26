@@ -1,68 +1,115 @@
 <template>
-  <v-container class="mt-4 movie-series">
-    
-    <h2 class="text-warning">{{ titlePage }}</h2>
-    <v-divider class="my-3" />
-    <v-row justify="center" v-if="loading">
-      <v-progress-circular indeterminate color="primary" size="40" />
+  <v-container class="search-page" fluid>
+    <v-row justify="center" class="mb-6">
+      <v-col cols="12">
+        <h2 class="text-center">{{ titlePage }}</h2>
+        <v-divider class="my-4" />
+      </v-col>
     </v-row>
 
-    <v-row v-else>
-     
-      <v-col cols="12" md="3" v-for="movie in movies" :key="movie.id" class="mb-4">
+    <v-row justify="center">
+      <v-col cols="12" class="text-center" v-if="loading">
+        <v-progress-circular indeterminate color="primary" size="50" />
+      </v-col>
+
+      <v-col cols="12" v-else>
+        <v-alert v-if="movies.length === 0" class="text-center">
+          Không tìm thấy phim nào.
+          <br />
+          <router-link to="/home">
+            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+          </router-link>
+        </v-alert>
+
         <router-link
+          v-for="movie in movies"
+          :key="movie.id"
           :to="{ name: 'MovieDetail', params: { slug: movie.slug } }"
           class="text-decoration-none"
         >
-          <v-card class="movie-card">
-            <v-img
-              :src="getOptimizedImage(movie.poster_url)"
-              alt="Movie Image"
-              height="180"
-              class="movie-image"
-              cover
-              lazy-src
-            >
-              <template #default>
-                <div class="overlay">
+          <v-card class="mb-5 overflow-hidden movie-card" elevation="4" hover>
+            <v-row>
+              <v-col cols="12" md="4">
+                <v-img
+                  :src="getOptimizedImage(movie.poster_url)"
+                  :alt="movie.name"
+                  aspect-ratio="16/9"
+                  class="movie-image"
+                  transition="fade-transition"
+                  cover
+                >
+                  <template #default>
+                    <v-chip
+                      size="small"
+                      color="warning"
+                      class="badge-top-left"
+                      label
+                      text-color="black"
+                    >
+                      {{
+                        movie.episode_current === 'Tập 0'
+                          ? 'Full-' + movie.lang
+                          : movie.episode_current + '-' + movie.lang
+                      }}
+                    </v-chip>
+                  </template>
+                </v-img>
+              </v-col>
+              <v-col cols="12" md="8" class="pa-6">
+                <h3 class="text-left title">{{ movie.name }}</h3>
+                <div class="genre-section mb-3">
                   <v-chip
-                    size="small"
-                    color="warning"
-                    class="badge-top-left"
+                    v-for="(genre, index) in movie.category"
+                    :key="index"
+                    class="ma-1"
                     label
-                    text-color="black"
                   >
-                    {{
-                      movie.episode_current === 'Tập 0'
-                        ? 'Full-' + movie.lang
-                        : movie.episode_current + '-' + movie.lang
-                    }}
+                    {{ genre.name }}
                   </v-chip>
                 </div>
-              </template>
-            </v-img>
 
-            <v-card-text class="text-center movie-title">
-              <span class="text-truncate d-block" :title="movie.name">
-                {{ movie.name }}
-              </span>
-              <div class="d-flex justify-center mt-1" style="font-size: 13px; color: #ffc107;">
-                {{ movie.year || 'Năm ?' }}
-              </div>
-            </v-card-text>
+                <div class="meta-info mb-2 d-flex align-center flex-wrap">
+                  <v-chip color="warning" size="small" label>
+                    {{ movie.episode_current }} - {{ movie.lang }}
+                  </v-chip>
+                  <v-icon size="18" class="me-1 text-grey ms-3">mdi-calendar</v-icon>
+                  <span class="me-4">{{ movie.year }}</span>
+                </div>
+
+                <p class="text-body-2 description-text">
+                  Miêu tả: {{ movie.origin_name }}
+                </p>
+
+                <div class="action-buttons mt-4">
+                  <v-btn
+                    variant="flat"
+                    color="primary"
+                    class="me-2"
+                    prepend-icon="mdi-play-circle"
+                  >
+                    Xem ngay
+                  </v-btn>
+                  <v-btn
+                    color="secondary"
+                    variant="outlined"
+                    prepend-icon="mdi-share-variant"
+                  >
+                    Chia sẻ
+                  </v-btn>
+                </div>
+              </v-col>
+            </v-row>
           </v-card>
         </router-link>
-      </v-col>
-      
-    </v-row>
 
-    <v-pagination
-      v-model="currentPage"
-      :length="Math.ceil(totalMovies / moviesPerPage)"
-      class="mt-4 d-flex justify-center"
-      color="yellow darken-2"
-      size="large"
-    />
+        <v-pagination
+          v-model="currentPage"
+          :length="Math.ceil(totalMovies / moviesPerPage)"
+          class="my-4 justify-center"
+          color="warning"
+        />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -157,100 +204,171 @@ export default {
 </script>
 
 <style scoped>
+.search-page {
+  min-height: 100vh;
+  padding: 2rem 0;
+  padding: 3rem 1rem;
+}
+
 .movie-card {
-  position: relative;
+  border: none;
   border-radius: 8px;
-  overflow: hidden;
   transition: transform 0.2s;
 }
 
 .movie-card:hover {
-  transform: scale(1.05);
+  transform: translateY(-3px);
 }
-
+.movie-image-loaded {
+  opacity: 1;
+}
 .movie-image {
-  width: 100%;
+  width: 440px;
+  height: 250px;
   object-fit: cover;
+  border-radius: 8px 0 0 8px;
+  transition: opacity 0.5s ease-in;
+  opacity: 1;
 }
 
-.overlay {
+.rating-badge {
   position: absolute;
   top: 10px;
   left: 10px;
-  z-index: 1;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
 }
 
-.badge-top-left {
-  font-size: 14px;
-  padding: 5px 8px;
+.genre-section {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
 }
 
-.movie-title {
-  color: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 5px;
-  font-size: 20px;
+.genre-item {
+  border-radius: 5px;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
 }
 
-.text-truncate {
-  white-space: nowrap;
+.meta-info {
+  font-size: 0.95rem;
+}
+
+.description-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
+
+.action-buttons {
+  border-top: 1px solid #444;
+  padding-top: 1rem;
+}
+.d-flex {
+  display: flex !important;
+  align-items: flex-start;
+}
+.b-card-body {
+  text-align: left;
+}
+
+.genre-section,
+.meta-info,
+.description-text {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.genre-item {
+  display: inline-block;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-start;
+}
+.overflow-hidden {
+  background-color: #111218;
+  color: #fff;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.overflow-hidden:hover {
+  transform: scale(1.01);
+  box-shadow: 0 5px 12px rgba(255, 255, 255, 0.05);
+}
+.search-page {
+  min-height: 100vh;
+  padding: 3rem 1rem;
+  background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+  color: #fff;
+}
+
 .movie-card {
-  position: relative;
-  border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  transition: transform 0.25s ease, box-shadow 0.3s ease;
+  background-color: #1e1f29;
 }
 
 .movie-card:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.08);
 }
 
 .movie-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: filter 0.3s ease;
+  border-radius: 12px 0 0 12px;
+  transition: opacity 0.5s ease;
 }
 
-.movie-card:hover .movie-image {
-  filter: brightness(1.1);
+.genre-section {
+  flex-wrap: wrap;
 }
 
-.overlay {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1;
+.genre-section .v-chip {
+  background-color: #2e2f3a;
+  color: #fff;
+  font-size: 0.85rem;
 }
 
-.badge-top-left {
-  font-size: 14px;
-  padding: 4px 10px;
-  border-radius: 12px;
+.description-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  -webkit-line-clamp: 4;
 }
 
-.movie-title {
-  color: white;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  padding: 8px 12px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-  font-size: 18px;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+.meta-info .v-icon {
+  vertical-align: middle;
 }
-.fade-enter-active, .fade-leave-active {
-  transition: all 0.4s ease;
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
 }
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
+.v-btn {
+  font-weight: 600;
+  text-transform: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.v-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+.v-list-item-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.title:hover{
+  color: orange;
 }
 </style>
