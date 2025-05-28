@@ -456,6 +456,7 @@ export default {
   margin-left: calc(-50vw + 50%);
   background-color: black;
   z-index: 10;
+  position: relative;
 }
 
 .video-wrapper iframe,
@@ -467,9 +468,11 @@ export default {
   border: none;
   margin: 0;
   padding: 0;
+  position: absolute;
 }
 
 .movie-detail {
+  position: relative;
   padding: 12px 0;
 
 }
