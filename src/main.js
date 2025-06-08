@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
-
+import 'core-js/stable'
+import 'regenerator-runtime/runtime'
 import App from './App.vue'
 
 import router from './router'
@@ -18,8 +19,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import '@mdi/font/css/materialdesignicons.css'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
+
 
 const vuetify = createVuetify({
   components,
