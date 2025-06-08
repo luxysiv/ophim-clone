@@ -15,7 +15,7 @@
       <v-card-title class="d-flex align-center">
         <span class="text-h6">{{ movie.title }}</span>
         <v-chip class="ml-2" color="red" text-color="white">{{ movie.page }}</v-chip>
-        <v-chip class="ml-2" color="red" text-color="white" v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')">Tập 1</v-chip>
+        <v-chip class="ml-2" color="red" text-color="white" v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT') || movie.page.includes('/')" >Tập 1</v-chip>
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -240,27 +240,35 @@ export default {
           if (result.status == true) {
             this.movie.page = result.movie.episode_current
             this.idMovie = result.movie._id;
-            this.movie.title = result.movie.origin_name;
+            // this.movie.title = result.movie.origin_name
             this.movie.description = result.movie.content;
             this.movie.pageMovie = result.episodes[0].server_data;
             this.movie.director = result.movie.director;
             // if (result.data.seoOnPage) {
             //   this.updateMetaTags(result.data.seoOnPage)
             // }
-            if(result.movie.status == "trailer" && result.episodes[0].server_data[0].link_embed == ""){
+            if(result.movie.status == "trailer" || result.episodes[0].server_data[0].link_embed == ""){
               this.movie.videoUrl = result.movie.trailer_url
+              this.movie.title = result.movie.name
               this.isTrailer = true
             }
             else{
-              if(this.movie.page == "Full" || this.movie.page.toUpperCase().includes('HOÀN TẤT')){
+              if(this.movie.page == "Full" || this.movie.page.toUpperCase().includes('HOÀN TẤT') || this.movie.page.includes('/')){
                 this.movie.videoUrl = result.episodes[0].server_data[0].link_embed
+                this.movie.title = result.movie.name
                 this.isTrailer = false;
 
               }
               else{
                 var tap = this.movie.page.split("Tập ")[1].trim();
-                this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                this.isTrailer = false;
+                const data = result.episodes[0].server_data.find(ep => ep.slug === tap);
+                if (data) {
+                  this.movie.videoUrl = data.link_embed;
+                  this.movie.title = data.filename;
+                  this.isTrailer = false;
+                }
+                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                // this.isTrailer = false;
               }
             }
             console.log(this.movie.videoUrl)
@@ -437,7 +445,7 @@ export default {
         class="w-full h-full"
         loading="eager"
         allowfullscreen
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 80%;"
+        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
       ></iframe>
     </div>`;
       
@@ -452,11 +460,8 @@ export default {
 <style scoped>
 .video-wrapper {
   width: 100vw;
-  max-height: 700px;
   margin-left: calc(-50vw + 50%);
   background-color: black;
-  z-index: 10;
-  position: relative;
 }
 
 .video-wrapper iframe,
@@ -468,11 +473,9 @@ export default {
   border: none;
   margin: 0;
   padding: 0;
-  position: absolute;
 }
 
 .movie-detail {
-  position: relative;
   padding: 12px 0;
 
 }
