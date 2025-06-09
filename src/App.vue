@@ -23,6 +23,21 @@ export default {
       setTheme: this.setTheme
     }
   },
+  mounted(){
+    const loginTime = localStorage.getItem("loginTimestamp");
+    if (loginTime) {
+    const now = Date.now();
+    const diff = now - Number(loginTime);
+    const oneDay = 24 * 60 * 60 * 1000;
+
+    if (diff > oneDay) {
+      localStorage.removeItem("name");
+      localStorage.removeItem("loginTimestamp");
+      // Nếu cần, xóa luôn thông tin trong Vuex store:
+      this.$store.commit("setEmpInfor", null);
+    }
+  }
+  },
   watch: {
     theme(newVal) {
       localStorage.setItem('theme', newVal)

@@ -3,7 +3,7 @@
     <v-row align="center" justify="center" style="flex-direction: column">
       <v-btn icon variant="text" class="ma-4" @click="goBack">
         <v-icon>mdi-arrow-left</v-icon>
-         Go Home
+         Back
       </v-btn>
 
       <v-col cols="12" sm="8" md="4">
@@ -100,9 +100,10 @@ export default {
     ],
     };
   },
+  
   methods: {
     goBack() {
-      this.$router.push("/home");
+      this.$router.go(-1);
     },
 
     handleLogin() {
@@ -121,6 +122,8 @@ export default {
         if (dat.status === 200) {
           this.$store.commit("setEmpInfor", dat.data.user);
           localStorage.setItem("name", dat.data.user.username);
+          localStorage.setItem("loginTimestamp", Date.now());
+
 
           this.Message = "Đăng nhập thành công";
           this.color = "success";

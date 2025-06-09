@@ -15,7 +15,7 @@
       <v-card-title class="d-flex align-center">
         <span class="text-h6">{{ movie.title }}</span>
         <v-chip class="ml-2" color="red" text-color="white">{{ movie.page }}</v-chip>
-        <v-chip class="ml-2" color="red" text-color="white" v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT') || movie.page.includes('/')" >Tập 1</v-chip>
+        <v-chip class="ml-2" color="red" text-color="white" v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT') || movie.page?.includes('/')" >Tập 1</v-chip>
       </v-card-title>
       <v-card-text>
         <v-row>
@@ -266,6 +266,14 @@ export default {
                   this.movie.videoUrl = data.link_embed;
                   this.movie.title = data.filename;
                   this.isTrailer = false;
+                }
+                else{
+                  const data = result.episodes[1].server_data.find(ep => ep.slug === tap);
+                  if (data) {
+                  this.movie.videoUrl = data.link_embed;
+                  this.movie.title = data.filename;
+                  this.isTrailer = false;
+                }
                 }
                 // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
                 // this.isTrailer = false;
