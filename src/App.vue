@@ -65,10 +65,15 @@ export default {
 
 <style>
 #app {
-  font-family: "Roboto Medium",sans-serif;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #fff;
+ 
+}
+.v-btn {
+  text-transform: none !important;
 }
 </style>
