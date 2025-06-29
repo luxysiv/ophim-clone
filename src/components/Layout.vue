@@ -49,7 +49,7 @@ export default {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
 .main{
-  padding: 0 30px 0 30px;
+  padding: 0 15px 0 15px;
 }
 
 </style>
