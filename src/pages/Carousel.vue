@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0">
     <v-carousel
       v-if="videoList.length"
-      height="500"
+      height="550"
       hide-delimiters="false"
       delimiter-icon="mdi-circle"
       delimiter-size="10"

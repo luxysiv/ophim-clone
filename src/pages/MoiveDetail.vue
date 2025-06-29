@@ -2,236 +2,261 @@
   <v-col cols="12" class="text-center" v-if="isLoading">
     <v-progress-circular indeterminate color="primary" size="50" />
   </v-col>
-  <div class="movie-detail" v-else>
+
+  <div v-else>
+    <!-- Breadcrumb -->
     <v-breadcrumbs :items="items">
       <template v-slot:divider>
         <v-icon icon="mdi-chevron-right"></v-icon>
       </template>
     </v-breadcrumbs>
-    <!-- Video -->
-    <div class="video-wrapper" v-html="generateEmbedHtml(movie.videoUrl)"></div>
 
-    <div
-      class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
-      style="background-color: #1a1a1a"
-    >
-      <!-- Nhóm nút bên trái -->
-      <div class="d-flex align-center flex-wrap" style="gap: 16px">
-        <v-btn variant="text"  @click="getTrailer()">
-          <v-icon start icon="mdi-youtube" />
-          Trailer
-        </v-btn>
+    <!-- Bố cục hai cột -->
+    <v-row dense>
+      <!-- Cột bên trái: Video + nút + danh sách tập + info -->
+      <v-col cols="12" md="10">
+        <!-- VIDEO -->
+        <div
+          class="video-wrapper"
+          v-html="generateEmbedHtml(movie.videoUrl)"
+        ></div>
 
-        <v-btn variant="text" >
-          <v-icon start icon="mdi-share-variant" />
-          Chia sẻ
-        </v-btn>
-
-        <v-btn variant="text" >
-          <v-icon start icon="mdi-flag" />
-          Báo lỗi
-        </v-btn>
-
-        <v-btn variant="text" >
-          <v-icon start icon="mdi-bookmark-outline" />
-          Xem sau
-        </v-btn>
-      </div>
-
-      <!-- Nhóm chọn server -->
-      <div class="d-flex" style="gap: 8px">
-        <v-btn
-          v-for="(server, index) in movie.servers"
-          :key="server"
-          :color="currentServer === index ? 'orange' : 'grey-darken-3'"
-          
-          class="text-white font-weight-bold"
-          @click="switchServer(server)"
+        <!-- Nhóm nút + server -->
+        <div
+          class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
+          style="background-color: #1a1a1a"
         >
-          {{ server.server_name || `Server ${index + 1}` }}
-        </v-btn>
-      </div>
-    </div>
-    <!-- Danh sách tập phim -->
-    <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
-      <v-card-title class="d-flex align-center">
-        <span class="text-h6">{{ movie.title }}</span>
-        <v-chip class="ml-2" color="red" text-color="white">{{
-          movie.page
-        }}</v-chip>
-        <v-chip
-          class="ml-2"
-          color="red"
-          text-color="white"
-          v-if="
-            (typeof movie.page === 'string' &&
-              movie.page.toUpperCase().includes('HOÀN TẤT')) 
-              
-          "
-        >
-          Tập 1
-        </v-chip>
-      </v-card-title>
-      <v-card-text>
-        <v-row>
-          <v-col
-            v-for="(episode, index) in movie.pageMovie"
-            :key="index"
-            cols="auto"
-            class="pa-2"
-          >
-            <v-btn color="primary" @click="playEpisode(episode)">
-              {{ episode.name ? "Tập " + episode.name : "Trailer" }}
+          <!-- Nút chức năng -->
+          <div class="d-flex align-center flex-wrap" style="gap: 16px">
+            <v-btn variant="text" @click="getTrailer()">
+              <v-icon start icon="mdi-youtube" />
+              Trailer
             </v-btn>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-
-    <!-- Thông tin phim -->
-
-    <v-card
-      class="pa-6 text-left"
-      color="grey-darken-4"
-      variant="flat"
-      rounded="lg"
-      theme="dark"
-    >
-      <v-card-title class="text-white mb-4">
-        {{ movie.title }}
-      </v-card-title>
-
-      <v-card-text class="text-grey-lighten-2 text-left">
-        <div v-html="movie.description"></div>
-      </v-card-text>
-
-      <v-card-text class="text-white text-left">
-        <p class="mb-2">
-          <strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}
-        </p>
-        <p class="mb-2">
-          <strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}
-        </p>
-        <p class="mb-2"><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
-        <div class="d-flex align-center">
-          <strong class="mr-2">Đánh giá:</strong>
-          <v-rating
-            readonly
-            :length="5"
-            :size="28"
-            :model-value="movie.rating"
-            active-color="yellow-darken-2"
-          />
-        </div>
-      </v-card-text>
-    </v-card>
-
-    <!-- Đề xuất phim -->
-    <div class="suggested-movies my-8">
-      <h2 class="text-h5 mb-4">🎬 Đề xuất cho bạn!</h2>
-      <div class="carousel-wrapper" style="display: flex; align-items: center">
-        <button class="nav-btn left" @click="scrollLeft">&#9664;</button>
-        <div class="suggested-slide-wrapper" ref="slideWrapper">
-          <div class="suggested-slide">
-            <div
-              class="movie-card"
-              v-for="suggested in suggestedMovies"
-              :key="suggested.id"
+            <v-btn variant="text"
+              ><v-icon start icon="mdi-share-variant" />Chia sẻ</v-btn
             >
-              <router-link
-                :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
-                class="text-decoration-none"
-              >
-                <div class="card-inner">
-                  <div class="card-image-wrapper">
-                    <img
-                      :src="getOptimizedImage(suggested.poster_url)"
-                      class="card-image"
-                      alt="Poster"
-                    />
-                    <div class="card-hover-overlay">
-                      <p class="card-title">{{ suggested.name }}</p>
-                    </div>
-                  </div>
+            <v-btn variant="text"
+              ><v-icon start icon="mdi-flag" />Báo lỗi</v-btn
+            >
+            <v-btn variant="text"
+              ><v-icon start icon="mdi-bookmark-outline" />Xem sau</v-btn
+            >
+          </div>
 
-                  <div class="card-info">
-                    <span class="episode-chip">
-                      {{ suggested.episode_current }} - {{ suggested.lang }}
-                    </span>
-                    <div class="origin">{{ suggested.origin_name }}</div>
-                    <div class="meta">
-                      {{ suggested.year }} |
-                      {{ suggested.category[0]?.name || "N/A" }}
-                    </div>
-                  </div>
-                </div>
-              </router-link>
+          <!-- Server -->
+          <div class="d-flex" style="gap: 8px">
+            <v-btn
+              v-for="(server, index) in movie.servers"
+              :key="server"
+              :color="currentServer === index ? 'orange' : 'grey-darken-3'"
+              class="text-white font-weight-bold"
+              @click="switchServer(server)"
+            >
+              {{ server.server_name || `Server ${index + 1}` }}
+            </v-btn>
+          </div>
+        </div>
+
+        <!-- Danh sách tập -->
+        <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
+          <v-card-title class="d-flex align-center">
+            <span class="text-h6">{{ movie.title }}</span>
+            <v-chip class="ml-2" color="red" text-color="white">{{
+              movie.page
+            }}</v-chip>
+            <v-chip
+              class="ml-2"
+              color="red"
+              text-color="white"
+              v-if="movie.page?.toUpperCase().includes('HOÀN TẤT')"
+            >
+              Tập 1
+            </v-chip>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col
+                v-for="(episode, index) in movie.pageMovie"
+                :key="index"
+                cols="auto"
+                class="pa-2"
+              >
+                <v-btn color="primary" @click="playEpisode(episode)">
+                  {{ episode.name ? "Tập " + episode.name : "Trailer" }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-card-text>
+        </v-card>
+
+        <!-- Thông tin phim -->
+        <v-card
+          class="pa-6 text-left"
+          color="grey-darken-4"
+          variant="flat"
+          rounded="lg"
+          theme="dark"
+        >
+          <v-card-title class="text-white mb-4">{{ movie.title }}</v-card-title>
+          <v-card-text
+            class="text-grey-lighten-2"
+            :v-html="movie.description"
+          ></v-card-text>
+          <v-card-text class="text-white">
+            <p><strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}</p>
+            <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
+            <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
+            <div class="d-flex align-center">
+              <strong class="mr-2">Đánh giá:</strong>
+              <v-rating
+                readonly
+                :length="5"
+                :size="28"
+                :model-value="movie.rating"
+                active-color="yellow-darken-2"
+              />
+            </div>
+          </v-card-text>
+        </v-card>
+
+        <!-- Bình luận -->
+        <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
+          <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ Bình luận</h2>
+          <v-text-field
+            v-model="newComment"
+            placeholder="Thêm bình luận..."
+            variant="outlined"
+            color="blue"
+            class="rounded-xl mb-4"
+            density="comfortable"
+            hide-details
+            append-inner-icon="mdi-send"
+            @click:append-inner="addComment"
+            :rules="[(v) => !!v || 'Bình luận không được để trống']"
+          ></v-text-field>
+          <v-divider class="mb-4" color="grey darken-3"></v-divider>
+          <div
+            v-for="(comment, index) in comments"
+            :key="index"
+            class="d-flex align-start mb-5"
+          >
+            <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
+              <v-icon color="white">mdi-account</v-icon>
+            </v-avatar>
+            <div class="flex-grow-1">
+              <div class="d-flex align-center mb-1">
+                <span class="text-blue-lighten-3 font-weight-medium me-2">{{
+                  comment.username
+                }}</span>
+                <v-chip
+                  size="x-small"
+                  color="grey-darken-4"
+                  text-color="grey-lighten-1"
+                  variant="flat"
+                >
+                  {{ comment.time }}
+                </v-chip>
+              </div>
+              <div class="text-white text-body-2">{{ comment.content }}</div>
+              <div
+                class="text-caption mt-2 text-grey-lighten-1"
+                style="cursor: pointer"
+              >
+                Phản hồi
+              </div>
             </div>
           </div>
-        </div>
-        <button class="nav-btn right" @click="scrollRight">&#9654;</button>
-      </div>
-    </div>
+        </v-card>
+      </v-col>
 
-    <!-- Bình luận -->
+      <!-- Cột bên phải: Gợi ý -->
+      <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
+      <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
+        <v-card class="pa-0" color="grey-darken-4" flat>
+          <v-tabs v-model="tab" background-color="grey-darken-3" grow>
+            <v-tab value="1">Gợi ý cho bạn</v-tab>
+            <v-tab value="2">Top phim</v-tab>
+          </v-tabs>
 
-    <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2">
-      <!-- Tiêu đề -->
-      <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ Bình luận</h2>
+          <v-card-text style="max-height: 87vh; overflow-y: auto">
+            <v-list dense nav>
+              <v-list-item
+                v-for="suggested in suggestedMovies"
+                :key="suggested.id"
+                class="suggested-item"
+              >
+                <router-link
+                  :to="{
+                    name: 'MovieDetail',
+                    params: { slug: suggested.slug },
+                  }"
+                  class="text-decoration-none"
+                >
+                  <v-list-item-avatar size="80">
+                    <v-img :src="getOptimizedImage(suggested.poster_url)" />
+                  </v-list-item-avatar>
 
-      <!-- Ô nhập bình luận -->
-      <v-text-field
-        v-model="newComment"
-        placeholder="Thêm bình luận..."
-        variant="outlined"
-        color="blue"
-        class="rounded-xl mb-4"
-        density="comfortable"
-        hide-details
-        append-inner-icon="mdi-send"
-        @click:append-inner="addComment"
-        :rules="[(v) => !!v || 'Bình luận không được để trống']"
-      ></v-text-field>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-white text-wrap text-body-2">
+                      {{ suggested.name }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle
+                      class="text-grey-lighten-1 text-caption"
+                    >
+                      {{ suggested.episode_current }} | {{ suggested.lang
+                      }}<br />
+                      {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </router-link>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
 
-      <!-- Danh sách bình luận -->
-      <v-divider class="mb-4" color="grey darken-3"></v-divider>
-      <div
-        v-for="(comment, index) in comments"
-        :key="index"
-        class="d-flex align-start mb-5"
-      >
-        <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
-          <v-icon color="white">mdi-account</v-icon>
-        </v-avatar>
-
-        <div class="flex-grow-1">
-          <div class="d-flex align-center mb-1">
-            <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-              comment.username
-            }}</span>
-            <v-chip
-              size="x-small"
-              color="grey-darken-4"
-              text-color="grey-lighten-1"
-              variant="flat"
-            >
-              {{ comment.time }}
-            </v-chip>
-          </div>
-          <div class="text-white text-body-2">{{ comment.content }}</div>
-          <div
-            class="text-caption mt-2 text-grey-lighten-1"
-            style="cursor: pointer"
+      <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+      <div class="suggested-movies my-8">
+        <h2 class="text-h5 mb-4">🎬 Phim được đề xuất</h2>
+        <v-row>
+          <v-col
+            v-for="suggested in suggestedMovies"
+            :key="suggested.id"
+            cols="6"
+            sm="4"
+            md="2"
           >
-            Phản hồi
-          </div>
-        </div>
+            <router-link
+              :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
+              class="text-decoration-none"
+            >
+              <v-card elevation="2" class="bg-grey-darken-4" hover>
+                <v-img
+                  :src="getOptimizedImage(suggested.poster_url)"
+                  aspect-ratio="16/9"
+                  cover
+                ></v-img>
+                <v-card-title class="text-white text-body-2 text-wrap">
+                  {{ suggested.name }}
+                </v-card-title>
+                <v-card-subtitle
+                  class="text-grey-lighten-1 text-caption px-4 pb-4"
+                >
+                  {{ suggested.episode_current }} | {{ suggested.lang }}<br />
+                  {{ suggested.category[0]?.name }} • {{ suggested.year }}
+                </v-card-subtitle>
+              </v-card>
+            </router-link>
+          </v-col>
+        </v-row>
       </div>
-    </v-card>
+    </v-row>
+
+    <!-- Snackbar -->
+    <v-snackbar v-model="mess" :timeout="3000" :color="color">
+      {{ Message }}
+    </v-snackbar>
   </div>
-  <v-snackbar v-model="mess" :timeout="3000" :color="color">
-    {{ Message }}
-  </v-snackbar>
 </template>
 
 
@@ -249,6 +274,7 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      tab: "",
       items: [
         {
           title: "Home",
@@ -277,7 +303,7 @@ export default {
         page: 1,
         rating: 5,
         categoris: "",
-        trailer_url: ""
+        trailer_url: "",
       },
       idMovie: "",
       isTrailer: false,
@@ -492,8 +518,8 @@ export default {
         container.scrollBy({ left: 220, behavior: "smooth" });
       }
     },
-    getTrailer(){
-      this.movie.videoUrl = this.movie.trailer_url
+    getTrailer() {
+      this.movie.videoUrl = this.movie.trailer_url;
     },
     playEpisode(episode) {
       this.isLoading = true;
@@ -505,27 +531,23 @@ export default {
     },
     switchServer(server) {
       this.isLoading = true;
-        this.movie.pageMovie = server.server_data;
-        if (
-          this.movie.page == "Full" ||
-          this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-          this.movie.page.includes("/")
-        ) {
-          this.movie.videoUrl = server.server_data[0].link_embed;
+      this.movie.pageMovie = server.server_data;
+      if (
+        this.movie.page == "Full" ||
+        this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+        this.movie.page.includes("/")
+      ) {
+        this.movie.videoUrl = server.server_data[0].link_embed;
+        this.isTrailer = false;
+      } else {
+        var tap = this.movie.page.split("Tập ")[1].trim();
+        const data = server.server_data.find((ep) => ep.slug === tap);
+        if (data) {
+          this.movie.videoUrl = data.link_embed;
           this.isTrailer = false;
-        } else {
-          var tap = this.movie.page.split("Tập ")[1].trim();
-          const data = server.server_data.find(
-            (ep) => ep.slug === tap
-          );
-          if (data) {
-            
-            this.movie.videoUrl = data.link_embed;
-            this.isTrailer = false;
-          
-          }
         }
-      
+      }
+
       this.GetComment();
       this.isLoading = false;
     },
@@ -574,24 +596,38 @@ export default {
 
 <style scoped>
 .video-wrapper {
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  background-color: black;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: black;
+  position: relative;
+  overflow: hidden;
 }
 
 .video-wrapper iframe,
 .video-wrapper video {
   width: 100%;
-  height: auto;
-  height: calc(100vw * 9 / 16); /* Tỷ lệ 16:9 */
-  display: block;
-  border: none;
-  margin: 0;
-  padding: 0;
+  height: 100%;
+}
+.suggested-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-radius: 8px;
+}
+
+.text-wrap {
+  white-space: normal !important;
+  overflow-wrap: break-word;
+}
+
+.suggested-item:hover {
+  background-color: #2e2e2e;
 }
 
 .movie-detail {
   padding: 12px 0;
+}
+a {
+  color: #fff;
 }
 
 .movie-info p {

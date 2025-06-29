@@ -5,7 +5,7 @@
       <header-component />
     </header>
 
-    <div class="container">
+    <div class="main">
       <div class="row">
         <router-view />
       </div>
@@ -47,6 +47,9 @@ export default {
   z-index: 1000;
   background-color: rgb(2, 2, 2);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+.main{
+  padding: 0 30px 0 30px;
 }
 
 </style>
