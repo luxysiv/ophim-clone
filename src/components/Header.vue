@@ -139,9 +139,9 @@
     @keyup.enter="searchMovie"
     offset-y
   >
-    <template #activator="{ props }">
+    <template #activator="{ props: activatorProps }">
       <v-text-field
-        v-bind="props"
+        v-bind="activatorProps"
         v-model="searchQuery"
         placeholder="Tên phim"
         append-inner-icon="mdi-magnify"

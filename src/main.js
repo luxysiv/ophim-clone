@@ -36,6 +36,16 @@ const vuetify = createVuetify({
 
 const app = createApp(App);
 
+window.addEventListener('error', function (e) {
+  if (
+    e.message === 'ResizeObserver loop completed with undelivered notifications.' ||
+    e.message.includes('ResizeObserver loop limit exceeded')
+  ) {
+    e.stopImmediatePropagation();
+    console.warn('⚠️ Cảnh báo ResizeObserver loop, đã được bỏ qua để tránh crash UI.');
+  }
+});
+
 app.use(router)
 app.use(store);
 app.use(BootstrapVue3)

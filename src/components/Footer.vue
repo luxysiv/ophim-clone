@@ -39,8 +39,8 @@
           <h4 class="text-subtitle-1 font-weight-bold mb-3">Thể loại</h4>
           <ul class="pa-0">
             <li v-for="item in genres" :key="item" class="mb-1">
-              <router-link :to="`/the-loai/${slugify(item)}`" class="text-decoration-none">
-                {{ item }}
+              <router-link :to="`/the-loai/${item.link}`" class="text-decoration-none">
+                {{ item.lable }}
               </router-link>
             </li>
           </ul>
@@ -51,8 +51,8 @@
           <h4 class="text-subtitle-1 font-weight-bold mb-3">Quốc gia</h4>
           <ul class="pa-0">
             <li v-for="item in countries" :key="item" class="mb-1">
-              <router-link :to="`/quoc-gia/${slugify(item)}`" class="text-decoration-none">
-                {{ item }}
+              <router-link :to="`/quoc-gia/${item.link}`" class="text-decoration-none">
+                {{ item.lable }}
               </router-link>
             </li>
           </ul>
@@ -99,15 +99,27 @@ export default {
         { label: 'Nettruyen ngôn tình', link: '/danh-sach/net-truyen-ngon-tinh' },
         { label: 'Hiện đại', link: '/danh-sach/hien-dai' }
       ],
-      genres: ['Chính kịch', 'Cổ Trang', 'Tình Cảm', 'Phim Bộ', 'Hành Động'],
-      countries: ['Âu Mỹ', 'Hàn Quốc', 'Trung Quốc', 'Nhật Bản', 'Việt Nam']
+      genres: [
+        {lable: 'Chính kịch', link:'chinh-kich'},  
+        {lable: 'Cổ Trang', link:'co-trang'},  
+        {lable: 'Tình Cảm', link:'tinh-cam'},  
+        {lable: 'Phim Bộ', link:'phim-bo'},  
+        {lable: 'Hành Động', link:'hanh-dong'},
+        {lable: 'Học đường', link:'hoc-duong'},
+      ],
+      countries: [
+        {lable: 'Âu Mỹ', link:'au-my'},  
+        {lable: 'Hàn Quốc', link:'han-quoc'},  
+        {lable: 'Trung Quốc', link:'trung-quoc'},  
+        {lable: 'Nhật Bản', link:'nhat-ban'},  
+        {lable: 'Ấn Độ', link:'an-do'},  
+        {lable: 'Việt Nam', link:'viet-nam'}  
+      ]
     };
   },
   methods: {
     slugify(str) {
       return str.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-        .replace(/[^a-z0-9\s-]/g, '')
         .trim().replace(/\s+/g, '-');
     }
   }

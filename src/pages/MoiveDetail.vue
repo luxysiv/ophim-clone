@@ -32,7 +32,7 @@
               <v-icon start icon="mdi-youtube" />
               Trailer
             </v-btn>
-            <v-btn variant="text"
+            <v-btn variant="text" @click="shareMovie"
               ><v-icon start icon="mdi-share-variant" />Chia sẻ</v-btn
             >
             <v-btn variant="text"
@@ -45,15 +45,20 @@
 
           <!-- Server -->
           <div class="d-flex" style="gap: 8px">
-            <v-btn
-              v-for="(server, index) in movie.servers"
-              :key="server"
-              :color="currentServer === index ? 'orange' : 'grey-darken-3'"
-              class="text-white font-weight-bold"
-              @click="switchServer(server)"
+            <v-tabs
+              v-model="tabserver"
+              class="custom-tabs"
+              background-color="transparent"
             >
-              {{ server.server_name || `Server ${index + 1}` }}
-            </v-btn>
+              <v-tab
+                v-for="(server, index) in movie.servers"
+                :key="index"
+                @click="switchServer(server)"
+                :class="{ 'active-tab': tabserver === index }"
+              >
+                {{ server.server_name || `Server ${index + 1}` }}
+              </v-tab>
+            </v-tabs>
           </div>
         </div>
 
@@ -97,7 +102,9 @@
           rounded="lg"
           theme="dark"
         >
-          <v-card-title class="text-white mb-4">{{ movie.title }}</v-card-title>
+          <v-card-title class="text-white mb-4"
+            >{{ movie.title }} ( {{ movie.name }})</v-card-title
+          >
           <v-card-text
             class="text-grey-lighten-2"
             :v-html="movie.description"
@@ -252,14 +259,85 @@
       </div>
     </v-row>
 
+    <!-- dialog share -->
+    <v-dialog v-model="shareDialog" max-width="500">
+      <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
+        <v-card-title class="text-h6 justify-center">Chia sẻ</v-card-title>
+
+        <v-row class="justify-center mt-4" dense>
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('facebook')"
+              class="bg-grey-darken-4"
+            >
+              <v-icon icon="mdi-facebook" />
+            </v-btn>
+            <div class="mt-1 text-caption">Facebook</div>
+          </v-col>
+
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('whatsapp')"
+              class="bg-grey-darken-4"
+            >
+              <v-icon icon="mdi-whatsapp" />
+            </v-btn>
+            <div class="mt-1 text-caption">WhatsApp</div>
+          </v-col>
+
+          <v-col cols="3" class="text-center">
+            <v-btn icon size="large" @click="copyLink" class="bg-grey-darken-4">
+              <v-icon icon="mdi-link-variant" />
+            </v-btn>
+            <div class="mt-1 text-caption">Copy link</div>
+          </v-col>
+
+          <v-col cols="3" class="text-center">
+            <v-btn
+              icon
+              size="large"
+              @click="shareTo('twitter')"
+              class="bg-grey-darken-4"
+            >
+              <v-icon icon="mdi-twitter" />
+            </v-btn>
+            <div class="mt-1 text-caption">Twitter</div>
+          </v-col>
+        </v-row>
+
+        <v-card
+          class="mt-4 px-3 py-2 d-flex align-center"
+          style="background-color: #2a2a2a; border-radius: 8px"
+        >
+          <span class="text-truncate" style="color: #facc15; max-width: 100%">
+            {{ shareUrl }}
+          </span>
+          <v-spacer />
+          <v-btn icon @click="copyLink" size="small">
+            <v-icon icon="mdi-content-copy" />
+          </v-btn>
+        </v-card>
+
+        <v-btn
+          icon
+          class="position-absolute"
+          style="top: 8px; right: 8px"
+          @click="shareDialog = false"
+        >
+          <v-icon icon="mdi-close" />
+        </v-btn>
+      </v-card>
+    </v-dialog>
     <!-- Snackbar -->
     <v-snackbar v-model="mess" :timeout="3000" :color="color">
       {{ Message }}
     </v-snackbar>
   </div>
 </template>
-
-
 
 <script>
 import {
@@ -275,6 +353,7 @@ export default {
   data() {
     return {
       tab: "",
+      tabserver: null,
       items: [
         {
           title: "Home",
@@ -304,6 +383,7 @@ export default {
         rating: 5,
         categoris: "",
         trailer_url: "",
+        name: "",
       },
       idMovie: "",
       isTrailer: false,
@@ -311,6 +391,7 @@ export default {
       suggestedMovies: [],
       comments: [],
       newComment: "",
+      shareDialog: false,
     };
   },
   props: ["slug"],
@@ -340,6 +421,7 @@ export default {
             this.movie.director = result.movie.director;
             this.movie.servers = result.episodes;
             this.movie.trailer_url = result.movie.trailer_url;
+            this.movie.name = result.movie.name;
 
             // if (result.data.seoOnPage) {
             //   this.updateMetaTags(result.data.seoOnPage)
@@ -454,7 +536,36 @@ export default {
         }
       );
     },
+    shareMovie() {
+      this.shareDialog = true;
+    },
 
+    shareTo(platform) {
+      // const url = encodeURIComponent(shareUrl.value);
+      // const text = encodeURIComponent("Xem phim này nè!");
+      let shareLink = "";
+
+      switch (platform) {
+        case "facebook":
+          shareLink = `https://www.facebook.com/sharer/sharer.php`;
+          break;
+        case "whatsapp":
+          shareLink = `https://api.whatsapp.com`;
+          break;
+        case "twitter":
+          shareLink = `https://twitter.com`;
+          break;
+      }
+      // const shareUrl = window.location.href;
+
+      window.open(shareLink, "_blank");
+    },
+    copyLink() {
+      const shareUrl = window.location.href;
+      navigator.clipboard.writeText(shareUrl.value).then(() => {
+        alert("Đã sao chép liên kết!");
+      });
+    },
     addComment() {
       var account = localStorage.getItem("name");
       var data = {
@@ -629,6 +740,18 @@ export default {
 a {
   color: #fff;
 }
+.custom-tabs .v-tab {
+  color: white;
+  background-color: transparent;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+.custom-tabs .v-tab.active-tab {
+  color: #000;
+  background-color: #f8b230;
+  border-radius: 5px;
+  font-weight: bold;
+}
 
 .movie-info p {
   margin-bottom: 8px;
@@ -790,4 +913,3 @@ a {
   margin-left: 8px;
 }
 </style>
-
