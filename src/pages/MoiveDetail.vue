@@ -35,7 +35,7 @@
             <v-btn variant="text" @click="shareMovie"
               ><v-icon start icon="mdi-share-variant" />Chia sẻ</v-btn
             >
-            <v-btn variant="text"
+            <v-btn variant="text" @click="ResponseError"
               ><v-icon start icon="mdi-flag" />Báo lỗi</v-btn
             >
             <v-btn variant="text"
@@ -73,7 +73,7 @@
               class="ml-2"
               color="red"
               text-color="white"
-              v-if="movie.page?.toUpperCase().includes('HOÀN TẤT')"
+              v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')"
             >
               Tập 1
             </v-chip>
@@ -281,12 +281,12 @@
             <v-btn
               icon
               size="large"
-              @click="shareTo('whatsapp')"
+              @click="shareTo('youtube')"
               class="bg-grey-darken-4"
             >
-              <v-icon icon="mdi-whatsapp" />
+              <v-icon icon="mdi-youtube" />
             </v-btn>
-            <div class="mt-1 text-caption">WhatsApp</div>
+            <div class="mt-1 text-caption">YouTube</div>
           </v-col>
 
           <v-col cols="3" class="text-center">
@@ -353,6 +353,7 @@ export default {
   data() {
     return {
       tab: "",
+      shareUrl: window.location.href,
       tabserver: null,
       items: [
         {
@@ -549,8 +550,8 @@ export default {
         case "facebook":
           shareLink = `https://www.facebook.com/sharer/sharer.php`;
           break;
-        case "whatsapp":
-          shareLink = `https://api.whatsapp.com`;
+        case "youtube":
+          shareLink = `https://www.youtube.com/`;
           break;
         case "twitter":
           shareLink = `https://twitter.com`;
@@ -560,9 +561,14 @@ export default {
 
       window.open(shareLink, "_blank");
     },
+    ResponseError(){
+      this.Message = "Dữ liệu đã được gửi tới Admin để xử lý";
+      this.color = "error";
+      this.mess = true
+    },
     copyLink() {
       const shareUrl = window.location.href;
-      navigator.clipboard.writeText(shareUrl.value).then(() => {
+      navigator.clipboard.writeText(shareUrl).then(() => {
         alert("Đã sao chép liên kết!");
       });
     },
