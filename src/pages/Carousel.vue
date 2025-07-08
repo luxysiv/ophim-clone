@@ -29,16 +29,16 @@
             <h2 class="text-h4 white--text mb-2 text-shadow">{{ item.name }}</h2>
 
             <div class="info-row mb-1 white--text">
-              <strong>Năm:</strong> {{ item.year }}
+              <strong>{{$t('Năm')}}:</strong> {{ item.year }}
               <span class="divider">|</span>
-              <strong>Thể loại:</strong> {{ item.category.map(cat => cat.name).join(', ') }}
+              <strong>{{$t('Thể loại')}}:</strong> {{ item.category.map(cat => cat.name).join(', ') }}
               <span class="divider">|</span>
-              <strong>Đánh giá:</strong> {{ item.rating || 'Chưa có' }}
+              <strong>{{$t('Đánh giá')}}:</strong> {{ item.rating || 'Chưa có' }}
               <span class="divider">|</span>
-              <strong>Thời lượng:</strong> {{ item.time || 'N/A' }}
+              <strong>{{$('Thời lượng')}}:</strong> {{ item.time || 'N/A' }}
             </div>
 
-            <p class="short-desc white--text mb-4">{{ item.origin_name || 'Không có mô tả.' }}</p>
+            <p class="short-desc white--text mb-4">{{ item.origin_name || $t('Không có mô tả.') }}</p>
 
             <v-row justify="center">
               <v-btn
@@ -48,7 +48,7 @@
                 @click="goToDetail(item.slug)"
                 elevation="2"
               >
-                Xem ngay
+                {{$t('Xem ngay')}}
               </v-btn>
             </v-row>
           </v-sheet>

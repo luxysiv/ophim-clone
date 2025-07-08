@@ -22,7 +22,7 @@
               v-model="loginForm.email"
               label="Email"
               prepend-inner-icon="mdi-email"
-              placeholder="Nhập email"
+              :placeholder="$t('Nhập email')"
               type="email"
               clearable
               class="mb-3"
@@ -35,7 +35,7 @@
               v-model="loginForm.password"
               label="Mật khẩu"
               prepend-inner-icon="mdi-lock"
-              placeholder="Nhập mật khẩu"
+              :placeholder="$t('Nhập mật khẩu')"
               type="password"
               clearable
               class="mb-3"
@@ -95,8 +95,8 @@ export default {
       mess: false,
       loading: false,
       emailRules: [
-      v => !!v || 'Email không được để trống',
-      v => /.+@.+\..+/.test(v) || 'Email không hợp lệ',
+      v => !!v || this.$t('Email không được để trống'),
+      v => /.+@.+\..+/.test(v) || this.$t('Email không hợp lệ'),
     ],
     };
   },
@@ -110,7 +110,7 @@ export default {
       const { email, password } = this.loginForm;
 
       if (!email || !password) {
-        this.Message = "Vui lòng nhập đầy đủ email và mật khẩu";
+        this.Message = this.$t('Vui lòng nhập đầy đủ email và mật khẩu');
         this.color = "error";
         this.mess = true;
         return;
@@ -125,20 +125,20 @@ export default {
           localStorage.setItem("loginTimestamp", Date.now());
 
 
-          this.Message = "Đăng nhập thành công";
+          this.Message = this.$t('Đăng nhập thành công');
           this.color = "success";
           this.mess = true;
           this.loading = false;
 
           this.$router.push("/home");
         } else {
-          this.Message = dat.response?.data?.message || "Đăng nhập thất bại";
+          this.Message = dat.response?.data?.message || this.$t('Đăng nhập thất bại');
           this.color = "error";
           this.mess = true;
           this.loading = false;
         }
       }, (err) => {
-        this.Message = err.response?.data?.message || "Có lỗi xảy ra";
+        this.Message = err.response?.data?.message || this.$t('Có lỗi xảy ra');
         this.color = "error";
         this.mess = true;
         this.loading = false;

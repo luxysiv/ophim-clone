@@ -33,13 +33,13 @@
               Trailer
             </v-btn>
             <v-btn variant="text" @click="shareMovie"
-              ><v-icon start icon="mdi-share-variant" />Chia sẻ</v-btn
+              ><v-icon start icon="mdi-share-variant" />{{$t('Chia sẻ')}}</v-btn
             >
             <v-btn variant="text" @click="ResponseError"
-              ><v-icon start icon="mdi-flag" />Báo lỗi</v-btn
+              ><v-icon start icon="mdi-flag" />{{$t('Báo lỗi')}}</v-btn
             >
             <v-btn variant="text"
-              ><v-icon start icon="mdi-bookmark-outline" />Xem sau</v-btn
+              ><v-icon start icon="mdi-bookmark-outline" />{{$t('Xem sau')}}</v-btn
             >
           </div>
 
@@ -75,7 +75,7 @@
               text-color="white"
               v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')"
             >
-              Tập 1
+              {{$t('Tập ')}}1
             </v-chip>
           </v-card-title>
           <v-card-text>
@@ -87,7 +87,7 @@
                 class="pa-2"
               >
                 <v-btn color="primary" @click="playEpisode(episode)">
-                  {{ episode.name ? "Tập " + episode.name : "Trailer" }}
+                  {{ episode.name ? $t('Tập ') + episode.name : "Trailer" }}
                 </v-btn>
               </v-col>
             </v-row>
@@ -110,11 +110,11 @@
             :v-html="movie.description"
           ></v-card-text>
           <v-card-text class="text-white">
-            <p><strong>Diễn viên:</strong> {{ movie.actors.join(", ") }}</p>
-            <p><strong>Đạo diễn:</strong> {{ movie.director.join(", ") }}</p>
-            <p><strong>Thể loại:</strong> {{ movie.genre.name }}</p>
+            <p><strong>{{$t('Diễn viên')}}:</strong> {{ movie.actors.join(", ") }}</p>
+            <p><strong>{{$t('Đạo diễn')}}:</strong> {{ movie.director.join(", ") }}</p>
+            <p><strong>{{$t('Thể loại')}}:</strong> {{ movie.genre.name }}</p>
             <div class="d-flex align-center">
-              <strong class="mr-2">Đánh giá:</strong>
+              <strong class="mr-2">{{$t('Đánh giá')}}:</strong>
               <v-rating
                 readonly
                 :length="5"
@@ -128,10 +128,10 @@
 
         <!-- Bình luận -->
         <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-          <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ Bình luận</h2>
+          <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ {{$t('Bình luận')}}</h2>
           <v-text-field
             v-model="newComment"
-            placeholder="Thêm bình luận..."
+            :placeholder="$t('Thêm bình luận...')"
             variant="outlined"
             color="blue"
             class="rounded-xl mb-4"
@@ -139,7 +139,7 @@
             hide-details
             append-inner-icon="mdi-send"
             @click:append-inner="addComment"
-            :rules="[(v) => !!v || 'Bình luận không được để trống']"
+            :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
           ></v-text-field>
           <v-divider class="mb-4" color="grey darken-3"></v-divider>
           <div
@@ -169,7 +169,7 @@
                 class="text-caption mt-2 text-grey-lighten-1"
                 style="cursor: pointer"
               >
-                Phản hồi
+                {{$t('Phản hồi')}}
               </div>
             </div>
           </div>
@@ -181,8 +181,8 @@
       <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
         <v-card class="pa-0" color="grey-darken-4" flat>
           <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-            <v-tab value="1">Gợi ý cho bạn</v-tab>
-            <v-tab value="2">Top phim</v-tab>
+            <v-tab value="1">{{$t('Gợi ý cho bạn')}}</v-tab>
+            <v-tab value="2">{{$t('Top phim')}}</v-tab>
           </v-tabs>
 
           <v-card-text style="max-height: 87vh; overflow-y: auto">
@@ -224,7 +224,7 @@
 
       <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
       <div class="suggested-movies my-8">
-        <h2 class="text-h5 mb-4">🎬 Phim được đề xuất</h2>
+        <h2 class="text-h5 mb-4">🎬 {{$t('Phim được đề xuất')}}</h2>
         <v-row>
           <v-col
             v-for="suggested in suggestedMovies"
@@ -562,14 +562,14 @@ export default {
       window.open(shareLink, "_blank");
     },
     ResponseError(){
-      this.Message = "Dữ liệu đã được gửi tới Admin để xử lý";
+      this.Message = this.$t('Dữ liệu đã được gửi tới Admin để xử lý');
       this.color = "error";
       this.mess = true
     },
     copyLink() {
       const shareUrl = window.location.href;
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert("Đã sao chép liên kết!");
+        alert(this.$t('Đã sao chép liên kết!'));
       });
     },
     addComment() {

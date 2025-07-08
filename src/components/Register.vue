@@ -11,16 +11,16 @@
           
           <!-- Tiêu đề -->
           <v-card-title class="text-h5 font-weight-bold text-center">
-            Đăng ký tài khoản
+            {{$t('Đăng ký tài khoản')}}
           </v-card-title>
           <v-card-subtitle class="text-center mb-4">
-            Điền thông tin bên dưới để tạo tài khoản
+            {{$t('Điền thông tin bên dưới để tạo tài khoản')}}
           </v-card-subtitle>
 
           <v-form ref="form" @submit.prevent="submitRegister">
             <v-text-field
               v-model="registerForm.username"
-              label="Tên hiển thị"
+              :label="$t('Tên hiển thị')"
               prepend-inner-icon="mdi-account"
               required
               class="mb-3"
@@ -38,7 +38,7 @@
 
             <v-text-field
               v-model="registerForm.password"
-              label="Mật khẩu"
+              :label="$t('Mật khẩu')"
               prepend-inner-icon="mdi-lock"
               type="password"
               required
@@ -47,18 +47,18 @@
 
             <v-text-field
             v-model="confirmPassword"
-            label="Xác nhận mật khẩu"
+            :label="$t('Xác nhận mật khẩu')"
             prepend-inner-icon="mdi-lock-check"
             type="password"
             :error="confirmPassword && confirmPassword !== registerForm.password"
-            :error-messages="confirmPassword && confirmPassword !== registerForm.password ? 'Mật khẩu không khớp' : ''"
+            :error-messages="confirmPassword && confirmPassword !== registerForm.password ? $t('Mật khẩu không khớp') : ''"
             required
             class="mb-3"
             />
 
             <v-checkbox
               v-model="agree"
-              label="Tôi đồng ý với Điều khoản & Chính sách"
+              :label="$t('Tôi đồng ý với Điều khoản & Chính sách')"
               class="mb-4"
               required
             />
@@ -71,14 +71,14 @@
               :loading="loading"
               :disabled="!isValid"
             >
-              Đăng ký
+              {{$t('Đăng ký')}}
             </v-btn>
           </v-form>
 
           <div class="text-center mt-6">
             <span>Đã có tài khoản?</span>
             <router-link to="/login" class="ml-1 text-decoration-underline font-weight-bold">
-              Đăng nhập
+              {{$t('Đăng nhập')}}
             </router-link>
           </div>
 
@@ -109,8 +109,8 @@ export default {
         snackbarColor: 'success',
         loading: false,
         emailRules: [
-            v => !!v || 'Email không được để trống',
-            v => /.+@.+\..+/.test(v) || 'Email không hợp lệ',
+            v => !!v || this.$t('Email không được để trống'),
+            v => /.+@.+\..+/.test(v) || this.$t('Email không hợp lệ'),
         ],
     };
   },
@@ -135,7 +135,7 @@ export default {
             console.log(dat)
             if(dat.status == 201){
                 this.snackbar = true;
-                this.snackbarMessage = "Đăng ký thành công! Bạn sẽ được chuyển đến trang đăng nhập.";
+                this.snackbarMessage = this.$t('Đăng ký thành công! Bạn sẽ được chuyển đến trang đăng nhập.');
                 this.snackbarColor = "success";
                 this.loading = false;
                 setTimeout(() => {

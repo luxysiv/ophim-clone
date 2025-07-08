@@ -16,13 +16,13 @@
 
       <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0" class="text-center">
-          Không tìm thấy phim nào với từ khóa "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">Về trang chủ</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 
@@ -68,7 +68,7 @@
                 </div>
 
                 <p class="text-body-2 description-text">
-                  Miêu tả: {{ movie.origin_name }}
+                  {{$t('Miêu tả')}}: {{ movie.origin_name }}
                 </p>
 
                 <div class="action-buttons mt-4">
@@ -128,7 +128,7 @@ export default {
     "$route.query.keyword": {
       immediate: true,
       handler(query) {
-        document.title = `Kết quả tìm kiếm: ${query}`;
+        document.title = `${this.$t('Kết quả tìm kiếm: ')} ${query}`;
         this.loading = true;
         this.path = query;
         this.SearchMovie(query);

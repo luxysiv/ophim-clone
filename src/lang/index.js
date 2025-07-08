@@ -42,8 +42,8 @@ export const getLocale = () => {
       return locale
     }
   }
-  // Default language is english
-  return 'en-US'
+  // Default language is vietnamese
+  return 'vi-VN'
 }
 const CURRENT_LANG = getLocale()
 

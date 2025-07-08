@@ -8,8 +8,8 @@
             <span class="font-italic">Phim</span><span class="text-yellow-darken-2">360</span>
           </div>
           <p class="mt-2 text-body-2">
-            <strong>Phim360</strong> - Trang xem phim Online với giao diện hiện đại, thân thiện người dùng.
-            Nguồn phim tổng hợp từ các website lớn với đa dạng thể loại và quốc gia.
+            <strong>Phim360</strong> - {{$t('Trang xem phim Online với giao diện hiện đại, thân thiện người dùng.')}}
+            {{$t('Nguồn phim tổng hợp từ các website lớn với đa dạng thể loại và quốc gia.')}}
           </p>
 
           <div class="d-flex flex-wrap mt-4 gap-2">
@@ -36,7 +36,7 @@
 
         <!-- Thể loại -->
         <v-col cols="6" md="2">
-          <h4 class="text-subtitle-1 font-weight-bold mb-3">Thể loại</h4>
+          <h4 class="text-subtitle-1 font-weight-bold mb-3">{{$t('Thể loại')}}</h4>
           <ul class="pa-0">
             <li v-for="item in genres" :key="item" class="mb-1">
               <router-link :to="`/the-loai/${item.link}`" class="text-decoration-none">
@@ -48,7 +48,7 @@
 
         <!-- Quốc gia -->
         <v-col cols="6" md="2">
-          <h4 class="text-subtitle-1 font-weight-bold mb-3">Quốc gia</h4>
+          <h4 class="text-subtitle-1 font-weight-bold mb-3">{{$t('Quốc gia')}}</h4>
           <ul class="pa-0">
             <li v-for="item in countries" :key="item" class="mb-1">
               <router-link :to="`/quoc-gia/${item.link}`" class="text-decoration-none">
@@ -62,10 +62,10 @@
         <v-col cols="12" md="4">
           <h4 class="text-subtitle-1 font-weight-bold mb-3">Thông tin</h4>
           <ul class="pa-0">
-            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">Giới thiệu</router-link></li>
-            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">Liên hệ</router-link></li>
-            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">Chính sách quyền riêng tư</router-link></li>
-            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">Khiếu nại bản quyền</router-link></li>
+            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Giới thiệu')}}</router-link></li>
+            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Liên hệ')}}</router-link></li>
+            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Chính sách quyền riêng tư')}}</router-link></li>
+            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Khiếu nại bản quyền')}}</router-link></li>
           </ul>
         </v-col>
       </v-row>
@@ -90,30 +90,30 @@ export default {
   data() {
     return {
       tags: [
-        { label: 'Phim mới', link: '/phim-moi' },
-        { label: 'Phim hay 2018', link: '/phim-hay' },
-        { label: 'Phim mới chill', link: '/danh-sach/phim-moi-chill' },
-        { label: 'Phim 18', link: '/danh-sach/phim-18' },
-        { label: 'Truyện tranh 18', link: '/danh-sach/truyen-tranh-18' },
-        { label: 'Nettruyen', link: '/danh-sach/net-truyen' },
-        { label: 'Nettruyen ngôn tình', link: '/danh-sach/net-truyen-ngon-tinh' },
-        { label: 'Hiện đại', link: '/danh-sach/hien-dai' }
+        { label: this.$t('Phim mới'), link: '/phim-moi' },
+        { label: this.$t('Phim hay'), link: '/phim-hay' },
+        { label: this.$t('Phim mới chill'), link: '/danh-sach/phim-moi-chill' },
+        { label: this.$t('Phim 18'), link: '/danh-sach/phim-18' },
+        { label: this.$t('Truyện tranh 18'), link: '/danh-sach/truyen-tranh-18' },
+        { label: this.$t('Nettruyen'), link: '/danh-sach/net-truyen' },
+        { label: this.$t('Nettruyen ngôn tình'), link: '/danh-sach/net-truyen-ngon-tinh' },
+        { label: this.$t('Hiện đại'), link: '/danh-sach/hien-dai' }
       ],
       genres: [
-        {lable: 'Chính kịch', link:'chinh-kich'},  
-        {lable: 'Cổ Trang', link:'co-trang'},  
-        {lable: 'Tình Cảm', link:'tinh-cam'},  
-        {lable: 'Phim Bộ', link:'phim-bo'},  
-        {lable: 'Hành Động', link:'hanh-dong'},
-        {lable: 'Học đường', link:'hoc-duong'},
+        {lable: this.$t('Chính kịch'), link:'chinh-kich'},  
+        {lable: this.$t('Cổ Trang'), link:'co-trang'},  
+        {lable: this.$t('Tình Cảm'), link:'tinh-cam'},  
+        {lable: this.$t('Phim Bộ'), link:'phim-bo'},  
+        {lable: this.$t('Hành Động'), link:'hanh-dong'},
+        {lable: this.$t('Học đường'), link:'hoc-duong'},
       ],
       countries: [
-        {lable: 'Âu Mỹ', link:'au-my'},  
-        {lable: 'Hàn Quốc', link:'han-quoc'},  
-        {lable: 'Trung Quốc', link:'trung-quoc'},  
-        {lable: 'Nhật Bản', link:'nhat-ban'},  
-        {lable: 'Ấn Độ', link:'an-do'},  
-        {lable: 'Việt Nam', link:'viet-nam'}  
+        {lable: this.$t('Âu Mỹ'), link:'au-my'},  
+        {lable: this.$t('Hàn Quốc'), link:'han-quoc'},  
+        {lable: this.$t('Trung Quốc'), link:'trung-quoc'},  
+        {lable: this.$t('Nhật Bản'), link:'nhat-ban'},  
+        {lable: this.$t('Ấn Độ'), link:'an-do'},  
+        {lable: this.$t('Việt Nam'), link:'viet-nam'}  
       ]
     };
   },

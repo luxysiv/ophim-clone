@@ -22,7 +22,7 @@
             "
             class="view-all"
           >
-            Xem tất cả >>
+            {{$t('Xem tất cả')}} >>
           </router-link>
         </v-col>
       </v-row>
@@ -110,7 +110,7 @@ export default {
       sections: [
         
         {
-          title: this.$t("PHIM THỊNH HÀNH"),
+          title: this.$t('PHIM THỊNH HÀNH'),
           id: "danh-sach/thinh-hanh",
           name: "PhimNew",
           listMovie: [],

@@ -143,7 +143,7 @@
       <v-text-field
         v-bind="activatorProps"
         v-model="searchQuery"
-        placeholder="Tên phim"
+        :placeholder="$t('Tên phim')"
         append-inner-icon="mdi-magnify"
         @keyup.enter="searchMovie"
         @click:append-inner="searchMovie"
@@ -178,7 +178,7 @@
       border-radius: 8px;
     ">
   <v-list-item>
-    <v-list-item-title>Không tìm thấy kết quả</v-list-item-title>
+    <v-list-item-title>{{$t('Không tìm thấy kết quả')}}</v-list-item-title>
   </v-list-item>
 </v-list>
   </v-menu>
@@ -190,7 +190,7 @@
     <!-- Ngôn ngữ -->
     <v-menu offset-y v-if="$vuetify.display.mdAndUp">
       <template #activator="{ props }">
-        <v-btn icon v-bind="props" title="Ngôn ngữ">
+        <v-btn icon v-bind="props" :title="$t('Ngôn ngữ')">
           <v-icon>mdi-translate</v-icon>
         </v-btn>
       </template>
@@ -209,16 +209,16 @@
     <!-- Tài khoản -->
     <v-menu offset-y v-if="!account && $vuetify.display.mdAndUp">
       <template #activator="{ props }">
-        <v-btn icon v-bind="props" title="Tài khoản">
+        <v-btn icon v-bind="props" :title="$t('Tài khoản')">
           <v-icon>mdi-account-circle</v-icon>
         </v-btn>
       </template>
       <v-list>
         <v-list-item @click="Login()">
-          <v-list-item-title>Đăng nhập</v-list-item-title>
+          <v-list-item-title>{{$t('Đăng nhập')}}</v-list-item-title>
         </v-list-item>
         <v-list-item @click="Register()">
-          <v-list-item-title>Đăng ký</v-list-item-title>
+          <v-list-item-title>{{$t('Đăng ký')}}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -233,7 +233,7 @@
       <v-list>
         
         <v-list-item @click="Logout()">
-          <v-list-item-title>Đăng xuất</v-list-item-title>
+          <v-list-item-title>{{$t('Đăng xuất')}}</v-list-item-title>
         </v-list-item>
       </v-list>
     </v-menu>
@@ -321,14 +321,14 @@
         <v-list-item-icon>
           <v-icon>mdi-white-balance-sunny</v-icon>
         </v-list-item-icon>
-        <v-list-item-title>Đổi giao diện</v-list-item-title>
+        <v-list-item-title>{{$t('Đổi giao diện')}}</v-list-item-title>
       </v-list-item>
 
 <!-- Ngôn ngữ -->
 <v-expansion-panels multiple>
   <v-expansion-panel>
     <v-expansion-panel-title>
-      <v-list-item-icon><v-icon>mdi-translate</v-icon> Ngôn ngữ</v-list-item-icon>
+      <v-list-item-icon><v-icon>mdi-translate</v-icon> {{$t('Ngôn ngữ')}}</v-list-item-icon>
     </v-expansion-panel-title>
     <v-expansion-panel-text>
       <v-list dense>
@@ -352,10 +352,10 @@
           <v-expansion-panel-text>
             <v-list>
               <v-list-item @click="Login()">
-                <v-list-item-title>Đăng nhập</v-list-item-title>
+                <v-list-item-title>{{$t('Đăng nhập')}}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="Register()">
-                <v-list-item-title>Đăng ký</v-list-item-title>
+                <v-list-item-title>{{$t('Đăng ký')}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-expansion-panel-text>
@@ -374,7 +374,7 @@
           <v-expansion-panel-text>
             <v-list>
               <v-list-item @click="Logout()">
-                <v-list-item-title>Đăng xuất</v-list-item-title>
+                <v-list-item-title>{{$t('Đăng xuất')}}</v-list-item-title>
               </v-list-item>
               
             </v-list>
