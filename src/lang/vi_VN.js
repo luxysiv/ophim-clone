@@ -20,6 +20,7 @@ export default
     'Thái Lan': 'Thái Lan',
     'Ấn Độ': 'Ấn Độ',
     'Anh': 'Anh',
+    'Hoạt hình': 'Hoạt hình',
     'PHIM ĐỀ CỬ': 'PHIM ĐỀ CỬ',
     'PHIM THỊNH HÀNH': 'PHIM THỊNH HÀNH',
     'PHIM BỘ': 'PHIM BỘ',

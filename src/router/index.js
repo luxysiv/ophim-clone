@@ -57,6 +57,11 @@ const routes =[
             component: () => import("@/pages/PhimSapChieu/SapChieu.vue")
         },
         {
+            path: '/hoat-hinh',
+            name: "HoatHinh",
+            component: () => import("@/pages/HoatHinh/HoatHinh.vue")
+        },
+        {
             path: '/the-loai/:path',
             name: "TheLoai",
             component: () => import("@/pages/TheLoai/TheLoai.vue"),

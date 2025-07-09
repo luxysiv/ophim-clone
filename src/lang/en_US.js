@@ -20,6 +20,7 @@ export default
     'Thái Lan': 'Thailand',
     'Ấn Độ': 'India',
     'Anh': 'English',
+    'Hoạt hình': 'Cartoon',
     'PHIM ĐỀ CỬ': 'Recommended Movies',
     'PHIM THỊNH HÀNH': 'Trending Movies',
     'PHIM BỘ': 'TV Series',

@@ -126,6 +126,13 @@
       >
         {{ $t("Sắp chiếu") }}
       </v-btn>
+      <v-btn
+        text
+        :to="{ path: '/hoat-hinh' }"
+        :class="{ 'text-green': $route.path === '/hoat-hinh' }"
+      >
+        {{ $t("Hoạt hình") }}
+      </v-btn>
     </v-toolbar-items>
 
     <!-- Search + Language + Profile -->

@@ -131,6 +131,7 @@ export default {
         document.title = `${this.$t('Kết quả tìm kiếm: ')} ${query}`;
         this.loading = true;
         this.path = query;
+        
         this.SearchMovie(query);
       },
     },

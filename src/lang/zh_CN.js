@@ -20,6 +20,7 @@ export default
     "Thái Lan": "泰国",
     "Ấn Độ": "印度",
     "Anh": "英语",
+    'Hoạt hình': '卡通片',
     "PHIM ĐỀ CỬ": "推荐电影",
     "PHIM THỊNH HÀNH": "热门电影",
     "PHIM BỘ": "电视剧",

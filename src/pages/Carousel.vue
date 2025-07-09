@@ -35,7 +35,7 @@
               <span class="divider">|</span>
               <strong>{{$t('Đánh giá')}}:</strong> {{ item.rating || 'Chưa có' }}
               <span class="divider">|</span>
-              <strong>{{$('Thời lượng')}}:</strong> {{ item.time || 'N/A' }}
+              <strong>{{$t('Thời lượng')}}:</strong> {{ item.time || 'N/A' }}
             </div>
 
             <p class="short-desc white--text mb-4">{{ item.origin_name || $t('Không có mô tả.') }}</p>
