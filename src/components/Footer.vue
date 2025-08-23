@@ -63,7 +63,7 @@
           <h4 class="text-subtitle-1 font-weight-bold mb-3">Thông tin</h4>
           <ul class="pa-0">
             <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Giới thiệu')}}</router-link></li>
-            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Liên hệ')}}</router-link></li>
+            <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Liên hệ')}} Nguyễn Văn Dương</router-link></li>
             <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Chính sách quyền riêng tư')}}</router-link></li>
             <li class="mb-1"><router-link to="" class="text-white text-decoration-none">{{$t('Khiếu nại bản quyền')}}</router-link></li>
           </ul>
