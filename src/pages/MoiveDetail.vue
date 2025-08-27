@@ -342,8 +342,10 @@
 <script>
 import {
   MoveInfor,
+  MoveInfor1,
   ListMovieByCate,
   urlImage,
+  urlImage1,
   GetComments,
   AddComment,
 } from "@/model/api";
@@ -389,10 +391,12 @@ export default {
       idMovie: "",
       isTrailer: false,
       urlImage: urlImage,
+      urlImage1: urlImage1,
       suggestedMovies: [],
       comments: [],
       newComment: "",
       shareDialog: false,
+      link: ''
     };
   },
   props: ["slug"],
@@ -476,14 +480,101 @@ export default {
             this.isLoading = false;
             this.GetComment();
           }
+          else{
+            this.MoveInfor1(slug);
+          }
+        },
+        (err) => {
+          console.log(err);
+          this.MoveInfor1(slug);
+        }
+      );
+    },
+    MoveInfor1(slug) {
+      MoveInfor1(
+        slug,
+        (result) => {
+          console.log(result);
+          if (result.status == true) {
+            this.link = 'link';
+            this.movie.page = result.movie.episode_current;
+            this.idMovie = result.movie._id;
+            this.movie.title = result.movie.origin_name;
+            this.movie.description = result.movie.content;
+            this.movie.pageMovie = result.episodes[0].server_data;
+            this.movie.director = result.movie.director;
+            this.movie.servers = result.episodes;
+            this.movie.trailer_url = result.movie.trailer_url;
+            this.movie.name = result.movie.name;
+
+            // if (result.data.seoOnPage) {
+            //   this.updateMetaTags(result.data.seoOnPage)
+            // }
+            if (
+              result.movie.status == "trailer" ||
+              result.episodes[0].server_data[0].link_embed == ""
+            ) {
+              this.movie.videoUrl = result.movie.trailer_url;
+              // this.movie.title = result.movie.name;
+              this.isTrailer = true;
+            } else {
+              if (
+                this.movie.page == "Full" ||
+                this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
+                this.movie.page.includes("/")
+              ) {
+                this.movie.videoUrl =
+                  result.episodes[0].server_data[0].link_embed;
+                // this.movie.title = result.movie.name;
+                this.isTrailer = false;
+              } else {
+                var tap = this.movie.page.split("Tập ")[1].trim();
+                const data = result.episodes[0].server_data.find(
+                  (ep) => ep.slug === tap
+                );
+                if (data) {
+                  this.movie.videoUrl = data.link_embed;
+                  // this.movie.title = data.filename;
+                  this.isTrailer = false;
+                } else {
+                  const data = result.episodes[1].server_data.find(
+                    (ep) => ep.slug === tap
+                  );
+                  if (data) {
+                    this.movie.videoUrl = data.link_embed;
+                    // this.movie.title = data.filename;
+                    this.isTrailer = false;
+                  }
+                }
+                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
+                // this.isTrailer = false;
+              }
+            }
+            console.log(this.movie.videoUrl);
+            this.movie.actors = result.movie.actor;
+            for (var i = 0; i < result.movie.country.length; i++) {
+              this.movie.genre = result.movie.country[i];
+            }
+            this.movie.categoris = result.movie.category[0].slug;
+            this.isLoading = false;
+            this.GetComment();
+          }
+          
         },
         (err) => {
           console.log(err);
         }
       );
     },
+
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      if(this.link == ""){
+        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      }
+      else{
+        return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+
+      }
     },
     // Chuản SEO
     updateMetaTags(seo) {

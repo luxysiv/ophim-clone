@@ -97,7 +97,7 @@
 
 
 <script>
-import { ListMovieByCateHome, urlImage } from "@/model/api";
+import { ListMovieByCateHome,ListMovieByCateHome1, urlImage,urlImage1 } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 
 export default {
@@ -105,6 +105,7 @@ export default {
   data() {
     return {
       urlImage: urlImage,
+      urlImage1: urlImage1,
       isLoading: true,
       favoriteMovies: [],
       sections: [
@@ -120,6 +121,14 @@ export default {
           title: this.$t("PHIM ĐỀ CỬ"),
           id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
+          listMovie: [],
+          content: ''
+
+        },
+        {
+          title: this.$t("PHIM VIỆT NAM"),
+          id: "quoc-gia/viet-nam?page=1&limit=20",
+          name: "QuocGia",
           listMovie: [],
           content: ''
 
@@ -157,6 +166,7 @@ export default {
 
         },
       ],
+      link: ''
     };
   },
   components: {
@@ -169,12 +179,14 @@ export default {
   },
   methods: {
     ListMovie(sectionId, section) {
-      ListMovieByCateHome(
+      console.log(section)
+      if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
+        ListMovieByCateHome1(
         sectionId,
         (result) => {
           if (result.status === "success") {
             section.listMovie = result.data.items;
-            
+              this.link = 'link2';
              if (result.data.seoOnPage) {
                 this.updateMetaTags(result.data.seoOnPage)
               }
@@ -185,9 +197,37 @@ export default {
           console.error(err);
         }
       );
+      }
+      else{
+        ListMovieByCateHome(
+          sectionId,
+          (result) => {
+            if (result.status === "success") {
+              section.listMovie = result.data.items;
+              
+              if (result.data.seoOnPage) {
+                  this.updateMetaTags(result.data.seoOnPage)
+                }
+              this.isLoading = false;
+            }
+          },
+          (err) => {
+            console.error(err);
+          }
+        );
+      }
+      
+
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      if(this.link == ""){
+        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+
+      }
+      else{
+        return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+
+      }
     },
     // Chuan SEO
     updateMetaTags(seo) {

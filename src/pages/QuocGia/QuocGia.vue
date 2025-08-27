@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { urlImage, CityDetail } from '@/model/api'
+import { urlImage,urlImage1, CityDetail,CityDetail1 } from '@/model/api'
 
 export default {
   name: 'QuocGia',
@@ -127,7 +127,9 @@ export default {
       totalMovies: 100,
       movies: [],
       urlImage,
+      urlImage1,
       titlePage: '',
+      link1: ''
     }
   },
   mounted() {
@@ -135,8 +137,10 @@ export default {
   },
   methods: {
     ListMovie(path) {
-      CityDetail(`${path}?page=${this.currentPage}`, (result) => {
+      if(path.includes("page=1&limit=20")){
+        CityDetail1(`${path}`, (result) => {
         if (result.status === 'success') {
+          this.link1 = 'link2'
           this.movies = result.data.items
           this.titlePage = result.data.titlePage
           if (result.data.seoOnPage) {
@@ -147,9 +151,31 @@ export default {
       }, (err) => {
         console.log(err)
       })
+      }
+      else{
+        CityDetail(`${path}?page=${this.currentPage}`, (result) => {
+            if (result.status === 'success') {
+              this.movies = result.data.items
+              this.titlePage = result.data.titlePage
+              if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
+              this.loading = false
+            }
+          }, (err) => {
+            console.log(err)
+          })
+        }
+      
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+      if(this.link1 == ""){
+        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`
+
+      }
+      else{
+        return `${this.urlImage1 + encodeURIComponent(imagePath)}`
+      }
     },
     updateMetaTags(seo) {
       document.title = seo.titleHead || 'Phim hay'

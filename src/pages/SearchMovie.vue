@@ -108,7 +108,7 @@
 
 <script>
 
-import { Search, urlImage } from "@/model/api";
+import { Search,Search1, urlImage,urlImage1 } from "@/model/api";
 export default {
   name: "SearchMovie",
   data() {
@@ -116,11 +116,13 @@ export default {
       movies: [],
       loading: true,
       urlImage: urlImage,
+      urlImage1: urlImage1,
       currentPage: 1,
       moviesPerPage: 20,
       totalMovies: 100,
       valueRate: 5,
       path: "",
+      link: '',
       
     };
   },
@@ -160,6 +162,38 @@ export default {
               this.loading = false;
             }
           }
+          else{
+            this.link = 'link1'
+            this.SearchMovie1(query)
+          }
+
+          console.log(result);
+        },
+        (err) => {
+          console.log(err);
+          this.link = 'link1'
+          this.SearchMovie1(query)
+        }
+      );
+    },
+    SearchMovie1(query) {
+      Search1(
+        { keyword: query, page: this.currentPage },
+        (result) => {
+          if (result.status == "success") {
+            if (result.data.items.length == 0) {
+              this.movies = [];
+              this.loading = false;
+            } else {
+              this.movies = result.data.items.sort((a, b) => {
+                return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
+              });
+              if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
+              this.loading = false;
+            }
+          }
 
           console.log(result);
         },
@@ -168,8 +202,16 @@ export default {
         }
       );
     },
+
     getOptimizedImage(imagePath) {
+      if(this.link == ""){
       return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+
+      }
+      else{
+      return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+
+      }
     },
     updateMetaTags(seo) {
     document.title = seo.titleHead || 'Phim hay'
