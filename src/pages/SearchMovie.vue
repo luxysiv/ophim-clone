@@ -149,7 +149,7 @@ export default {
         { keyword: query, page: this.currentPage },
         (result) => {
           if (result.status == "success") {
-            if (result.data.items.length == 0) {
+            if (result.data.items.length == 0 || result.data.item == null) {
               this.movies = [];
               this.link = 'link1'
               this.SearchMovie1(query)
@@ -180,7 +180,7 @@ export default {
     },
     SearchMovie1(query) {
       Search1(
-        { keyword: query, page: this.currentPage },
+        { keyword: query,page:1,limit:10 },
         (result) => {
           if (result.status == "success") {
             if (result.data.items.length == 0) {
@@ -211,7 +211,7 @@ export default {
 
       }
       else{
-      return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+      return `${this.urlImage1+ "https://phimimg.com/" + encodeURIComponent(imagePath)}`;
 
       }
     },

@@ -48,7 +48,7 @@
           >
             <v-card class="mx-auto bg-dark text-white" max-width="344">
               <v-img
-                :src="getOptimizedImage(item.poster_url)"
+                :src="getOptimizedImage(item.poster_url, section.id)"
                 :alt="`Poster phim ${item.name}`"
                 class="movie-img"
                 height="250"
@@ -179,7 +179,6 @@ export default {
   },
   methods: {
     ListMovie(sectionId, section) {
-      console.log(section)
       if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
         ListMovieByCateHome1(
         sectionId,
@@ -219,13 +218,13 @@ export default {
       
 
     },
-    getOptimizedImage(imagePath) {
-      if(this.link == ""){
+    getOptimizedImage(imagePath,sectionID) {
+      if(sectionID != "quoc-gia/viet-nam?page=1&limit=20"){
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
 
       }
       else{
-        return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+        return `${this.urlImage1 + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`;
 
       }
     },
