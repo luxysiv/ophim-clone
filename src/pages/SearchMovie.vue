@@ -151,6 +151,8 @@ export default {
           if (result.status == "success") {
             if (result.data.items.length == 0) {
               this.movies = [];
+              this.link = 'link1'
+              this.SearchMovie1(query)
               this.loading = false;
             } else {
               this.movies = result.data.items.sort((a, b) => {

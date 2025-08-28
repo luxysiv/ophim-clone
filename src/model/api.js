@@ -22,7 +22,7 @@ let urlCategoris = "https://ophim1.com/v1/api/the-loai/"
 
 let urlCategorisHome = "https://ophim1.com/v1/api/"
 
-let urlCategorisHome1 = "https://phimapi.com/v1/api"
+let urlCategorisHome1 = "https://phimapi.com/v1/api/"
 
 // quoc gia
 let urlCity = "https://ophim1.com/v1/api/quoc-gia/"
