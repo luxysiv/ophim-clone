@@ -144,14 +144,14 @@ export default {
   },
   methods: {
     SearchMovie(query) {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve,reject) => {
         Search(
           { keyword: query, page: this.currentPage },
           (result) => {
             if (result.status == "success") {
               this.link = "";
               if (result.data.items.length == 0 || result.data.item == null) {
-                this.movies = [];
+                // this.movies = [];
                 this.link = "link1";
                 this.SearchMovie1(query);
                 this.loading = false;
@@ -168,14 +168,16 @@ export default {
             } else {
               this.link = "link1";
               this.SearchMovie1(query);
+              resolve(true)
             }
-
+            reject(result)
             console.log(result);
           },
           (err) => {
             console.log(err);
             this.link = "link1";
             this.SearchMovie1(query);
+            
           }
         );
       });
@@ -201,7 +203,7 @@ export default {
               resolve(true)
             }
           }
-
+          reject()
           console.log(result);
         },
         (err) => {
