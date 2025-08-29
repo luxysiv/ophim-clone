@@ -402,14 +402,20 @@ export default {
   },
   props: ["slug"],
   watch: {
-     slug(newSlug) {
-        this.MoveInfor(newSlug);
-       this.ListMovieByCate();
+    async slug(newSlug) {
+      await  this.MoveInfor(newSlug);
+      await this.ListMovieByCate();
     },
   },
-   mounted() {
-     this.MoveInfor(this.slug);
-     this.ListMovieByCate();
+  async mounted() {
+    try{
+      await this.MoveInfor(this.slug);
+      await this.ListMovieByCate();
+    }
+    catch(err){
+      console.log(err)
+    }
+    
   },
   methods: {
     // Call API
