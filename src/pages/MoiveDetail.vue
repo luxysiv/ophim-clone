@@ -344,7 +344,7 @@ import {
   MoveInfor,
   MoveInfor1,
   ListMovieByCate,
-  ListMovieByCate1,
+  Categoris1,
   urlImage,
   urlImage1,
   GetComments,
@@ -653,7 +653,7 @@ export default {
       );
       }
       else{
-        ListMovieByCate1(
+        Categoris1(
         this.movie.categoris,
 
         (data) => {

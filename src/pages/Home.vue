@@ -183,41 +183,58 @@ export default {
   methods: {
     ListMovie(sectionId, section) {
       if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
-        ListMovieByCateHome1(
-        sectionId,
-        (result) => {
-          if (result.status === "success") {
-            section.listMovie = result.data.items;
-              this.link = 'link2';
-             if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage)
-              }
-            this.isLoading = false;
-          }
-        },
-        (err) => {
-          console.error(err);
-        }
-      );
-      }
-      else{
-        ListMovieByCateHome(
+        return new Promise((resolve, reject) =>{
+          ListMovieByCateHome1(
           sectionId,
           (result) => {
             if (result.status === "success") {
-              this.link = '';
               section.listMovie = result.data.items;
-              
+                this.link = 'link2';
               if (result.data.seoOnPage) {
                   this.updateMetaTags(result.data.seoOnPage)
                 }
               this.isLoading = false;
+              resolve(true)
+            }
+            else{
+              resolve(false)
             }
           },
           (err) => {
             console.error(err);
+            reject(err)
           }
         );
+        })
+        
+      }
+      else{
+        return new Promise((resolve, reject) =>{
+          ListMovieByCateHome(
+            sectionId,
+            (result) => {
+              if (result.status === "success") {
+                this.link = '';
+                section.listMovie = result.data.items;
+                
+                if (result.data.seoOnPage) {
+                    this.updateMetaTags(result.data.seoOnPage)
+                  }
+                this.isLoading = false;
+                resolve(true);
+              }
+              else{
+                resolve(false)
+              }
+            },
+            (err) => {
+              console.error(err);
+              reject(err)
+            }
+          );
+      
+        })
+        
       }
       
 
