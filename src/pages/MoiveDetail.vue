@@ -481,7 +481,9 @@ export default {
             }
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
-            this.GetComment();
+            this.GetComment()
+            .then(resolve)
+            .catch(reject);
             resolve(true);
           }
           else{
@@ -568,7 +570,9 @@ export default {
             }
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
-            this.GetComment();
+            this.GetComment()
+            .then(resolve)
+            .catch(reject);
             resolve(true)
           }
           else{
@@ -735,7 +739,8 @@ export default {
     },
     GetComment() {
       if (!this.idMovie) return;
-      GetComments(
+      return new Promise((resolve, reject) =>{
+        GetComments(
         { movieId: this.idMovie, episode: this.movie.page },
         (res) => {
           if (Array.isArray(res)) {
@@ -744,12 +749,20 @@ export default {
               content: c.content,
               createdAt: c.createdAt,
             }));
+            resolve(true)
+          }
+          else{
+            resolve(false)
           }
         },
         (err) => {
           console.error("Lỗi lấy bình luận:", err);
+          reject(err)
         }
       );
+    
+      })
+      
     },
 
     scrollLeft() {
