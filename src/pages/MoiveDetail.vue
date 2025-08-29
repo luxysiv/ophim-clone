@@ -419,6 +419,7 @@ export default {
         (result) => {
           console.log(result);
           if (result.status == true) {
+            this.link = '';
             this.movie.page = result.movie.episode_current;
             this.idMovie = result.movie._id;
             this.movie.title = result.movie.origin_name;
@@ -551,7 +552,6 @@ export default {
                 // this.isTrailer = false;
               }
             }
-            console.log(this.movie.videoUrl);
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
@@ -573,7 +573,7 @@ export default {
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
       }
       else{
-        return `${this.urlImage1 + encodeURIComponent(imagePath)}`;
+        return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`;
 
       }
     },

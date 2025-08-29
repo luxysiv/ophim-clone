@@ -202,6 +202,7 @@ export default {
           sectionId,
           (result) => {
             if (result.status === "success") {
+              this.link = '';
               section.listMovie = result.data.items;
               
               if (result.data.seoOnPage) {

@@ -149,6 +149,7 @@ export default {
         { keyword: query, page: this.currentPage },
         (result) => {
           if (result.status == "success") {
+            this.link = '';
             if (result.data.items.length == 0 || result.data.item == null) {
               this.movies = [];
               this.link = 'link1'

@@ -155,6 +155,7 @@ export default {
       else{
         CityDetail(`${path}?page=${this.currentPage}`, (result) => {
             if (result.status === 'success') {
+              this.link1 = '';
               this.movies = result.data.items
               this.titlePage = result.data.titlePage
               if (result.data.seoOnPage) {
@@ -174,7 +175,7 @@ export default {
 
       }
       else{
-        return `${this.urlImage1 + encodeURIComponent(imagePath)}`
+        return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`
       }
     },
     updateMetaTags(seo) {
