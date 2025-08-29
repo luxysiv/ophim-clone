@@ -487,9 +487,9 @@ export default {
             }
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
-            this.GetComment()
-            .then(resolve)
-            .catch(reject);
+            // this.GetComment()
+            // .then(resolve)
+            // .catch(reject);
             resolve(true);
           }
           else{
@@ -576,9 +576,9 @@ export default {
             }
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
-            this.GetComment()
-            .then(resolve)
-            .catch(reject);
+            // this.GetComment()
+            // .then(resolve)
+            // .catch(reject);
             resolve(true)
           }
           else{
