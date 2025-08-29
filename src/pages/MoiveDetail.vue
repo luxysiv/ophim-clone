@@ -758,7 +758,7 @@ export default {
             resolve(true)
           }
           else{
-            resolve(false)
+            resolve(true)
           }
         },
         (err) => {
