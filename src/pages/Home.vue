@@ -172,10 +172,13 @@ export default {
   components: {
     CarouselPage,
   },
-  mounted() {
-    this.sections.forEach((item) => {
-      this.ListMovie(item.id, item);
-    });
+  async mounted() {
+    await Promise.all(
+      this.sections.map(item => this.ListMovie(item.id, item))
+  );
+    // this.sections.forEach((item) => {
+    //   await this.ListMovie(item.id, item);
+    // });
   },
   methods: {
     ListMovie(sectionId, section) {

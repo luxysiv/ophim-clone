@@ -414,7 +414,8 @@ export default {
   methods: {
     // Call API
     MoveInfor(slug) {
-      MoveInfor(
+      return new Promise((resolve,reject) =>{
+        MoveInfor(
         slug,
         (result) => {
           console.log(result);
@@ -481,19 +482,28 @@ export default {
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
             this.GetComment();
+            resolve(true);
           }
           else{
-            this.MoveInfor1(slug);
+            this.MoveInfor1(slug)
+            .then(resolve)
+            .catch(reject);
           }
         },
         (err) => {
           console.log(err);
-          this.MoveInfor1(slug);
+          this.MoveInfor1(slug)
+          .then(resolve)
+          .catch(reject);
         }
       );
+    
+      })
+      
     },
     MoveInfor1(slug) {
-      MoveInfor1(
+      return new Promise((resolve,reject) =>{
+        MoveInfor1(
         slug,
         (result) => {
           console.log(result);
@@ -559,13 +569,21 @@ export default {
             this.movie.categoris = result.movie.category[0].slug;
             this.isLoading = false;
             this.GetComment();
+            resolve(true)
+          }
+          else{
+            resolve(false)
           }
           
         },
         (err) => {
           console.log(err);
+          reject(err);
         }
       );
+    
+      })
+      
     },
 
     getOptimizedImage(imagePath) {

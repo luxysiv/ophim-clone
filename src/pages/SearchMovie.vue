@@ -129,18 +129,18 @@ export default {
   watch: {
     "$route.query.keyword": {
       immediate: true,
-      handler(query) {
+      async handler(query) {
         document.title = `${this.$t('Kết quả tìm kiếm: ')} ${query}`;
         this.loading = true;
         this.path = query;
         
-        this.SearchMovie(query);
+        await this.SearchMovie(query);
       },
     },
-    currentPage(newpage) {
+    async currentPage(newpage) {
       this.loading = true;
       this.currentPage = newpage;
-      this.SearchMovie(this.path);
+      await this.SearchMovie(this.path);
     },
   },
   methods: {
