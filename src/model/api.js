@@ -15,6 +15,8 @@ let URLInfor1 = "https://phimapi.com/phim/"
 // the loai phim
 let urlListMoiveByCategoris = "https://ophim1.com/v1/api/danh-sach/"
 
+let urlListMoiveByCategoris1 = "https://phimapi.com/v1/api/danh-sach/"
+
 
 // the loai phim
 let urlCategoris = "https://ophim1.com/v1/api/the-loai/"
@@ -56,6 +58,9 @@ export const urlImage1 = "https://phimapi.com/image.php?url="
 
  // danh sach phim theo the loai phim
  export const ListMovieByCate= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris}${params}`, {}  , success, error)
+
+ export const ListMovieByCate1= (params, success, error) => http.GetNew(`${urlListMoiveByCategoris1}${params}`, {}  , success, error)
+
  export const ListMovieByCateHome= (params, success, error) => http.GetNew(`${urlCategorisHome}${params}`, {}  , success, error)
 
  export const ListMovieByCateHome1= (params, success, error) => http.GetNew(`${urlCategorisHome1}${params}`, {}  , success, error)

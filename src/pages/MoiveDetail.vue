@@ -344,6 +344,7 @@ import {
   MoveInfor,
   MoveInfor1,
   ListMovieByCate,
+  ListMovieByCate1,
   urlImage,
   urlImage1,
   GetComments,
@@ -613,7 +614,24 @@ export default {
       }
     },
     ListMovieByCate() {
-      ListMovieByCate(
+      if(this.link == ""){
+        ListMovieByCate(
+          this.movie.categoris,
+
+          (data) => {
+            if (data.status == "success") {
+              this.suggestedMovies = data.data.items;
+              this.isLoading = false;
+            }
+            console.log(data);
+          },
+          (err) => {
+            console.log(err);
+          }
+      );
+      }
+      else{
+        ListMovieByCate1(
         this.movie.categoris,
 
         (data) => {
@@ -627,6 +645,8 @@ export default {
           console.log(err);
         }
       );
+      }
+      
     },
     shareMovie() {
       this.shareDialog = true;
