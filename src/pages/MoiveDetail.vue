@@ -16,16 +16,16 @@
       <!-- Cột bên trái: Video + nút + danh sách tập + info -->
       <v-col cols="12" md="10">
         <!-- VIDEO -->
-        <!-- <div
+        <div
           class="video-wrapper"
           v-html="generateEmbedHtml(movie.videoUrl)"
-        ></div> -->
-        <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
+        ></div>
+        <!-- <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
           <img :src="thumbnailUrl" alt="Preview" style="width:100%;cursor:pointer;" />
           <div class="play-button">▶</div>
         </div>
 
-        <div v-else class="video-wrapper" v-html="embedHtml()"></div>
+        <div v-else class="video-wrapper" v-html="embedHtml()"></div> -->
 
         <!-- Nhóm nút + server -->
         <div
