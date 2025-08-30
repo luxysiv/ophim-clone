@@ -841,17 +841,6 @@ export default {
       this.GetComment();
       this.isLoading = false;
     },
-    
-  },
-  computed: {
-    thumbnailUrl() {
-      const match = this.movie.videoUrl.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-      );
-      return match
-        ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
-        : "/placeholder.jpg";
-    },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
         const youtubeMatch = url.match(
@@ -891,6 +880,58 @@ export default {
     </div>`;
       }
     },
+    
+  },
+  computed: {
+    thumbnailUrl() {
+      const match = this.movie.videoUrl.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
+      );
+      return match
+        ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
+        : "/placeholder.jpg";
+    },
+    embedHtml() {
+      const url = this.movie.videoUrl
+      if (this.isTrailer) {
+        const youtubeMatch = url.match(
+          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
+        );
+        if (youtubeMatch) {
+          const videoId = youtubeMatch[1];
+          return `
+            <iframe width="100%" height="600"
+              src="https://www.youtube.com/embed/${videoId}"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen loading="lazy">
+            </iframe>
+          `;
+        } else {
+          return `
+            <video width="100%" height="600" controls preload="none">
+              <source src="${url}" type="video/mp4">
+              Trình duyệt của bạn không hỗ trợ video.
+            </video>
+          `;
+        }
+      } else {
+        return `
+          <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
+            <iframe
+              src="${url}"
+              frameborder="0"
+              class="w-full h-full"
+              loading="lazy"
+              allowfullscreen
+              allow="autoplay; fullscreen"
+              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+            ></iframe>
+          </div>
+        `;
+      }
+    }
+    
   }
 };
 </script>
