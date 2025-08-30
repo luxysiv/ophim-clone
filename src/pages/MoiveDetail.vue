@@ -406,14 +406,14 @@ export default {
     async slug(newSlug) {
       await  this.MoveInfor(newSlug);
       await this.ListMovieByCate();
-      await this.GetComment();
+      //await this.GetComment();
     },
   },
   async mounted() {
     try{
       await this.MoveInfor(this.slug);
       await this.ListMovieByCate();
-      await this.GetComment();
+      //await this.GetComment();
     }
     catch(err){
       console.log(err)
