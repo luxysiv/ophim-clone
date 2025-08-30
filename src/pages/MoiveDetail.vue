@@ -25,7 +25,7 @@
           <div class="play-button">▶</div>
         </div>
 
-        <div v-else class="video-wrapper" v-html="generateEmbedHtml(movie.videoUrl)"></div>
+        <div v-else class="video-wrapper" v-html="embedHtml()"></div>
 
         <!-- Nhóm nút + server -->
         <div
