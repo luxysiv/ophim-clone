@@ -404,13 +404,17 @@ export default {
   watch: {
     async slug(newSlug) {
       await  this.MoveInfor(newSlug);
+      console.log("Chay xong ham MoveInfor")
       await this.ListMovieByCate();
+      console.log("Chay xong ham ListMovieByCate")
     },
   },
   async mounted() {
     try{
       await this.MoveInfor(this.slug);
+      console.log("Chay xong ham MoveInfor")
       await this.ListMovieByCate();
+      console.log("Chay xong ham ListMovieByCate")
     }
     catch(err){
       console.log(err)
@@ -582,7 +586,7 @@ export default {
             resolve(true)
           }
           else{
-            resolve(false)
+            reject("error");
           }
           
         },
@@ -654,7 +658,7 @@ export default {
                 resolve(true)
               }
               else{
-                resolve(false)
+                reject("error");
               }
               console.log(data);
             },
@@ -675,7 +679,7 @@ export default {
             resolve(true)
           }
           else{
-            resolve(false)
+            reject("error");
           }
           
           console.log(data);
