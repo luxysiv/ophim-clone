@@ -874,6 +874,7 @@ export default {
         class="w-full h-full"
         loading="lazy"
         allowfullscreen
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
       ></iframe>
@@ -926,6 +927,7 @@ export default {
               loading="lazy"
               allowfullscreen
               allow="autoplay; fullscreen"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
             ></iframe>
           </div>
