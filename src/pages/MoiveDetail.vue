@@ -16,10 +16,16 @@
       <!-- Cột bên trái: Video + nút + danh sách tập + info -->
       <v-col cols="12" md="10">
         <!-- VIDEO -->
-        <div
+        <!-- <div
           class="video-wrapper"
           v-html="generateEmbedHtml(movie.videoUrl)"
-        ></div>
+        ></div> -->
+        <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
+          <img :src="thumbnailUrl" alt="Preview" style="width:100%;cursor:pointer;" />
+          <div class="play-button">▶</div>
+        </div>
+
+        <div v-else class="video-wrapper" v-html="generateEmbedHtml(movie.videoUrl)"></div>
 
         <!-- Nhóm nút + server -->
         <div
@@ -356,6 +362,7 @@ export default {
   name: "MovieDetail",
   data() {
     return {
+      videoLoaded: false,
       tab: "",
       shareUrl: window.location.href,
       tabserver: null,
@@ -834,6 +841,17 @@ export default {
       this.GetComment();
       this.isLoading = false;
     },
+    
+  },
+  computed: {
+    thumbnailUrl() {
+      const match = this.movie.videoUrl.match(
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
+      );
+      return match
+        ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
+        : "/placeholder.jpg";
+    },
     generateEmbedHtml(url) {
       if (this.isTrailer) {
         const youtubeMatch = url.match(
@@ -852,7 +870,7 @@ export default {
         } else {
           // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
           return `
-            <video width="100%" height="600" controls>
+            <video width="100%" height="600" controls preload="none">
               <source src="${url}" type="video/mp4">
               Trình duyệt của bạn không hỗ trợ video.
             </video>
@@ -865,15 +883,15 @@ export default {
         src="${url}"
         frameborder="0"
         class="w-full h-full"
-        loading="eager"
+        loading="lazy"
         allowfullscreen
-        allow="autoplay; fullscreen"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
       ></iframe>
     </div>`;
       }
     },
-  },
+  }
 };
 </script>
 
