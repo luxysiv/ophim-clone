@@ -223,12 +223,13 @@
       </v-col>
 
       <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
+      {{suggestedMovies}}
       <div class="suggested-movies my-8">
         <h2 class="text-h5 mb-4">🎬 {{$t('Phim được đề xuất')}}</h2>
         <v-row>
           <v-col
             v-for="suggested in suggestedMovies"
-            :key="suggested.id"
+            :key="suggested._id"
             cols="6"
             sm="4"
             md="2"
