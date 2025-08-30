@@ -87,7 +87,7 @@
                 class="pa-2"
               >
                 <v-btn color="primary" @click="playEpisode(episode)">
-                  {{ !episode.name.includes("Tập") ? $t('Tập ') + episode.name : "Trailer" }}
+                  {{ episode.name ?( episode.name.includes("Tập") ? episode.name: $t('Tập ') + episode.name) : "Trailer" }}
                 </v-btn>
               </v-col>
             </v-row>
