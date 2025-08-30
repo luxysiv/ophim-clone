@@ -888,9 +888,10 @@ export default {
         /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
       );
       return match
-        ? `https://img.youtube.com/vi/${match[1]}/hqdefault.jpg`
-        : "/placeholder.jpg";
+        ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`
+        : "/placeholder.jpg"; // fallback ảnh tĩnh nếu không phải YouTube
     },
+
     embedHtml() {
       const url = this.movie.videoUrl
       if (this.isTrailer) {
