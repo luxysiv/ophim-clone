@@ -108,7 +108,7 @@
           <v-card-text
             class="text-white"
             :v-html="movie.description"
-          ></v-card-text>
+          >{{movie.description}}</v-card-text>
           <v-card-text class="text-white">
             <p><strong>{{$t('Diễn viên')}}:</strong> {{ movie.actors.join(", ") }}</p>
             <p><strong>{{$t('Đạo diễn')}}:</strong> {{ movie.director.join(", ") }}</p>
@@ -646,7 +646,6 @@ export default {
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) =>{
-        console.log(this.link)
         if(this.link == ""){
           ListMovieByCate(
             this.movie.categoris,
