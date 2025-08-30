@@ -553,7 +553,7 @@ export default {
               } else {
                 var tap = this.movie.page.split("Tập ")[1].trim();
                 const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap || ep.slug === "tap"
+                  (ep) => ep.slug === tap || ep.slug.includes(tap)
                 );
                 if (data) {
                   this.movie.videoUrl = data.link_embed;
@@ -561,7 +561,7 @@ export default {
                   this.isTrailer = false;
                 } else {
                   const data = result.episodes[1].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug === "tap"
+                    (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
