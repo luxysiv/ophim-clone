@@ -579,6 +579,7 @@ export default {
             // this.GetComment()
             // .then(resolve)
             // .catch(reject);
+            console.log(this.movie.description)
             resolve(true)
           }
           else{
