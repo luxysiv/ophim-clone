@@ -647,11 +647,13 @@ export default {
     },
     ListMovieByCate() {
       return new Promise((resolve, reject) =>{
+        console.log(this.link)
         if(this.link == ""){
           ListMovieByCate(
             this.movie.categoris,
 
             (data) => {
+              console.log(data)
               if (data.status == "success") {
                 this.suggestedMovies = data.data.items;
                 this.isLoading = false;
@@ -660,11 +662,10 @@ export default {
               else{
                 reject("error");
               }
-              console.log(data);
             },
             (err) => {
-              reject(err)
               console.log(err);
+              reject(err)
             }
         );
         
@@ -674,6 +675,7 @@ export default {
         this.movie.categoris,
 
         (data) => {
+          console.log(data)
           if (data.status == "success") {
             this.suggestedMovies = data.data.items;
             this.isLoading = false;
@@ -682,12 +684,10 @@ export default {
           else{
             reject("error");
           }
-          
-          console.log(data);
         },
         (err) => {
-          reject(err)
           console.log(err);
+          reject(err)
         }
       );
       }
