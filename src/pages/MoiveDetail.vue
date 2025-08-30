@@ -106,7 +106,7 @@
             >{{ movie.title }} ( {{ movie.name }})</v-card-title
           >
           <v-card-text
-            class="text-grey-lighten-2"
+            class="text-white"
             :v-html="movie.description"
           ></v-card-text>
           <v-card-text class="text-white">
@@ -579,7 +579,6 @@ export default {
             // this.GetComment()
             // .then(resolve)
             // .catch(reject);
-            console.log(this.movie.description)
             resolve(true)
           }
           else{
