@@ -405,17 +405,15 @@ export default {
   watch: {
     async slug(newSlug) {
       await  this.MoveInfor(newSlug);
-      console.log("Chay xong ham MoveInfor")
       await this.ListMovieByCate();
-      console.log("Chay xong ham ListMovieByCate")
+      await this.GetComment();
     },
   },
   async mounted() {
     try{
       await this.MoveInfor(this.slug);
-      console.log("Chay xong ham MoveInfor")
       await this.ListMovieByCate();
-      console.log("Chay xong ham ListMovieByCate")
+      await this.GetComment();
     }
     catch(err){
       console.log(err)
@@ -765,8 +763,8 @@ export default {
       }
     },
     GetComment() {
-      if (!this.idMovie) return;
       return new Promise((resolve, reject) =>{
+      if (!this.idMovie) reject("error");
         GetComments(
         { movieId: this.idMovie, episode: this.movie.page },
         (res) => {
@@ -779,7 +777,7 @@ export default {
             resolve(true)
           }
           else{
-            resolve(true)
+            reject("error")
           }
         },
         (err) => {
