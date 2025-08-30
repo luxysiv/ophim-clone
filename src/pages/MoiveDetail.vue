@@ -642,21 +642,27 @@ export default {
       }
     },
     ListMovieByCate() {
-      if(this.link == ""){
-        ListMovieByCate(
-          this.movie.categoris,
+      return new Promise((resolve, reject) =>{
+        if(this.link == ""){
+          ListMovieByCate(
+            this.movie.categoris,
 
-          (data) => {
-            if (data.status == "success") {
-              this.suggestedMovies = data.data.items;
-              this.isLoading = false;
+            (data) => {
+              if (data.status == "success") {
+                this.suggestedMovies = data.data.items;
+                this.isLoading = false;
+                resolve(true)
+              }
+              else{
+                resolve(false)
+              }
+              console.log(data);
+            },
+            (err) => {
+              reject(err)
+              console.log(err);
             }
-            console.log(data);
-          },
-          (err) => {
-            console.log(err);
-          }
-      );
+        );
       }
       else{
         Categoris1(
@@ -666,14 +672,22 @@ export default {
           if (data.status == "success") {
             this.suggestedMovies = data.data.items;
             this.isLoading = false;
+            resolve(true)
           }
+          else{
+            resolve(false)
+          }
+          
           console.log(data);
         },
         (err) => {
+          reject(err)
           console.log(err);
         }
       );
       }
+      
+      })
       
     },
     shareMovie() {
