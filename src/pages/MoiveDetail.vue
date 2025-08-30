@@ -667,6 +667,7 @@ export default {
               console.log(err);
             }
         );
+        
       }
       else{
         Categoris1(
@@ -690,6 +691,7 @@ export default {
         }
       );
       }
+      
       
       })
       
