@@ -49,6 +49,7 @@
             <v-card class="mx-auto bg-dark text-white" max-width="344">
               <v-img
                 :src="getOptimizedImage(item.poster_url, section.id)"
+                :lazy-src="getOptimizedImage(item.poster_url, section.id)"
                 :alt="`Poster phim ${item.name}`"
                 class="movie-img"
                 height="250"

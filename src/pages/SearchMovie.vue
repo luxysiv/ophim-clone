@@ -39,6 +39,7 @@
               <v-col cols="12" md="4">
                 <v-img
                   :src="getOptimizedImage(movie.poster_url)"
+                  :lazy-src="getOptimizedImage(movie.poster_url)"
                   :alt="movie.name"
                   spect-ratio="16/9"
                   class="movie-image"
@@ -70,7 +71,8 @@
                 </div>
 
                 <p class="text-body-2 description-text">
-                  {{ $t("Miêu tả") }}: {{ movie.origin_name }}
+                  {{ $t("Miêu tả") }}:  
+                  <span v-html="movie.origin_name"></span>
                 </p>
 
                 <div class="action-buttons mt-4">
@@ -148,13 +150,15 @@ export default {
         Search(
           { keyword: query, page: this.currentPage },
           (result) => {
-            if (result.status == "success") {
+            if (result.status == "success"|| result.status == true) {
               this.link = "";
               if (result.data.items.length == 0 || result.data.item == null) {
                 // this.movies = [];
                 this.link = "link1";
-                this.SearchMovie1(query);
-                this.loading = false;
+                this.SearchMovie1(query)
+                .then(resolve)
+                .catch(reject);
+                
               } else {
                 this.movies = result.data.items.sort((a, b) => {
                   return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
@@ -167,7 +171,9 @@ export default {
               }
             } else {
               this.link = "link1";
-              this.SearchMovie1(query);
+              this.SearchMovie1(query)
+              .then(resolve)
+              .catch(reject);
               resolve(true)
             }
             reject(result)
@@ -176,7 +182,9 @@ export default {
           (err) => {
             console.log(err);
             this.link = "link1";
-            this.SearchMovie1(query);
+            this.SearchMovie1(query)
+            .then(resolve)
+            .catch(reject);
             
           }
         );
@@ -187,7 +195,7 @@ export default {
           Search1(
         { keyword: query, page: 1, limit: 10 },
         (result) => {
-          if (result.status == "success") {
+          if (result.status == "success" || result.status == true) {
             if (result.data.items.length == 0) {
               this.movies = [];
               this.loading = false;

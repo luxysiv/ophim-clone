@@ -10,6 +10,9 @@ module.exports = defineConfig({
         pathRewrite: { '^/api': '' }, // Thay thế /api thành rỗng
       },
     },
+    client: {
+      overlay: false // tắt màn hình đỏ
+    }
   },
   pages: {
     index: {

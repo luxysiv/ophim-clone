@@ -50,11 +50,20 @@
           </div>
 
           <!-- Server -->
+          
           <div class="d-flex" style="gap: 8px">
+            <router-link
+              :to="movie.LinkDown"
+              download
+              target="_blank"
+            >
+              <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
+            </router-link>
             <v-tabs
               v-model="tabserver"
               class="custom-tabs"
               background-color="transparent"
+
             >
               <v-tab
                 v-for="(server, index) in movie.servers"
@@ -66,6 +75,7 @@
               </v-tab>
             </v-tabs>
           </div>
+
         </div>
 
         <!-- Danh sách tập -->
@@ -111,10 +121,9 @@
           <v-card-title class="text-white mb-4"
             >{{ movie.title }} ( {{ movie.name }})</v-card-title
           >
-          <v-card-text
-            class="text-white"
-            :v-html="movie.description"
-          >{{movie.description}}</v-card-text>
+          <v-card-text class="text-white">
+            <div v-html="movie.description"></div>
+          </v-card-text>
           <v-card-text class="text-white">
             <p><strong>{{$t('Diễn viên')}}:</strong> {{ movie.actors.join(", ") }}</p>
             <p><strong>{{$t('Đạo diễn')}}:</strong> {{ movie.director.join(", ") }}</p>
@@ -206,7 +215,7 @@
                   class="text-decoration-none"
                 >
                   <v-list-item-avatar size="80">
-                    <v-img :src="getOptimizedImage(suggested.poster_url)" />
+                    <v-img  :src="getOptimizedImage(suggested.poster_url)" :lazy-src="getOptimizedImage(suggested.poster_url)" />
                   </v-list-item-avatar>
 
                   <v-list-item-content>
@@ -246,9 +255,11 @@
             >
               <v-card elevation="2" class="bg-grey-darken-4" hover>
                 <v-img
+                  :lazy-src="getOptimizedImage(suggested.poster_url)"
                   :src="getOptimizedImage(suggested.poster_url)"
                   aspect-ratio="16/9"
                   cover
+                  
                 ></v-img>
                 <v-card-title class="text-white text-body-2 text-wrap">
                   {{ suggested.name }}
@@ -396,6 +407,7 @@ export default {
         categoris: "",
         trailer_url: "",
         name: "",
+        LinkDown: ''
       },
       idMovie: "",
       isTrailer: false,
@@ -435,7 +447,7 @@ export default {
         slug,
         (result) => {
           console.log(result);
-          if (result.status == true) {
+          if (result.status == true || result.status == "success") {
             this.link = '';
             this.movie.page = result.movie.episode_current;
             this.idMovie = result.movie._id;
@@ -470,18 +482,20 @@ export default {
               } else {
                 var tap = this.movie.page.split("Tập ")[1].trim();
                 const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap
+                  (ep) => ep.slug === tap || ep.slug.includes(tap)
                 );
                 if (data) {
                   this.movie.videoUrl = data.link_embed;
+                  this.movie.LinkDown = data.link_m3u8;
                   // this.movie.title = data.filename;
                   this.isTrailer = false;
                 } else {
                   const data = result.episodes[1].server_data.find(
-                    (ep) => ep.slug === tap
+                    (ep) => ep.slug === tap || ep.slug.includes(tap)
                   );
                   if (data) {
                     this.movie.videoUrl = data.link_embed;
+                    this.movie.LinkDown = data.link_m3u8;
                     // this.movie.title = data.filename;
                     this.isTrailer = false;
                   }
@@ -490,7 +504,6 @@ export default {
                 // this.isTrailer = false;
               }
             }
-            console.log(this.movie.videoUrl);
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
@@ -525,7 +538,7 @@ export default {
         slug,
         (result) => {
           console.log(result);
-          if (result.status == true) {
+          if (result.status == true || result.status == "success") {
             this.link = 'link';
             this.movie.page = result.movie.episode_current;
             this.idMovie = result.movie._id;
@@ -606,6 +619,10 @@ export default {
       
     },
 
+    DownloadVideo(linkdown){
+      window.open(linkdown);
+    
+    },
     getOptimizedImage(imagePath) {
       if(this.link == ""){
         return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
@@ -815,6 +832,8 @@ export default {
       this.isLoading = true;
       // this.movie.title = episode.filename;
       this.movie.videoUrl = episode.link_embed;
+      this.movie.LinkDown = episode.link_m3u8;
+      
       this.movie.page = "Tập " + episode.slug;
       this.GetComment();
       this.isLoading = false;
@@ -828,12 +847,14 @@ export default {
         this.movie.page.includes("/")
       ) {
         this.movie.videoUrl = server.server_data[0].link_embed;
+        this.movie.LinkDown = server.server_data[0].link_m3u8;
         this.isTrailer = false;
       } else {
         var tap = this.movie.page.split("Tập ")[1].trim();
         const data = server.server_data.find((ep) => ep.slug === tap);
         if (data) {
           this.movie.videoUrl = data.link_embed;
+          this.movie.LinkDown = data.link_m3u8;
           this.isTrailer = false;
         }
       }

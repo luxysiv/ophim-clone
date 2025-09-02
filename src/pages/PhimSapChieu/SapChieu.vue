@@ -34,6 +34,7 @@
               <v-col cols="12" md="4">
                 <v-img
                   :src="getOptimizedImage(movie.poster_url)"
+                  :lazy-src="getOptimizedImage(movie.poster_url)"
                   :alt="movie.name"
                   aspect-ratio="16/9"
                   class="movie-image"

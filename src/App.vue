@@ -3,6 +3,9 @@
     <v-app id="app" :style="{ color: theme === 'dark' ? 'white' : 'black' }">
       <v-main>
         <router-view />
+        <v-snackbar v-model="showError" color="red" timeout="3000">
+        {{ errorMessage }}
+      </v-snackbar>
       </v-main>
     </v-app>
   </v-theme-provider>
@@ -14,7 +17,9 @@ export default {
   name: 'App',
   data(){
     return{
-      theme: localStorage.getItem('theme') || 'dark'
+      theme: localStorage.getItem('theme') || 'dark',
+      showError: false,
+      errorMessage: ''
     }
   },
    provide() {
@@ -37,6 +42,10 @@ export default {
       this.$store.commit("setEmpInfor", null);
     }
   }
+  this.$bus.$on("show-error", (msg) => {
+      this.errorMessage = msg;
+      this.showError = true;
+    });
   },
   watch: {
     theme(newVal) {

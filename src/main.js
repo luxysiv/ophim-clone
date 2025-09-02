@@ -34,7 +34,13 @@ const vuetify = createVuetify({
   },
 })
 
+
 const app = createApp(App);
+app.config.errorHandler = (err, vm, info) => {
+  console.error("Lỗi Vue:", err, info)
+  // phát sự kiện để App.vue bắt và show snackbar
+  app.config.globalProperties.$emit?.("show-error", err.message || "Có lỗi xảy ra")
+}
 
 window.addEventListener('error', function (e) {
   if (
