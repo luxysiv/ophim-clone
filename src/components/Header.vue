@@ -1,413 +1,260 @@
 <template>
   <div>
-  <v-app-bar class="main-navbar">
-    <!-- Logo -->
-    <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
-    <v-img
-    :src="imageLogo"
-    alt="Phim360"
-    contain
-    class="mx-4"
-    cover
-    style="cursor: pointer;"
-    @click="goHome"
-  ></v-img>
-    
-    
+    <v-app-bar class="main-navbar">
+      <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
+      <v-img :src="imageLogo" alt="Phim360" contain class="mx-4" cover style="cursor: pointer" @click="goHome"></v-img>
 
-    <!-- Menu chính -->
-    <v-toolbar-items class="hidden-sm-and-down">
-      <v-btn
-        text
-        :to="{ path: '/home' }"
-        :class="{ 'text-green': $route.path === '/home' }"
-      >
-        {{ $t("Trang chủ") }}
-      </v-btn>
-      <v-btn
-        text
-        :to="{ path: '/phim-bo' }"
-        :class="{ 'text-green': $route.path === '/phim-bo' }"
-      >
-        {{ $t("Phim Bộ") }}
-      </v-btn>
-      <v-btn
-        text
-        :to="{ path: '/phim-le' }"
-        :class="{ 'text-green': $route.path === '/phim-le' }"
-      >
-        {{ $t("Phim Lẻ") }}
-      </v-btn>
+      <v-toolbar-items class="hidden-sm-and-down">
+        <v-btn text :to="{ path: '/home' }" :class="{ 'text-green': $route.path === '/home' }">
+          {{ $t('Trang chủ') }}
+        </v-btn>
+        <v-btn text :to="{ path: '/phim-bo' }" :class="{ 'text-green': $route.path === '/phim-bo' }">
+          {{ $t('Phim Bộ') }}
+        </v-btn>
+        <v-btn text :to="{ path: '/phim-le' }" :class="{ 'text-green': $route.path === '/phim-le' }">
+          {{ $t('Phim Lẻ') }}
+        </v-btn>
 
-      <!-- Dropdown Thể loại -->
-      <v-menu offset-y>
-        <template #activator="{ props }">
-          <v-btn text v-bind="props" @click="getTheLoai" :loading="loadingTheLoai"
-          :disabled="loadingTheLoai">
-            {{ $t("Thể loại") }}
-            <v-icon right>mdi-menu-down</v-icon>
-          </v-btn>
-        </template>
-        <v-list style="background-color: #1e1e1e">
-          <v-sheet
-            class="pa-4"
-            style="
-              max-width: 600px;
-              background-color: #1e1e1e;
-              color: white;
-              border-radius: 8px;
-            "
-          >
-            <v-row dense>
-              <v-col
-                v-for="genre in genres"
-                :key="genre._id"
-                cols="12"
-                sm="6"
-                md="3"
-              >
-                <RouterLink
-                  :to="{ name: 'TheLoai', params: { path: genre.slug } }"
-                  class="d-block text-white text-body-2 mb-2"
-                  style="text-decoration: none"
-                >
-                  {{ genre.name }}
-                </RouterLink>
-              </v-col>
-            </v-row>
-          </v-sheet>
-        </v-list>
-      </v-menu>
+        <v-menu offset-y>
+          <template #activator="{ props }">
+            <v-btn text v-bind="props" @click="getTheLoai" :loading="loadingTheLoai" :disabled="loadingTheLoai">
+              {{ $t('Thể loại') }}
+              <v-icon right>mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list style="background-color: #1e1e1e">
+            <v-sheet
+              class="pa-4"
+              style="
+                max-width: 600px;
+                background-color: #1e1e1e;
+                color: white;
+                border-radius: 8px;
+              "
+            >
+              <v-row dense>
+                <v-col v-for="genre in genres" :key="genre._id" cols="12" sm="6" md="3">
+                  <RouterLink
+                    :to="{ name: 'TheLoai', params: { path: genre.slug } }"
+                    class="d-block text-white text-body-2 mb-2"
+                    style="text-decoration: none"
+                  >
+                    {{ genre.name }}
+                  </RouterLink>
+                </v-col>
+              </v-row>
+            </v-sheet>
+          </v-list>
+        </v-menu>
 
-      <!-- Dropdown Quốc gia -->
-      <v-menu offset-y>
-        <template #activator="{ props }">
-          <v-btn text v-bind="props" @click="getQuocGia" :loading="loadingQuocGia"
-          :disabled="loadingQuocGia">
-            {{ $t("Quốc gia") }}
-            <v-icon right>mdi-menu-down</v-icon>
-          </v-btn>
-        </template>
-        <v-list style="background-color: #1e1e1e">
-          <v-sheet
-            class="pa-4"
-            style="
-              max-width: 600px;
-              background-color: #1e1e1e;
-              color: white;
-              border-radius: 8px;
-            "
-          >
-            <v-row dense>
-              <v-col
-                v-for="country in countries"
-                :key="country._id"
-                cols="12"
-                sm="6"
-                md="3"
-              >
-                <RouterLink
-                  :to="{ name: 'QuocGia', params: { path: country.slug } }"
-                  class="d-block text-white text-body-2 mb-2"
-                  style="text-decoration: none"
-                >
-                  {{ country.name }}
-                </RouterLink>
-              </v-col>
-            </v-row>
-          </v-sheet>
-        </v-list>
-      </v-menu>
+        <v-menu offset-y>
+          <template #activator="{ props }">
+            <v-btn text v-bind="props" @click="getQuocGia" :loading="loadingQuocGia" :disabled="loadingQuocGia">
+              {{ $t('Quốc gia') }}
+              <v-icon right>mdi-menu-down</v-icon>
+            </v-btn>
+          </template>
+          <v-list style="background-color: #1e1e1e">
+            <v-sheet
+              class="pa-4"
+              style="
+                max-width: 600px;
+                background-color: #1e1e1e;
+                color: white;
+                border-radius: 8px;
+              "
+            >
+              <v-row dense>
+                <v-col v-for="country in countries" :key="country._id" cols="12" sm="6" md="3">
+                  <RouterLink
+                    :to="{ name: 'QuocGia', params: { path: country.slug } }"
+                    class="d-block text-white text-body-2 mb-2"
+                    style="text-decoration: none"
+                  >
+                    {{ country.name }}
+                  </RouterLink>
+                </v-col>
+              </v-row>
+            </v-sheet>
+          </v-list>
+        </v-menu>
 
-      <v-btn
-        text
-        :to="{ path: '/phim-sap-chieu' }"
-        :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
-      >
-        {{ $t("Sắp chiếu") }}
-      </v-btn>
-      <v-btn
-        text
-        :to="{ path: '/hoat-hinh' }"
-        :class="{ 'text-green': $route.path === '/hoat-hinh' }"
-      >
-        {{ $t("Hoạt hình") }}
-      </v-btn>
-    </v-toolbar-items>
+        <v-btn text :to="{ path: '/phim-sap-chieu' }" :class="{ 'text-green': $route.path === '/phim-sap-chieu' }">
+          {{ $t('Sắp chiếu') }}
+        </v-btn>
+        <v-btn text :to="{ path: '/hoat-hinh' }" :class="{ 'text-green': $route.path === '/hoat-hinh' }">
+          {{ $t('Hoạt hình') }}
+        </v-btn>
+      </v-toolbar-items>
 
-    <!-- Search + Language + Profile -->
-    <v-spacer />
-    
-<v-menu
-    v-model="menuVisible"
-    :close-on-content-click="false"
-    :open-on-click="false"
-    :open-on-focus="false"
-    @keyup.enter="searchMovie"
-    offset-y
-  >
-    <template #activator="{ props: activatorProps }">
-      <v-text-field
-        v-bind="activatorProps"
-        v-model="searchQuery"
-        :placeholder="$t('Tên phim')"
-        append-inner-icon="mdi-magnify"
+      <v-spacer />
+
+      <v-menu
+        v-model="menuVisible"
+        :close-on-content-click="false"
+        :open-on-click="false"
+        :open-on-focus="false"
         @keyup.enter="searchMovie"
-        @click:append-inner="searchMovie"
-        @update:model-value="onInput"
-        clearable
-        solo
-        hide-details
-        density="comfortable"
-      />
-    </template>
-
-    <v-list v-if="movieSuggestions.length" style="
-      min-width: 100%;
-      max-height: 250px;
-      overflow-y: auto;
-      background-color: #1e1e1e;
-      color: white;
-      border-radius: 8px;
-    ">
-      <v-list-item
-        v-for="(item, index) in movieSuggestions"
-        :key="index"
-        @click="selectSuggestion(item)"
+        offset-y
       >
-        <v-list-item-title>{{ item.name }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
-    <v-list v-else style="
-      min-width: 100%;
-      background-color: #1e1e1e;
-      color: white;
-      border-radius: 8px;
-    ">
-  <v-list-item>
-    <v-list-item-title>{{$t('Không tìm thấy kết quả')}}</v-list-item-title>
-  </v-list-item>
-</v-list>
-  </v-menu>
+        <template #activator="{ props: activatorProps }">
+          <v-text-field
+            v-bind="activatorProps"
+            v-model="searchQuery"
+            :placeholder="$t('Tên phim')"
+            append-inner-icon="mdi-magnify"
+            @keyup.enter="searchMovie"
+            @click:append-inner="searchMovie"
+            @update:model-value="onInput"
+            clearable
+            solo
+            hide-details
+            density="comfortable"
+          />
+        </template>
 
-    <!-- Theme -->
-    <v-btn icon title="Theme" @click="changeTheme" v-show="$vuetify.display.mdAndUp">
-      <v-icon>mdi-white-balance-sunny</v-icon>
-    </v-btn>
-    <!-- Ngôn ngữ -->
-    <v-menu offset-y v-if="$vuetify.display.mdAndUp">
-      <template #activator="{ props }">
-        <v-btn icon v-bind="props" :title="$t('Ngôn ngữ')">
-          <v-icon>mdi-translate</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="lang in languages"
-          :key="lang.title"
-          @click="changeLanguage(lang.title)"
+        <v-list
+          v-if="movieSuggestions.length"
+          style="
+            min-width: 100%;
+            max-height: 250px;
+            overflow-y: auto;
+            background-color: #1e1e1e;
+            color: white;
+            border-radius: 8px;
+          "
         >
-          <v-list-item-title>{{ lang.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+          <v-list-item v-for="(item, index) in movieSuggestions" :key="index" @click="selectSuggestion(item)">
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+        <v-list
+          v-else
+          style="
+            min-width: 100%;
+            background-color: #1e1e1e;
+            color: white;
+            border-radius: 8px;
+          "
+        >
+          <v-list-item>
+            <v-list-item-title>{{ $t('Không tìm thấy kết quả') }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
 
-
-    <!-- Tài khoản -->
-    <v-menu offset-y v-if="!account && $vuetify.display.mdAndUp">
-      <template #activator="{ props }">
-        <v-btn icon v-bind="props" :title="$t('Tài khoản')">
-          <v-icon>mdi-account-circle</v-icon>
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item @click="Login()">
-          <v-list-item-title>{{$t('Đăng nhập')}}</v-list-item-title>
-        </v-list-item>
-        <v-list-item @click="Register()">
-          <v-list-item-title>{{$t('Đăng ký')}}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-    <v-menu offset-y v-else-if="$vuetify.display.mdAndUp">
-      <template #activator="{ props }">
-        <v-btn v-bind="props" variant="text">
-        <span>
-          {{ account }}
-        </span>
+      <v-btn icon title="Theme" @click="changeTheme" v-show="$vuetify.display.mdAndUp">
+        <v-icon>mdi-white-balance-sunny</v-icon>
       </v-btn>
-      </template>
-      <v-list>
-        
-        <v-list-item @click="Logout()">
-          <v-list-item-title>{{$t('Đăng xuất')}}</v-list-item-title>
+      <v-menu offset-y v-if="$vuetify.display.mdAndUp">
+        <template #activator="{ props }">
+          <v-btn icon v-bind="props" :title="$t('Ngôn ngữ')">
+            <v-icon>mdi-translate</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
+            <v-list-item-title>{{ lang.name }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+
+    <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
+      <v-list nav dense>
+        <v-list-item :to="{ path: '/home' }" :class="{ 'text-green': $route.path === '/home' }">
+          <v-list-item-title>{{ $t('Trang chủ') }}</v-list-item-title>
         </v-list-item>
+
+        <v-list-item :to="{ path: '/phim-bo' }" :class="{ 'text-green': $route.path === '/phim-bo' }">
+          <v-list-item-title>{{ $t('Phim Bộ') }}</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item :to="{ path: '/phim-le' }" :class="{ 'text-green': $route.path === '/phim-le' }">
+          <v-list-item-title>{{ $t('Phim Lẻ') }}</v-list-item-title>
+        </v-list-item>
+
+        <v-expansion-panels multiple>
+          <v-expansion-panel>
+            <v-expansion-panel-title @click="getTheLoai" :loading="loadingTheLoai" :disabled="loadingTheLoai">
+              {{ $t('Thể loại') }}
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-list dense>
+                <v-list-item
+                  v-for="genre in genres"
+                  :key="genre._id"
+                  :to="{ name: 'TheLoai', params: { path: genre.slug } }"
+                  @click="drawer = false"
+                >
+                  <v-list-item-title>{{ genre.name }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+
+          <v-expansion-panel>
+            <v-expansion-panel-title @click="getQuocGia" :loading="loadingQuocGia" :disabled="loadingQuocGia">
+              {{ $t('Quốc gia') }}
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-list dense>
+                <v-list-item
+                  v-for="country in countries"
+                  :key="country._id"
+                  :to="{ name: 'QuocGia', params: { path: country.slug } }"
+                  @click="drawer = false"
+                >
+                  <v-list-item-title>{{ country.name }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+
+          <v-list-item :to="{ path: '/phim-sap-chieu' }" :class="{ 'text-green': $route.path === '/phim-sap-chieu' }">
+            <v-list-item-title>{{ $t('Sắp chiếu') }}</v-list-item-title>
+          </v-list-item>
+          <v-divider class="my-2"></v-divider>
+        </v-expansion-panels>
+        <v-list-item @click="changeTheme">
+          <v-list-item-icon>
+            <v-icon>mdi-white-balance-sunny</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>{{ $t('Đổi giao diện') }}</v-list-item-title>
+        </v-list-item>
+
+        <v-expansion-panels multiple>
+          <v-expansion-panel>
+            <v-expansion-panel-title>
+              <v-list-item-icon><v-icon>mdi-translate</v-icon> {{ $t('Ngôn ngữ') }}</v-list-item-icon>
+            </v-expansion-panel-title>
+            <v-expansion-panel-text>
+              <v-list dense>
+                <v-list-item v-for="lang in languages" :key="lang.title" @click="changeLanguage(lang.title)">
+                  <v-list-item-title>{{ lang.name }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-expansion-panel-text>
+          </v-expansion-panel>
+        </v-expansion-panels>
       </v-list>
-    </v-menu>
-    
-  </v-app-bar>
+    </v-navigation-drawer>
 
-  <!-- DRAWER CHO MOBILE -->
-  <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
-    <v-list nav dense>
-      <!-- Mục chính -->
-      <v-list-item
-        :to="{ path: '/home' }"
-        :class="{ 'text-green': $route.path === '/home' }"
-      >
-        <v-list-item-title>{{ $t("Trang chủ") }}</v-list-item-title>
-      </v-list-item>
-
-      <v-list-item
-        :to="{ path: '/phim-bo' }"
-        :class="{ 'text-green': $route.path === '/phim-bo' }"
-      >
-        <v-list-item-title>{{ $t("Phim Bộ") }}</v-list-item-title>
-      </v-list-item>
-
-      <v-list-item
-        :to="{ path: '/phim-le' }"
-        :class="{ 'text-green': $route.path === '/phim-le' }"
-      >
-        <v-list-item-title>{{ $t("Phim Lẻ") }}</v-list-item-title>
-      </v-list-item>
-
-      <!-- THỂ LOẠI (submenu) -->
-      <v-expansion-panels multiple>
-        <v-expansion-panel>
-          <v-expansion-panel-title @click="getTheLoai" :loading="loadingTheLoai"
-          :disabled="loadingTheLoai">
-            {{ $t("Thể loại") }}
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-list dense>
-              <v-list-item
-                v-for="genre in genres"
-                :key="genre._id"
-                :to="{ name: 'TheLoai', params: { path: genre.slug } }"
-                @click="drawer = false"
-              >
-                <v-list-item-title>{{ genre.name }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-
-        <!-- QUỐC GIA (submenu) -->
-        <v-expansion-panel>
-          <v-expansion-panel-title @click="getQuocGia" :loading="loadingQuocGia"
-          :disabled="loadingQuocGia">
-            {{ $t("Quốc gia") }}
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-list dense>
-              <v-list-item
-                v-for="country in countries"
-                :key="country._id"
-                :to="{ name: 'QuocGia', params: { path: country.slug } }"
-                @click="drawer = false"
-              >
-                <v-list-item-title>{{ country.name }}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-
-        <!-- Sắp chiếu -->
-        <v-list-item
-          :to="{ path: '/phim-sap-chieu' }"
-          :class="{ 'text-green': $route.path === '/phim-sap-chieu' }"
-        >
-          <v-list-item-title>{{ $t("Sắp chiếu") }}</v-list-item-title>
-        </v-list-item>
-        <!-- Divider -->
-        <v-divider class="my-2"></v-divider>
-      </v-expansion-panels>
-      <!-- Theme (chuyển theme) -->
-      <v-list-item @click="changeTheme">
-        <v-list-item-icon>
-          <v-icon>mdi-white-balance-sunny</v-icon>
-        </v-list-item-icon>
-        <v-list-item-title>{{$t('Đổi giao diện')}}</v-list-item-title>
-      </v-list-item>
-
-<!-- Ngôn ngữ -->
-<v-expansion-panels multiple>
-  <v-expansion-panel>
-    <v-expansion-panel-title>
-      <v-list-item-icon><v-icon>mdi-translate</v-icon> {{$t('Ngôn ngữ')}}</v-list-item-icon>
-    </v-expansion-panel-title>
-    <v-expansion-panel-text>
-      <v-list dense>
-        <v-list-item
-          v-for="lang in languages"
-          :key="lang.title"
-          @click="changeLanguage(lang.title)"
-        >
-          <v-list-item-title>{{ lang.name }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-     </v-expansion-panel-text>
-  </v-expansion-panel>
-  </v-expansion-panels>
-      <!-- Profile -->
-      <v-expansion-panels multiple v-if="!account">
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <v-list-item-icon><v-icon>mdi-account-circle</v-icon> Tài khoản</v-list-item-icon>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-list>
-              <v-list-item @click="Login()">
-                <v-list-item-title>{{$t('Đăng nhập')}}</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="Register()">
-                <v-list-item-title>{{$t('Đăng ký')}}</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-
-      <v-expansion-panels multiple v-else>
-        <v-expansion-panel>
-          <v-expansion-panel-title>
-            <v-list-item-icon><v-icon>mdi-account-circle</v-icon> 
-              <span>
-                {{ account }}
-              </span>
-        </v-list-item-icon>
-          </v-expansion-panel-title>
-          <v-expansion-panel-text>
-            <v-list>
-              <v-list-item @click="Logout()">
-                <v-list-item-title>{{$t('Đăng xuất')}}</v-list-item-title>
-              </v-list-item>
-              
-            </v-list>
-          </v-expansion-panel-text>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      
-    </v-list>
-  </v-navigation-drawer>
-
-
-<v-snackbar v-model="mess" :timeout="3000" :color="color">
-  {{ Message }}
-</v-snackbar>
-</div>
+    <v-snackbar v-model="mess" :timeout="3000" :color="color">
+      {{ Message }}
+    </v-snackbar>
+  </div>
 </template>
 
 <script>
-import vi from "element-plus/dist/locale/vi.mjs";
-import en from "element-plus/dist/locale/en.mjs";
-import cn from "element-plus/dist/locale/zh-cn.mjs";
-import { getLanguage, setLanguage } from "@/utils/cookies";
-import { Categoris, City,Search } from "@/model/api";
+import vi from 'element-plus/dist/locale/vi.mjs';
+import en from 'element-plus/dist/locale/en.mjs';
+import cn from 'element-plus/dist/locale/zh-cn.mjs';
+import { getLanguage, setLanguage } from '@/utils/cookies';
+import { Categoris, City, Search } from '@/model/api';
 import imageLogo from '@/assets/Logo.png';
 export default {
-  name: "HeaderVuetify",
+  name: 'HeaderVuetify',
   data() {
     return {
       imageLogo: imageLogo,
@@ -416,76 +263,68 @@ export default {
       drawer: false,
       loading: false,
       mess: false,
-      Message: "",
+      Message: '',
       color: '',
-      account: '',
       searchQuery: '',
-      curElLang: "",
-      curLang: "",
+      curElLang: '',
+      curLang: '',
       searchInput: '',
       movieSuggestions: [],
       menuVisible: false,
       genres: [],
       countries: [],
       languages: [
-        { name: "Tiếng Việt", title: "vi-VN" },
-        { name: "English", title: "en-US" },
-        { name: "中国", title: "zh-CN" },
+        { name: 'Tiếng Việt', title: 'vi-VN' },
+        { name: 'English', title: 'en-US' },
+        { name: '中国', title: 'zh-CN' },
       ],
-      dialogLogin: false,
-      dialogRegister: false,
-      loginForm: { email: '', password: '' },
-      registerForm: { name: '', email: '', password: '' },
     };
   },
   inject: ['currentTheme', 'setTheme'],
-  mounted(){
-    this.account = localStorage.getItem('name')
-  },
   methods: {
-    changeTheme(){
-      const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark'
-      this.setTheme(newTheme)
+    changeTheme() {
+      const newTheme = this.currentTheme() === 'dark' ? 'light' : 'dark';
+      this.setTheme(newTheme);
     },
     getTheLoai() {
-      this.loadingTheLoai = true
+      this.loadingTheLoai = true;
       Categoris(
         {},
         (dat) => {
-          if (dat.status == "success") {
+          if (dat.status == 'success') {
             this.genres = dat.data.items;
-            this.loadingTheLoai = false
+            this.loadingTheLoai = false;
           }
         },
         (err) => {
           console.log(err);
-          this.loadingTheLoai = false
+          this.loadingTheLoai = false;
         }
       );
     },
     getQuocGia() {
-      this.loadingQuocGia = true
+      this.loadingQuocGia = true;
       City(
         {},
         (dat) => {
-          if (dat.status == "success") {
+          if (dat.status == 'success') {
             this.countries = dat.data.items;
-            this.loadingQuocGia = false
+            this.loadingQuocGia = false;
           }
         },
         (err) => {
           console.log(err);
-          this.loadingQuocGia = false
+          this.loadingQuocGia = false;
         }
       );
     },
     searchMovie() {
       if (this.searchQuery) {
         this.$router.push({
-          name: "SearchMovie",
+          name: 'SearchMovie',
           query: { keyword: this.searchQuery },
         });
-        this.searchQuery = ''
+        this.searchQuery = '';
         this.menuVisible = false;
       }
     },
@@ -495,13 +334,13 @@ export default {
     },
     ChangeLang() {
       switch (this.curLang) {
-        case "en-US":
+        case 'en-US':
           this.curElLang = en;
           break;
-        case "vi-VN":
+        case 'vi-VN':
           this.curElLang = vi;
           break;
-        case "zh-CN":
+        case 'zh-CN':
           this.curElLang = cn;
           break;
         default:
@@ -518,27 +357,11 @@ export default {
     },
     InitLang() {
       const currLang = getLanguage();
-      this.curLang = currLang || "vi-VN";
+      this.curLang = currLang || 'vi-VN';
       this.ChangeLang();
     },
-    Login() {
-      this.$router.push('/login')
-    },
-    Register() {
-      this.$router.push('/register')
-    },
-    handleLogin(){
-      this.$router.push('/login')
-    },
-    handleRegister(){
-      this.$router.push('/register')
-    },
-    goHome(){
-      this.$router.push('/home')
-    },
-    Logout(){
-      localStorage.removeItem('name');
-      this.account = ''
+    goHome() {
+      this.$router.push('/home');
     },
     onInput(value) {
       if (!value || typeof value !== 'string' || value.trim().length < 2) {
@@ -554,7 +377,7 @@ export default {
         Search(
           { keyword },
           (dat) => {
-            this.movieSuggestions = dat.data.items.sort((a,b) => b.year-a.year) || [];
+            this.movieSuggestions = dat.data.items.sort((a, b) => b.year - a.year) || [];
             this.menuVisible = this.movieSuggestions.length > 0;
           },
           (err) => {
@@ -572,7 +395,6 @@ export default {
     },
   },
   created() {
-    this.account = localStorage.getItem('name') || "";
     this.InitLang();
   },
 };
@@ -599,5 +421,4 @@ a.router-link-active,
 a:hover {
   color: #00e165 !important;
 }
-
 </style>
