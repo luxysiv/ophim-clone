@@ -180,12 +180,6 @@
 import Hls from 'hls.js';
 import { MoveInfor, ListMovieByCate, urlImage } from '@/model/api';
 
-/**
- * Clean HLS manifest by removing ad segments between discontinuity tags
- * @param {string} manifest - HLS manifest content
- * @param {Object} opts - Configuration options
- * @returns {string} Cleaned manifest
- */
 function cleanManifest(manifest, opts = {}) {
     const {
         minSegments = 8,
@@ -200,7 +194,6 @@ function cleanManifest(manifest, opts = {}) {
     const lines = manifest.replace(/\r\n/g, '\n').split('\n');
     const discIndices = [];
     
-    // Find all discontinuity indices
     for (let i = 0; i < lines.length; i++) {
         if (lines[i].trim() === '#EXT-X-DISCONTINUITY') {
             discIndices.push(i);
@@ -209,7 +202,6 @@ function cleanManifest(manifest, opts = {}) {
 
     const toRemove = new Array(lines.length).fill(false);
 
-    // Analyze each discontinuity block
     for (let p = 0; p < discIndices.length - 1; p++) {
         const startIdx = discIndices[p];
         const endIdx = discIndices[p + 1];
@@ -219,16 +211,13 @@ function cleanManifest(manifest, opts = {}) {
         let shortSegmentCount = 0;
         const segmentDurations = [];
 
-        // Analyze lines between two discontinuities
         for (let k = startIdx + 1; k < endIdx; k++) {
             const line = lines[k].trim();
             
-            // Count TS segments
             if (/\.ts($|\?)/i.test(line)) {
                 segmentCount++;
             }
             
-            // Analyze durations if enabled
             if (analyzeDurations && line.startsWith('#EXTINF:')) {
                 const durationMatch = line.match(/#EXTINF:([\d.]+),/);
                 if (durationMatch) {
@@ -242,11 +231,9 @@ function cleanManifest(manifest, opts = {}) {
             }
         }
 
-        // Calculate metrics
         const avgDuration = segmentCount > 0 ? totalDuration / segmentCount : 0;
         const shortRatio = segmentCount > 0 ? shortSegmentCount / segmentCount : 0;
 
-        // Determine if this is an ad block
         const isAdBlock = segmentCount >= minSegments && 
                          segmentCount <= maxSegments &&
                          (!analyzeDurations || 
@@ -256,21 +243,18 @@ function cleanManifest(manifest, opts = {}) {
         console.log(`Block ${p + 1}: ${segmentCount} segments, avg: ${avgDuration.toFixed(2)}s, short: ${shortSegmentCount}/${segmentCount}, isAd: ${isAdBlock}`);
 
         if (isAdBlock) {
-            // Mark all lines in this block for removal
             for (let k = startIdx; k <= endIdx; k++) {
                 toRemove[k] = true;
             }
         }
     }
 
-    // Remove EXT-X-KEY: METHOD=NONE lines
     for (let i = 0; i < lines.length; i++) {
         if (/^#EXT-X-KEY:METHOD=NONE\b/i.test(lines[i].trim())) {
             toRemove[i] = true;
         }
     }
 
-    // Remove all remaining discontinuity tags if enabled
     if (removeAllDiscontinuity) {
         for (let i = 0; i < lines.length; i++) {
             if (lines[i].trim() === '#EXT-X-DISCONTINUITY') {
@@ -279,12 +263,10 @@ function cleanManifest(manifest, opts = {}) {
         }
     }
 
-    // Build cleaned output
     const cleanedLines = [];
     for (let i = 0; i < lines.length; i++) {
         if (!toRemove[i]) {
             let line = lines[i];
-            // Clean up URLs if needed
             line = line.replace(/\/convertv7\//g, '/');
             cleanedLines.push(line);
         }
@@ -293,11 +275,6 @@ function cleanManifest(manifest, opts = {}) {
     return cleanedLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 
-/**
- * Fetch and process HLS playlist
- * @param {string} playlistUrl - URL of the HLS playlist
- * @returns {Promise<string>} Processed playlist URL
- */
 async function fetchAndProcessPlaylist(playlistUrl) {
     let req;
     try {
