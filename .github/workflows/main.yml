@@ -1,0 +1,31 @@
+name: Build Vue App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Clean install dependencies
+        run: |
+          rm -rf node_modules
+          npm install
+
+      - name: Build Vue app
+        run: npm run build   # Vue build script tạo thư mục 'dist'
+
+      - name: Upload build as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vue-build
+          path: dist   # Thư mục build của Vue
