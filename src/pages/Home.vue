@@ -33,8 +33,8 @@
             ? Array(12).fill({})
             : section.listMovie.slice(0, 12)"
           :key="item.slug || index"
-          cols="4"
-          xs="4"
+          cols="6"
+          xs="6"
           sm="4"
           md="3"
           lg="2"
@@ -48,27 +48,12 @@
           >
             <v-card class="mx-auto bg-dark text-white" max-width="344">
               <v-img
-                :src="getOptimizedImage(item.poster_url, section.id)"
-                :lazy-src="getOptimizedImage(item.poster_url, section.id)"
+                :src="getOptimizedImage(item.poster_url)"
                 :alt="`Poster phim ${item.name}`"
                 class="movie-img"
                 height="250"
                 cover
               >
-                <template #default>
-                  <v-btn
-                    icon
-                    size="small"
-                    color="red"
-                    variant="flat"
-                    class="favorite-btn"
-                    @click.stop="toggleFavorite(item)"
-                  >
-                    <v-icon>{{
-                      isFavorite(item) ? "mdi-heart" : "mdi-heart-outline"
-                    }}</v-icon>
-                  </v-btn>
-                </template>
               </v-img>
 
               <v-card-subtitle class="episode-lang">
@@ -98,7 +83,7 @@
 
 
 <script>
-import { ListMovieByCateHome,ListMovieByCateHome1, urlImage,urlImage1 } from "@/model/api";
+import { ListMovieByCateHome, urlImage } from "@/model/api";
 import CarouselPage from "./Carousel.vue";
 
 export default {
@@ -106,9 +91,7 @@ export default {
   data() {
     return {
       urlImage: urlImage,
-      urlImage1: urlImage1,
       isLoading: true,
-      favoriteMovies: [],
       sections: [
         
         {
@@ -122,14 +105,6 @@ export default {
           title: this.$t("PHIM ĐỀ CỬ"),
           id: "danh-sach/phim-moi-cap-nhat?page=2",
           name: "PhimNew",
-          listMovie: [],
-          content: ''
-
-        },
-        {
-          title: this.$t("PHIM VIỆT NAM"),
-          id: "quoc-gia/viet-nam?page=1&limit=20",
-          name: "QuocGia",
           listMovie: [],
           content: ''
 
@@ -167,88 +142,37 @@ export default {
 
         },
       ],
-      link: ''
     };
   },
   components: {
     CarouselPage,
   },
-  async mounted() {
-    await Promise.all(
-      this.sections.map(item => this.ListMovie(item.id, item))
-  );
-    // this.sections.forEach((item) => {
-    //   await this.ListMovie(item.id, item);
-    // });
+  mounted() {
+    this.sections.forEach((item) => {
+      this.ListMovie(item.id, item);
+    });
   },
   methods: {
     ListMovie(sectionId, section) {
-      if(section.id == "quoc-gia/viet-nam?page=1&limit=20"){
-        return new Promise((resolve, reject) =>{
-          ListMovieByCateHome1(
-          sectionId,
-          (result) => {
-            if (result.status === "success") {
-              section.listMovie = result.data.items;
-                this.link = 'link2';
-              if (result.data.seoOnPage) {
-                  this.updateMetaTags(result.data.seoOnPage)
-                }
-              this.isLoading = false;
-              resolve(true)
-            }
-            else{
-              resolve(false)
-            }
-          },
-          (err) => {
-            console.error(err);
-            reject(err)
+      ListMovieByCateHome(
+        sectionId,
+        (result) => {
+          if (result.status === "success") {
+            section.listMovie = result.data.items;
+            
+             if (result.data.seoOnPage) {
+                this.updateMetaTags(result.data.seoOnPage)
+              }
+            this.isLoading = false;
           }
-        );
-        })
-        
-      }
-      else{
-        return new Promise((resolve, reject) =>{
-          ListMovieByCateHome(
-            sectionId,
-            (result) => {
-              if (result.status === "success") {
-                this.link = '';
-                section.listMovie = result.data.items;
-                
-                if (result.data.seoOnPage) {
-                    this.updateMetaTags(result.data.seoOnPage)
-                  }
-                this.isLoading = false;
-                resolve(true);
-              }
-              else{
-                resolve(false)
-              }
-            },
-            (err) => {
-              console.error(err);
-              reject(err)
-            }
-          );
-      
-        })
-        
-      }
-      
-
+        },
+        (err) => {
+          console.error(err);
+        }
+      );
     },
-    getOptimizedImage(imagePath,sectionID) {
-      if(sectionID != "quoc-gia/viet-nam?page=1&limit=20"){
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-
-      }
-      else{
-        return `${this.urlImage1 + "https://phimimg.com/"+ encodeURIComponent(imagePath)}`;
-
-      }
+    getOptimizedImage(imagePath) {
+      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
     },
     // Chuan SEO
     updateMetaTags(seo) {
@@ -294,19 +218,6 @@ export default {
         }
       });
     },
-    isFavorite(movie) {
-    return this.favoriteMovies.some(fav => fav.slug === movie.slug);
-  },
-
-  // Thêm/bỏ yêu thích
-  toggleFavorite(movie) {
-    const index = this.favoriteMovies.findIndex(fav => fav.slug === movie.slug);
-    if (index !== -1) {
-      this.favoriteMovies.splice(index, 1); // Bỏ yêu thích
-    } else {
-      this.favoriteMovies.push(movie); // Thêm yêu thích
-    }
-  },
   },
 };
 </script>
@@ -353,13 +264,7 @@ a {
   transition: transform 0.3s ease;
   box-shadow: 0 4px 20px rgba(255, 204, 0, 0.2);
 }
-.favorite-btn {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  z-index: 2;
-  background-color: rgba(0, 0, 0, 0.5);
-}
+
 .fade-scale-enter-active,
 .fade-scale-leave-active {
   transition: all 0.4s ease;

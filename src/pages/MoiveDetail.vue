@@ -4,67 +4,32 @@
   </v-col>
 
   <div v-else>
-    <!-- Breadcrumb -->
     <v-breadcrumbs :items="items">
       <template v-slot:divider>
         <v-icon icon="mdi-chevron-right"></v-icon>
       </template>
     </v-breadcrumbs>
 
-    <!-- Bố cục hai cột -->
     <v-row dense>
-      <!-- Cột bên trái: Video + nút + danh sách tập + info -->
       <v-col cols="12" md="10">
-        <!-- VIDEO -->
-        <div
-          class="video-wrapper"
-          v-html="generateEmbedHtml(movie.videoUrl)"
-        ></div>
-        <!-- <div v-if="!videoLoaded" class="video-placeholder" @click="videoLoaded = true">
-          <img :src="thumbnailUrl" alt="Preview" style="width:100%;cursor:pointer;" />
-          <div class="play-button">▶</div>
+        <div class="video-wrapper">
+          <video id="videoPlayer" class="w-full h-full" controls autoplay></video>
         </div>
 
-        <div v-else class="video-wrapper" v-html="embedHtml()"></div> -->
-
-        <!-- Nhóm nút + server -->
         <div
           class="d-flex align-center justify-space-between flex-wrap px-4 py-2"
           style="background-color: #1a1a1a"
         >
-          <!-- Nút chức năng -->
           <div class="d-flex align-center flex-wrap" style="gap: 16px">
             <v-btn variant="text" @click="getTrailer()">
               <v-icon start icon="mdi-youtube" />
               Trailer
             </v-btn>
-            <v-btn variant="text" @click="shareMovie"
-              ><v-icon start icon="mdi-share-variant" />{{$t('Chia sẻ')}}</v-btn
-            >
-            <v-btn variant="text" @click="ResponseError"
-              ><v-icon start icon="mdi-flag" />{{$t('Báo lỗi')}}</v-btn
-            >
-            <v-btn variant="text"
-              ><v-icon start icon="mdi-bookmark-outline" />{{$t('Xem sau')}}</v-btn
-            >
+            <v-btn variant="text" @click="shareMovie"><v-icon start icon="mdi-share-variant" />{{ $t('Chia sẻ') }}</v-btn>
           </div>
 
-          <!-- Server -->
-          
           <div class="d-flex" style="gap: 8px">
-            <router-link
-              :to="movie.LinkDown"
-              download
-              target="_blank"
-            >
-              <v-btn class="ma-2" icon="mdi-cloud-download"></v-btn>
-            </router-link>
-            <v-tabs
-              v-model="tabserver"
-              class="custom-tabs"
-              background-color="transparent"
-
-            >
+            <v-tabs v-model="tabserver" class="custom-tabs" background-color="transparent">
               <v-tab
                 v-for="(server, index) in movie.servers"
                 :key="index"
@@ -75,61 +40,41 @@
               </v-tab>
             </v-tabs>
           </div>
-
         </div>
 
-        <!-- Danh sách tập -->
         <v-card class="my-4" variant="flat" color="grey-darken-4" theme="dark">
           <v-card-title class="d-flex align-center">
             <span class="text-h6">{{ movie.title }}</span>
-            <v-chip class="ml-2" color="red" text-color="white">{{
-              movie.page
-            }}</v-chip>
+            <v-chip class="ml-2" color="red" text-color="white">{{ movie.page }}</v-chip>
             <v-chip
               class="ml-2"
               color="red"
               text-color="white"
               v-if="typeof movie.page === 'string' && movie.page.toUpperCase().includes('HOÀN TẤT')"
             >
-              {{$t('Tập ')}}1
+              {{ $t('Tập ') }}1
             </v-chip>
           </v-card-title>
           <v-card-text>
             <v-row>
-              <v-col
-                v-for="(episode, index) in movie.pageMovie"
-                :key="index"
-                cols="auto"
-                class="pa-2"
-              >
+              <v-col v-for="(episode, index) in movie.pageMovie" :key="index" cols="auto" class="pa-2">
                 <v-btn color="primary" @click="playEpisode(episode)">
-                  {{ episode.name ?( episode.name.includes("Tập") ? episode.name: $t('Tập ') + episode.name) : "Trailer" }}
+                  {{ episode.name ? $t('Tập ') + episode.name : 'Trailer' }}
                 </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
         </v-card>
 
-        <!-- Thông tin phim -->
-        <v-card
-          class="pa-6 text-left"
-          color="grey-darken-4"
-          variant="flat"
-          rounded="lg"
-          theme="dark"
-        >
-          <v-card-title class="text-white mb-4"
-            >{{ movie.title }} ( {{ movie.name }})</v-card-title
-          >
+        <v-card class="pa-6 text-left" color="grey-darken-4" variant="flat" rounded="lg" theme="dark">
+          <v-card-title class="text-white mb-4">{{ movie.title }} ( {{ movie.name }})</v-card-title>
+          <v-card-text class="text-grey-lighten-2" :v-html="movie.description"></v-card-text>
           <v-card-text class="text-white">
-            <div v-html="movie.description"></div>
-          </v-card-text>
-          <v-card-text class="text-white">
-            <p><strong>{{$t('Diễn viên')}}:</strong> {{ movie.actors.join(", ") }}</p>
-            <p><strong>{{$t('Đạo diễn')}}:</strong> {{ movie.director.join(", ") }}</p>
-            <p><strong>{{$t('Thể loại')}}:</strong> {{ movie.genre.name }}</p>
+            <p><strong>{{ $t('Diễn viên') }}:</strong> {{ movie.actors.join(', ') }}</p>
+            <p><strong>{{ $t('Đạo diễn') }}:</strong> {{ movie.director.join(', ') }}</p>
+            <p><strong>{{ $t('Thể loại') }}:</strong> {{ movie.genre.name }}</p>
             <div class="d-flex align-center">
-              <strong class="mr-2">{{$t('Đánh giá')}}:</strong>
+              <strong class="mr-2">{{ $t('Đánh giá') }}:</strong>
               <v-rating
                 readonly
                 :length="5"
@@ -140,73 +85,18 @@
             </div>
           </v-card-text>
         </v-card>
-
-        <!-- Bình luận -->
-        <v-card flat color="#1e1e1e" class="pa-6 rounded-xl elevation-2 mt-6">
-          <h2 class="text-white mb-6 text-h5 font-weight-bold">🗨️ {{$t('Bình luận')}}</h2>
-          <v-text-field
-            v-model="newComment"
-            :placeholder="$t('Thêm bình luận...')"
-            variant="outlined"
-            color="blue"
-            class="rounded-xl mb-4"
-            density="comfortable"
-            hide-details
-            append-inner-icon="mdi-send"
-            @click:append-inner="addComment"
-            :rules="[(v) => !!v || $t('Bình luận không được để trống')]"
-          ></v-text-field>
-          <v-divider class="mb-4" color="grey darken-3"></v-divider>
-          <div
-            v-for="(comment, index) in comments"
-            :key="index"
-            class="d-flex align-start mb-5"
-          >
-            <v-avatar size="44" class="me-3" color="blue-grey-darken-3">
-              <v-icon color="white">mdi-account</v-icon>
-            </v-avatar>
-            <div class="flex-grow-1">
-              <div class="d-flex align-center mb-1">
-                <span class="text-blue-lighten-3 font-weight-medium me-2">{{
-                  comment.username
-                }}</span>
-                <v-chip
-                  size="x-small"
-                  color="grey-darken-4"
-                  text-color="grey-lighten-1"
-                  variant="flat"
-                >
-                  {{ comment.time }}
-                </v-chip>
-              </div>
-              <div class="text-white text-body-2">{{ comment.content }}</div>
-              <div
-                class="text-caption mt-2 text-grey-lighten-1"
-                style="cursor: pointer"
-              >
-                {{$t('Phản hồi')}}
-              </div>
-            </div>
-          </div>
-        </v-card>
       </v-col>
 
-      <!-- Cột bên phải: Gợi ý -->
-      <!-- Cột bên phải: Gợi ý chỉ hiện trên desktop -->
       <v-col cols="12" md="2" v-show="$vuetify.display.mdAndUp">
         <v-card class="pa-0" color="grey-darken-4" flat>
           <v-tabs v-model="tab" background-color="grey-darken-3" grow>
-            <v-tab value="1">{{$t('Gợi ý cho bạn')}}</v-tab>
-            <v-tab value="2">{{$t('Top phim')}}</v-tab>
+            <v-tab value="1">{{ $t('Gợi ý cho bạn') }}</v-tab>
+            <v-tab value="2">{{ $t('Top phim') }}</v-tab>
           </v-tabs>
 
           <v-card-text style="max-height: 87vh; overflow-y: auto">
             <v-list dense nav>
-              <v-list-item
-                v-for="suggested in suggestedMovies"
-                :key="suggested.id"
-                class="suggested-item"
-              >
+              <v-list-item v-for="suggested in suggestedMovies" :key="suggested.id" class="suggested-item">
                 <router-link
                   :to="{
                     name: 'MovieDetail',
@@ -215,18 +105,15 @@
                   class="text-decoration-none"
                 >
                   <v-list-item-avatar size="80">
-                    <v-img  :src="getOptimizedImage(suggested.poster_url)" :lazy-src="getOptimizedImage(suggested.poster_url)" />
+                    <v-img :src="getOptimizedImage(suggested.poster_url)" />
                   </v-list-item-avatar>
 
                   <v-list-item-content>
                     <v-list-item-title class="text-white text-wrap text-body-2">
                       {{ suggested.name }}
                     </v-list-item-title>
-                    <v-list-item-subtitle
-                      class="text-grey-lighten-1 text-caption"
-                    >
-                      {{ suggested.episode_current }} | {{ suggested.lang
-                      }}<br />
+                    <v-list-item-subtitle class="text-grey-lighten-1 text-caption">
+                      {{ suggested.episode_current }} | {{ suggested.lang }}<br />
                       {{ suggested.category[0]?.name }} • {{ suggested.year }}
                     </v-list-item-subtitle>
                   </v-list-item-content>
@@ -237,36 +124,20 @@
         </v-card>
       </v-col>
 
-      <!-- Gợi ý mở rộng bên dưới chỉ hiện trên desktop -->
-      
       <div class="suggested-movies my-8">
-        <h2 class="text-h5 mb-4">🎬 {{$t('Phim được đề xuất')}}</h2>
+        <h2 class="text-h5 mb-4">🎬 {{ $t('Phim được đề xuất') }}</h2>
         <v-row>
-          <v-col
-            v-for="suggested in suggestedMovies"
-            :key="suggested._id"
-            cols="6"
-            sm="4"
-            md="2"
-          >
+          <v-col v-for="suggested in suggestedMovies" :key="suggested.id" cols="6" sm="4" md="2">
             <router-link
               :to="{ name: 'MovieDetail', params: { slug: suggested.slug } }"
               class="text-decoration-none"
             >
               <v-card elevation="2" class="bg-grey-darken-4" hover>
-                <v-img
-                  :lazy-src="getOptimizedImage(suggested.poster_url)"
-                  :src="getOptimizedImage(suggested.poster_url)"
-                  aspect-ratio="16/9"
-                  cover
-                  
-                ></v-img>
+                <v-img :src="getOptimizedImage(suggested.poster_url)" aspect-ratio="16/9" cover></v-img>
                 <v-card-title class="text-white text-body-2 text-wrap">
                   {{ suggested.name }}
                 </v-card-title>
-                <v-card-subtitle
-                  class="text-grey-lighten-1 text-caption px-4 pb-4"
-                >
+                <v-card-subtitle class="text-grey-lighten-1 text-caption px-4 pb-4">
                   {{ suggested.episode_current }} | {{ suggested.lang }}<br />
                   {{ suggested.category[0]?.name }} • {{ suggested.year }}
                 </v-card-subtitle>
@@ -277,56 +148,10 @@
       </div>
     </v-row>
 
-    <!-- dialog share -->
     <v-dialog v-model="shareDialog" max-width="500">
       <v-card class="pa-4" style="background-color: #1e1e1e; color: white">
         <v-card-title class="text-h6 justify-center">Chia sẻ</v-card-title>
-
-        <v-row class="justify-center mt-4" dense>
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('facebook')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-facebook" />
-            </v-btn>
-            <div class="mt-1 text-caption">Facebook</div>
-          </v-col>
-
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('youtube')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-youtube" />
-            </v-btn>
-            <div class="mt-1 text-caption">YouTube</div>
-          </v-col>
-
-          <v-col cols="3" class="text-center">
-            <v-btn icon size="large" @click="copyLink" class="bg-grey-darken-4">
-              <v-icon icon="mdi-link-variant" />
-            </v-btn>
-            <div class="mt-1 text-caption">Copy link</div>
-          </v-col>
-
-          <v-col cols="3" class="text-center">
-            <v-btn
-              icon
-              size="large"
-              @click="shareTo('twitter')"
-              class="bg-grey-darken-4"
-            >
-              <v-icon icon="mdi-twitter" />
-            </v-btn>
-            <div class="mt-1 text-caption">Twitter</div>
-          </v-col>
-        </v-row>
-
+        
         <v-card
           class="mt-4 px-3 py-2 d-flex align-center"
           style="background-color: #2a2a2a; border-radius: 8px"
@@ -340,17 +165,11 @@
           </v-btn>
         </v-card>
 
-        <v-btn
-          icon
-          class="position-absolute"
-          style="top: 8px; right: 8px"
-          @click="shareDialog = false"
-        >
+        <v-btn icon class="position-absolute" style="top: 8px; right: 8px" @click="shareDialog = false">
           <v-icon icon="mdi-close" />
         </v-btn>
       </v-card>
     </v-dialog>
-    <!-- Snackbar -->
     <v-snackbar v-model="mess" :timeout="3000" :color="color">
       {{ Message }}
     </v-snackbar>
@@ -358,98 +177,309 @@
 </template>
 
 <script>
-import {
-  MoveInfor,
-  MoveInfor1,
-  ListMovieByCate,
-  Categoris1,
-  urlImage,
-  urlImage1,
-  GetComments,
-  AddComment,
-} from "@/model/api";
+import Hls from 'hls.js';
+import { MoveInfor, ListMovieByCate, urlImage } from '@/model/api';
+
+/**
+ * Clean HLS manifest by removing ad segments between discontinuity tags
+ * @param {string} manifest - HLS manifest content
+ * @param {Object} opts - Configuration options
+ * @returns {string} Cleaned manifest
+ */
+function cleanManifest(manifest, opts = {}) {
+    const {
+        minSegments = 8,
+        maxSegments = 20,
+        removeAllDiscontinuity = true,
+        maxAvgDuration = 3.0,
+        analyzeDurations = true,
+        shortDurationThreshold = 2.5,
+        minShortRatio = 0.6
+    } = opts;
+
+    const lines = manifest.replace(/\r\n/g, '\n').split('\n');
+    const discIndices = [];
+    
+    // Find all discontinuity indices
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i].trim() === '#EXT-X-DISCONTINUITY') {
+            discIndices.push(i);
+        }
+    }
+
+    const toRemove = new Array(lines.length).fill(false);
+
+    // Analyze each discontinuity block
+    for (let p = 0; p < discIndices.length - 1; p++) {
+        const startIdx = discIndices[p];
+        const endIdx = discIndices[p + 1];
+
+        let segmentCount = 0;
+        let totalDuration = 0;
+        let shortSegmentCount = 0;
+        const segmentDurations = [];
+
+        // Analyze lines between two discontinuities
+        for (let k = startIdx + 1; k < endIdx; k++) {
+            const line = lines[k].trim();
+            
+            // Count TS segments
+            if (/\.ts($|\?)/i.test(line)) {
+                segmentCount++;
+            }
+            
+            // Analyze durations if enabled
+            if (analyzeDurations && line.startsWith('#EXTINF:')) {
+                const durationMatch = line.match(/#EXTINF:([\d.]+),/);
+                if (durationMatch) {
+                    const duration = parseFloat(durationMatch[1]);
+                    totalDuration += duration;
+                    segmentDurations.push(duration);
+                    if (duration < shortDurationThreshold) {
+                        shortSegmentCount++;
+                    }
+                }
+            }
+        }
+
+        // Calculate metrics
+        const avgDuration = segmentCount > 0 ? totalDuration / segmentCount : 0;
+        const shortRatio = segmentCount > 0 ? shortSegmentCount / segmentCount : 0;
+
+        // Determine if this is an ad block
+        const isAdBlock = segmentCount >= minSegments && 
+                         segmentCount <= maxSegments &&
+                         (!analyzeDurations || 
+                          avgDuration < maxAvgDuration || 
+                          shortRatio >= minShortRatio);
+
+        console.log(`Block ${p + 1}: ${segmentCount} segments, avg: ${avgDuration.toFixed(2)}s, short: ${shortSegmentCount}/${segmentCount}, isAd: ${isAdBlock}`);
+
+        if (isAdBlock) {
+            // Mark all lines in this block for removal
+            for (let k = startIdx; k <= endIdx; k++) {
+                toRemove[k] = true;
+            }
+        }
+    }
+
+    // Remove EXT-X-KEY: METHOD=NONE lines
+    for (let i = 0; i < lines.length; i++) {
+        if (/^#EXT-X-KEY:METHOD=NONE\b/i.test(lines[i].trim())) {
+            toRemove[i] = true;
+        }
+    }
+
+    // Remove all remaining discontinuity tags if enabled
+    if (removeAllDiscontinuity) {
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].trim() === '#EXT-X-DISCONTINUITY') {
+                toRemove[i] = true;
+            }
+        }
+    }
+
+    // Build cleaned output
+    const cleanedLines = [];
+    for (let i = 0; i < lines.length; i++) {
+        if (!toRemove[i]) {
+            let line = lines[i];
+            // Clean up URLs if needed
+            line = line.replace(/\/convertv7\//g, '/');
+            cleanedLines.push(line);
+        }
+    }
+
+    return cleanedLines.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+}
+
+/**
+ * Fetch and process HLS playlist
+ * @param {string} playlistUrl - URL of the HLS playlist
+ * @returns {Promise<string>} Processed playlist URL
+ */
+async function fetchAndProcessPlaylist(playlistUrl) {
+    let req;
+    try {
+        req = await fetch(playlistUrl);
+        if (!req.ok) throw new Error(`Failed to fetch playlist: ${req.statusText}`);
+    } catch (error) {
+        console.error('Failed to fetch playlist:', error);
+        return playlistUrl;
+    }
+
+    let playlistText = await req.text();
+
+    playlistText = playlistText.replace(/^[^#].*$/gm, (line) => {
+        try {
+            const parsedUrl = new URL(line, playlistUrl);
+            return parsedUrl.toString();
+        } catch {
+            return line;
+        }
+    });
+
+    if (playlistText.includes('#EXT-X-STREAM-INF')) {
+        const subPlaylistUrl = playlistText.trim().split('\n').slice(-1)[0];
+        return fetchAndProcessPlaylist(subPlaylistUrl);
+    }
+
+    const processedPlaylist = cleanManifest(playlistText, {
+        minSegments: 10,
+        maxSegments: 18,
+        removeAllDiscontinuity: true
+    });
+
+    const blobUrl = URL.createObjectURL(
+        new Blob([processedPlaylist], { type: req.headers.get('Content-Type') ?? 'text/plain' })
+    );
+
+    return blobUrl;
+}
 
 export default {
-  name: "MovieDetail",
+  name: 'MovieDetail',
   data() {
     return {
-      videoLoaded: false,
-      tab: "",
+      tab: '',
       shareUrl: window.location.href,
       tabserver: null,
       items: [
         {
-          title: "Home",
+          title: 'Home',
           disabled: false,
-          href: "/home",
-        },
-        {
-          title: this.slug,
-          disabled: true,
+          href: '/home',
         },
       ],
       isLoading: true,
-      Message: "",
-      color: "",
+      Message: '',
+      color: '',
       mess: false,
       movie: {
-        title: "",
+        title: '',
         valueRate: 4.5,
-        description: "",
-        videoUrl: "",
+        description: '',
+        videoUrl: '',
         actors: [],
         director: [],
         servers: [],
-        genre: "",
+        genre: '',
         pageMovie: [],
         page: 1,
         rating: 5,
-        categoris: "",
-        trailer_url: "",
-        name: "",
-        LinkDown: ''
+        categoris: '',
+        trailer_url: '',
+        name: '',
       },
-      idMovie: "",
+      idMovie: '',
       isTrailer: false,
       urlImage: urlImage,
-      urlImage1: urlImage1,
       suggestedMovies: [],
-      comments: [],
-      newComment: "",
       shareDialog: false,
-      link: ''
+      hls: null,
     };
   },
-  props: ["slug"],
+  props: ['slug'],
   watch: {
-    async slug(newSlug) {
-      await  this.MoveInfor(newSlug);
-      await this.ListMovieByCate();
-      //await this.GetComment();
+    slug(newSlug) {
+      this.items = [{ title: 'Home', disabled: false, href: '/home' }];
+      this.MoveInfor(newSlug);
+      this.ListMovieByCate();
+    },
+    'movie.videoUrl'(newUrl) {
+      if (newUrl) {
+        this.$nextTick(() => {
+          this.loadVideo(newUrl);
+        });
+      }
     },
   },
-  async mounted() {
-    try{
-      await this.MoveInfor(this.slug);
-      await this.ListMovieByCate();
-      //await this.GetComment();
+  mounted() {
+    this.MoveInfor(this.slug);
+    this.ListMovieByCate();
+  },
+  beforeUnmount() {
+    if (this.hls) {
+      this.hls.destroy();
     }
-    catch(err){
-      console.log(err)
-    }
-    
   },
   methods: {
-    // Call API
+    async loadVideo(url) {
+      const video = document.getElementById('videoPlayer');
+      if (!video) {
+        console.error('Video element not found!');
+        return;
+      }
+
+      if (video.src) {
+        video.pause();
+        video.src = '';
+        video.load();
+      }
+
+      const oldIframe = document.querySelector('.video-wrapper iframe');
+      if (oldIframe) {
+        oldIframe.remove();
+      }
+
+      const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/);
+      if (youtubeMatch) {
+        const videoId = youtubeMatch[1];
+        video.style.display = 'none';
+        const wrapper = document.querySelector('.video-wrapper');
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.frameBorder = '0';
+        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+        iframe.allowFullscreen = true;
+        wrapper.appendChild(iframe);
+      } else if (Hls.isSupported()) {
+        video.style.display = 'block';
+        if (this.hls) {
+          this.hls.destroy();
+        }
+        this.hls = new Hls();
+        
+        // Use the new function to process the URL
+        const processedUrl = await fetchAndProcessPlaylist(url);
+        
+        this.hls.loadSource(processedUrl);
+        this.hls.attachMedia(video);
+        this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+          video.play();
+        });
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        video.style.display = 'block';
+        video.src = url;
+        video.addEventListener('loadedmetadata', function() {
+          video.play();
+        });
+      }
+    },
     MoveInfor(slug) {
-      return new Promise((resolve,reject) =>{
-        MoveInfor(
+      MoveInfor(
         slug,
         (result) => {
           console.log(result);
-          if (result.status == true || result.status == "success") {
-            this.link = '';
-            this.movie.page = result.movie.episode_current;
+          if (result.status == true) {
+            const tapFromUrl = this.$route.query.tap;
+            let initialVideoUrl = '';
+            let initialEpisodePage = '';
+
+            const episodeData = result.episodes[0].server_data.find(ep => ep.slug === tapFromUrl);
+            if (episodeData) {
+              initialVideoUrl = episodeData.link_m3u8;
+              initialEpisodePage = 'Tập ' + tapFromUrl;
+            } else {
+              initialVideoUrl = result.episodes[0].server_data[0].link_m3u8;
+              initialEpisodePage = result.movie.episode_current;
+            }
+
+            this.movie.videoUrl = initialVideoUrl;
+            this.movie.page = initialEpisodePage;
+
             this.idMovie = result.movie._id;
             this.movie.title = result.movie.origin_name;
             this.movie.description = result.movie.content;
@@ -459,293 +489,79 @@ export default {
             this.movie.trailer_url = result.movie.trailer_url;
             this.movie.name = result.movie.name;
 
-            // if (result.data.seoOnPage) {
-            //   this.updateMetaTags(result.data.seoOnPage)
-            // }
-            if (
-              result.movie.status == "trailer" ||
-              result.episodes[0].server_data[0].link_embed == ""
-            ) {
+            if (result.movie.status == 'trailer' || !result.episodes[0].server_data[0].link_m3u8) {
               this.movie.videoUrl = result.movie.trailer_url;
-              // this.movie.title = result.movie.name;
               this.isTrailer = true;
-            } else {
-              if (
-                this.movie.page == "Full" ||
-                this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                this.movie.page.includes("/")
-              ) {
-                this.movie.videoUrl =
-                  result.episodes[0].server_data[0].link_embed;
-                // this.movie.title = result.movie.name;
-                this.isTrailer = false;
-              } else {
-                var tap = this.movie.page.split("Tập ")[1].trim();
-                const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap || ep.slug.includes(tap)
-                );
-                if (data) {
-                  this.movie.videoUrl = data.link_embed;
-                  this.movie.LinkDown = data.link_m3u8;
-                  // this.movie.title = data.filename;
-                  this.isTrailer = false;
-                } else {
-                  const data = result.episodes[1].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
-                  );
-                  if (data) {
-                    this.movie.videoUrl = data.link_embed;
-                    this.movie.LinkDown = data.link_m3u8;
-                    // this.movie.title = data.filename;
-                    this.isTrailer = false;
-                  }
-                }
-                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                // this.isTrailer = false;
-              }
             }
+
+            console.log(this.movie.videoUrl);
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
             }
             this.movie.categoris = result.movie.category[0].slug;
+
+            this.items.push({
+              title: result.movie.origin_name,
+              disabled: true,
+            });
+
             this.isLoading = false;
-            // this.GetComment()
-            // .then(resolve)
-            // .catch(reject);
-            resolve(true);
-          }
-          else{
-            this.MoveInfor1(slug)
-            .then(resolve)
-            .catch(reject);
           }
         },
         (err) => {
           console.log(err);
-          this.MoveInfor1(slug)
-          .then(resolve)
-          .catch(reject);
         }
       );
-    
-      })
-      
-    },
-    MoveInfor1(slug) {
-      return new Promise((resolve,reject) =>{
-        MoveInfor1(
-        slug,
-        (result) => {
-          console.log(result);
-          if (result.status == true || result.status == "success") {
-            this.link = 'link';
-            this.movie.page = result.movie.episode_current;
-            this.idMovie = result.movie._id;
-            this.movie.title = result.movie.origin_name;
-            this.movie.description = result.movie.content;
-            this.movie.pageMovie = result.episodes[0].server_data;
-            this.movie.director = result.movie.director;
-            this.movie.servers = result.episodes;
-            this.movie.trailer_url = result.movie.trailer_url;
-            this.movie.name = result.movie.name;
-
-            // if (result.data.seoOnPage) {
-            //   this.updateMetaTags(result.data.seoOnPage)
-            // }
-            if (
-              result.movie.status == "trailer" ||
-              result.episodes[0].server_data[0].link_embed == ""
-            ) {
-              this.movie.videoUrl = result.movie.trailer_url;
-              // this.movie.title = result.movie.name;
-              this.isTrailer = true;
-            } else {
-              if (
-                this.movie.page == "Full" ||
-                this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-                this.movie.page.includes("/")
-              ) {
-                this.movie.videoUrl =
-                  result.episodes[0].server_data[0].link_embed;
-                // this.movie.title = result.movie.name;
-                this.isTrailer = false;
-              } else {
-                var tap = this.movie.page.split("Tập ")[1].trim();
-                const data = result.episodes[0].server_data.find(
-                  (ep) => ep.slug === tap || ep.slug.includes(tap)
-                );
-                if (data) {
-                  this.movie.videoUrl = data.link_embed;
-                  // this.movie.title = data.filename;
-                  this.isTrailer = false;
-                } else {
-                  const data = result.episodes[1].server_data.find(
-                    (ep) => ep.slug === tap || ep.slug.includes(tap)
-                  );
-                  if (data) {
-                    this.movie.videoUrl = data.link_embed;
-                    // this.movie.title = data.filename;
-                    this.isTrailer = false;
-                  }
-                }
-                // this.movie.videoUrl = result.episodes[0].server_data[tap-1].link_embed
-                // this.isTrailer = false;
-              }
-            }
-            this.movie.actors = result.movie.actor;
-            for (var i = 0; i < result.movie.country.length; i++) {
-              this.movie.genre = result.movie.country[i];
-            }
-            this.movie.categoris = result.movie.category[0].slug;
-            this.isLoading = false;
-            // this.GetComment()
-            // .then(resolve)
-            // .catch(reject);
-            resolve(true)
-          }
-          else{
-            reject("error");
-          }
-          
-        },
-        (err) => {
-          console.log(err);
-          reject(err);
-        }
-      );
-    
-      })
-      
-    },
-
-    DownloadVideo(linkdown){
-      window.open(linkdown);
-    
     },
     getOptimizedImage(imagePath) {
-      if(this.link == ""){
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      }
-      else{
-        return `${this.urlImage1 + "https://phimimg.com/" + encodeURIComponent(imagePath)}`;
-
-      }
+      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
     },
-    // Chuản SEO
     updateMetaTags(seo) {
-      document.title = seo.titleHead || "Phim hay";
-
-      const removeOldMeta = (key, attr = "name") => {
+      document.title = seo.titleHead || 'Phim hay';
+      const removeOldMeta = (key, attr = 'name') => {
         const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
         old.forEach((tag) => tag.remove());
       };
-
-      const setMeta = (key, content, attr = "name") => {
+      const setMeta = (key, content, attr = 'name') => {
         if (!content) return;
-        const meta = document.createElement("meta");
+        const meta = document.createElement('meta');
         meta.setAttribute(attr, key);
-        meta.setAttribute("content", content);
+        meta.setAttribute('content', content);
         document.head.appendChild(meta);
       };
-
-      // Xóa cũ
-      removeOldMeta("description");
-      removeOldMeta("og:title", "property");
-      removeOldMeta("og:description", "property");
-      removeOldMeta("og:type", "property");
-      removeOldMeta("og:image", "property");
-
-      // Thêm mới
-      setMeta("description", seo.descriptionHead);
-      setMeta("og:title", seo.titleHead, "property");
-      setMeta("og:description", seo.descriptionHead, "property");
-      setMeta("og:type", seo.og_type || "website", "property");
-
+      removeOldMeta('description');
+      removeOldMeta('og:title', 'property');
+      removeOldMeta('og:description', 'property');
+      removeOldMeta('og:type', 'property');
+      removeOldMeta('og:image', 'property');
+      setMeta('description', seo.descriptionHead);
+      setMeta('og:title', seo.titleHead, 'property');
+      setMeta('og:description', seo.descriptionHead, 'property');
+      setMeta('og:type', seo.og_type || 'website', 'property');
       if (Array.isArray(seo.og_image)) {
         seo.og_image.forEach((img) => {
-          setMeta("og:image", img, "property");
+          setMeta('og:image', img, 'property');
         });
       }
     },
     ListMovieByCate() {
-      return new Promise((resolve, reject) =>{
-        if(this.link == ""){
-          ListMovieByCate(
-            this.movie.categoris,
-
-            (data) => {
-              console.log(data)
-              if (data.status == "success") {
-                this.suggestedMovies = data.data.items;
-                this.isLoading = false;
-                resolve(true)
-              }
-              else{
-                reject("error");
-              }
-            },
-            (err) => {
-              console.log(err);
-              reject(err)
-            }
-        );
-        
-      }
-      else{
-        Categoris1(
+      ListMovieByCate(
         this.movie.categoris,
-
         (data) => {
-          console.log(data)
-          if (data.status == true) {
+          if (data.status == 'success') {
             this.suggestedMovies = data.data.items;
             this.isLoading = false;
-            resolve(true)
           }
-          else{
-            reject("error");
-          }
+          console.log(data);
         },
         (err) => {
           console.log(err);
-          reject(err)
         }
       );
-      }
-      
-      
-      })
-      
     },
     shareMovie() {
       this.shareDialog = true;
-    },
-
-    shareTo(platform) {
-      // const url = encodeURIComponent(shareUrl.value);
-      // const text = encodeURIComponent("Xem phim này nè!");
-      let shareLink = "";
-
-      switch (platform) {
-        case "facebook":
-          shareLink = `https://www.facebook.com/sharer/sharer.php`;
-          break;
-        case "youtube":
-          shareLink = `https://www.youtube.com/`;
-          break;
-        case "twitter":
-          shareLink = `https://twitter.com`;
-          break;
-      }
-      // const shareUrl = window.location.href;
-
-      window.open(shareLink, "_blank");
-    },
-    ResponseError(){
-      this.Message = this.$t('Dữ liệu đã được gửi tới Admin để xử lý');
-      this.color = "error";
-      this.mess = true
     },
     copyLink() {
       const shareUrl = window.location.href;
@@ -753,210 +569,41 @@ export default {
         alert(this.$t('Đã sao chép liên kết!'));
       });
     },
-    addComment() {
-      var account = localStorage.getItem("name");
-      var data = {
-        movieId: this.idMovie,
-        episode: this.movie.page,
-        userId: this.$store.state.empInfor.id,
-        username: account,
-        content: this.newComment,
-      };
-      if (account == null || account == "") {
-        this.$router.push("/login");
-      }
-      if (this.newComment.trim()) {
-        AddComment(
-          data,
-          (dat) => {
-            if (dat.status == 201) {
-              this.Message = dat.data.message;
-              this.color = "success";
-              this.mess = true;
-              this.GetComment();
-            }
-          },
-          (err) => {
-            this.Message = err.response.data.message;
-            this.color = "error";
-            this.mess = true;
-          }
-        );
-        this.newComment = "";
-      }
-    },
-    GetComment() {
-      return new Promise((resolve, reject) =>{
-      if (!this.idMovie) reject("error");
-        GetComments(
-        { movieId: this.idMovie, episode: this.movie.page },
-        (res) => {
-          if (Array.isArray(res)) {
-            this.comments = res.map((c) => ({
-              username: c.username,
-              content: c.content,
-              createdAt: c.createdAt,
-            }));
-            resolve(true)
-          }
-          else{
-            reject("error")
-          }
-        },
-        (err) => {
-          console.error("Lỗi lấy bình luận:", err);
-          reject(err)
-        }
-      );
-    
-      })
-      
-    },
-
-    scrollLeft() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: -220, behavior: "smooth" });
-      }
-    },
-    scrollRight() {
-      const container = this.$refs.slideWrapper;
-      if (container) {
-        container.scrollBy({ left: 220, behavior: "smooth" });
-      }
-    },
     getTrailer() {
       this.movie.videoUrl = this.movie.trailer_url;
+      this.$router.push({ name: 'MovieDetail', params: { slug: this.slug }, query: { tap: 'trailer' } });
     },
     playEpisode(episode) {
       this.isLoading = true;
-      // this.movie.title = episode.filename;
-      this.movie.videoUrl = episode.link_embed;
-      this.movie.LinkDown = episode.link_m3u8;
-      
-      this.movie.page = "Tập " + episode.slug;
-      this.GetComment();
+      this.movie.videoUrl = episode.link_m3u8;
+      this.movie.page = 'Tập ' + episode.slug;
       this.isLoading = false;
+      this.$router.push({ name: 'MovieDetail', params: { slug: this.slug }, query: { tap: episode.slug } });
     },
     switchServer(server) {
       this.isLoading = true;
       this.movie.pageMovie = server.server_data;
-      if (
-        this.movie.page == "Full" ||
-        this.movie.page.toUpperCase().includes("HOÀN TẤT") ||
-        this.movie.page.includes("/")
-      ) {
-        this.movie.videoUrl = server.server_data[0].link_embed;
-        this.movie.LinkDown = server.server_data[0].link_m3u8;
+      
+      const currentTap = this.movie.page.split('Tập ')[1]?.trim() || server.server_data[0].slug;
+      const data = server.server_data.find((ep) => ep.slug === currentTap);
+
+      if (data) {
+        this.movie.videoUrl = data.link_m3u8;
         this.isTrailer = false;
       } else {
-        var tap = this.movie.page.split("Tập ")[1].trim();
-        const data = server.server_data.find((ep) => ep.slug === tap);
-        if (data) {
-          this.movie.videoUrl = data.link_embed;
-          this.movie.LinkDown = data.link_m3u8;
-          this.isTrailer = false;
-        }
+        this.movie.videoUrl = server.server_data[0].link_m3u8;
+        this.isTrailer = false;
       }
-
-      this.GetComment();
+      
+      this.$router.push({
+        name: 'MovieDetail',
+        params: { slug: this.slug },
+        query: { tap: currentTap },
+      });
+      
       this.isLoading = false;
     },
-    generateEmbedHtml(url) {
-      if (this.isTrailer) {
-        const youtubeMatch = url.match(
-          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        );
-        if (youtubeMatch) {
-          const videoId = youtubeMatch[1];
-          return `
-            <iframe width="100%" height="600"
-              src="https://www.youtube.com/embed/${videoId}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy">
-            </iframe>
-          `;
-        } else {
-          // Nếu không phải YouTube thì giả sử là .mp4 và dùng thẻ video
-          return `
-            <video width="100%" height="600" controls preload="none">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-        //return `<video width="100%" height="600" controls><source src="${url}" type="video/mp4">Trình duyệt của bạn không hỗ trợ video.</video> `;
-      } else {
-        return `<div style="position: relative; width: 100%; padding-bottom: 56.25%; ">
-      <iframe
-        src="${url}"
-        frameborder="0"
-        class="w-full h-full"
-        loading="lazy"
-        allowfullscreen
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-      ></iframe>
-    </div>`;
-      }
-    },
-    
   },
-  computed: {
-    thumbnailUrl() {
-      const match = this.movie.videoUrl.match(
-        /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-      );
-      return match
-        ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg`
-        : "/placeholder.jpg"; // fallback ảnh tĩnh nếu không phải YouTube
-    },
-
-    embedHtml() {
-      const url = this.movie.videoUrl
-      if (this.isTrailer) {
-        const youtubeMatch = url.match(
-          /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/
-        );
-        if (youtubeMatch) {
-          const videoId = youtubeMatch[1];
-          return `
-            <iframe width="100%" height="600"
-              src="https://www.youtube.com/embed/${videoId}"
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen loading="lazy">
-            </iframe>
-          `;
-        } else {
-          return `
-            <video width="100%" height="600" controls preload="none">
-              <source src="${url}" type="video/mp4">
-              Trình duyệt của bạn không hỗ trợ video.
-            </video>
-          `;
-        }
-      } else {
-        return `
-          <div style="position: relative; width: 100%; padding-bottom: 56.25%;">
-            <iframe
-              src="${url}"
-              frameborder="0"
-              class="w-full h-full"
-              loading="lazy"
-              allowfullscreen
-              allow="autoplay; fullscreen"
-              sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-            ></iframe>
-          </div>
-        `;
-      }
-    }
-    
-  }
 };
 </script>
 

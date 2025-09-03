@@ -70,8 +70,8 @@ export default {
       path: "phim-moi-cap-nhat",
     };
   },
-  async created() {
-    await this.ListMovie();
+  created() {
+    this.ListMovie();
   },
   methods: {
     ListMovie() {

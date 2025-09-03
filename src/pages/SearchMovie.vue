@@ -16,15 +16,13 @@
 
       <v-col cols="12" v-else>
         <v-alert v-if="movies.length === 0" class="text-center">
-          {{ $t("Không tìm thấy phim nào với từ khóa") }} "<strong>{{
+          {{$t('Không tìm thấy phim nào với từ khóa')}} "<strong>{{
             $route.query.keyword
           }}</strong
           >".
           <br />
           <router-link to="/home">
-            <v-btn variant="outlined" class="mt-2">{{
-              $t("Về trang chủ")
-            }}</v-btn>
+            <v-btn variant="outlined" class="mt-2">{{$t('Về trang chủ')}}</v-btn>
           </router-link>
         </v-alert>
 
@@ -39,7 +37,6 @@
               <v-col cols="12" md="4">
                 <v-img
                   :src="getOptimizedImage(movie.poster_url)"
-                  :lazy-src="getOptimizedImage(movie.poster_url)"
                   :alt="movie.name"
                   spect-ratio="16/9"
                   class="movie-image"
@@ -71,8 +68,7 @@
                 </div>
 
                 <p class="text-body-2 description-text">
-                  {{ $t("Miêu tả") }}:  
-                  <span v-html="movie.origin_name"></span>
+                  {{$t('Miêu tả')}}: {{ movie.origin_name }}
                 </p>
 
                 <div class="action-buttons mt-4">
@@ -85,13 +81,14 @@
                     {{ $t("Xem ngay") }}
                   </v-btn>
                   <v-btn
-                    v-bind="props"
-                    color="secondary"
-                    variant="outlined"
-                    prepend-icon="mdi-share-variant"
-                  >
-                    {{ $t("Chia sẻ") }}
-                  </v-btn>
+                        v-bind="props"
+                        color="secondary"
+                        variant="outlined"
+                        prepend-icon="mdi-share-variant"
+                      >
+                        {{ $t("Chia sẻ") }}
+                      </v-btn>
+                  
                 </div>
               </v-col>
             </v-row>
@@ -110,7 +107,8 @@
 
 
 <script>
-import { Search, Search1, urlImage, urlImage1 } from "@/model/api";
+
+import { Search, urlImage } from "@/model/api";
 export default {
   name: "SearchMovie",
   data() {
@@ -118,156 +116,97 @@ export default {
       movies: [],
       loading: true,
       urlImage: urlImage,
-      urlImage1: urlImage1,
       currentPage: 1,
       moviesPerPage: 20,
       totalMovies: 100,
       valueRate: 5,
       path: "",
-      link: "",
+      
     };
   },
   watch: {
     "$route.query.keyword": {
       immediate: true,
-      async handler(query) {
-        document.title = `${this.$t("Kết quả tìm kiếm: ")} ${query}`;
+      handler(query) {
+        document.title = `${this.$t('Kết quả tìm kiếm: ')} ${query}`;
         this.loading = true;
         this.path = query;
-
-        await this.SearchMovie(query);
+        
+        this.SearchMovie(query);
       },
     },
-    async currentPage(newpage) {
+    currentPage(newpage) {
       this.loading = true;
       this.currentPage = newpage;
-      await this.SearchMovie(this.path);
+      this.SearchMovie(this.path);
     },
   },
   methods: {
     SearchMovie(query) {
-      return new Promise((resolve,reject) => {
-        Search(
-          { keyword: query, page: this.currentPage },
-          (result) => {
-            if (result.status == "success"|| result.status == true) {
-              this.link = "";
-              if (result.data.items.length == 0 || result.data.item == null) {
-                // this.movies = [];
-                this.link = "link1";
-                this.SearchMovie1(query)
-                .then(resolve)
-                .catch(reject);
-                
-              } else {
-                this.movies = result.data.items.sort((a, b) => {
-                  return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
-                });
-                if (result.data.seoOnPage) {
-                  this.updateMetaTags(result.data.seoOnPage);
-                }
-                this.loading = false;
-                resolve(true)
-              }
-            } else {
-              this.link = "link1";
-              this.SearchMovie1(query)
-              .then(resolve)
-              .catch(reject);
-              resolve(true)
-            }
-            reject(result)
-            console.log(result);
-          },
-          (err) => {
-            console.log(err);
-            this.link = "link1";
-            this.SearchMovie1(query)
-            .then(resolve)
-            .catch(reject);
-            
-          }
-        );
-      });
-    },
-    SearchMovie1(query) {
-      return new Promise((resolve, reject) =>{
-          Search1(
-        { keyword: query, page: 1, limit: 10 },
+      Search(
+        { keyword: query, page: this.currentPage },
         (result) => {
-          if (result.status == "success" || result.status == true) {
+          if (result.status == "success") {
             if (result.data.items.length == 0) {
               this.movies = [];
               this.loading = false;
-              
             } else {
               this.movies = result.data.items.sort((a, b) => {
                 return parseInt(b.year) - parseInt(a.year); // Sắp xếp giảm dần theo năm
               });
               if (result.data.seoOnPage) {
-                this.updateMetaTags(result.data.seoOnPage);
+                this.updateMetaTags(result.data.seoOnPage)
               }
               this.loading = false;
-              resolve(true)
             }
           }
-          reject()
+
           console.log(result);
         },
         (err) => {
           console.log(err);
         }
       );
-      })
-      
     },
-
     getOptimizedImage(imagePath) {
-      if (this.link == "") {
-        return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
-      } else {
-        return `${
-          this.urlImage1 +
-          "https://phimimg.com/" +
-          encodeURIComponent(imagePath)
-        }`;
-      }
+      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
     },
     updateMetaTags(seo) {
-      document.title = seo.titleHead || "Phim hay";
+    document.title = seo.titleHead || 'Phim hay'
 
-      const removeOldMeta = (key, attr = "name") => {
-        const old = document.querySelectorAll(`meta[${attr}="${key}"]`);
-        old.forEach((tag) => tag.remove());
-      };
+    const removeOldMeta = (key, attr = 'name') => {
+      const old = document.querySelectorAll(`meta[${attr}="${key}"]`)
+      old.forEach(tag => tag.remove())
+    }
 
-      const setMeta = (key, content, attr = "name") => {
-        if (!content) return;
-        const meta = document.createElement("meta");
-        meta.setAttribute(attr, key);
-        meta.setAttribute("content", content);
-        document.head.appendChild(meta);
-      };
+    const setMeta = (key, content, attr = 'name') => {
+      if (!content) return
+      const meta = document.createElement('meta')
+      meta.setAttribute(attr, key)
+      meta.setAttribute('content', content)
+      document.head.appendChild(meta)
+    }
 
-      // Xóa cũ
-      removeOldMeta("description");
-      removeOldMeta("og:title", "property");
-      removeOldMeta("og:description", "property");
-      removeOldMeta("og:type", "property");
-      removeOldMeta("og:image", "property");
+    // Xóa cũ
+    removeOldMeta('description')
+    removeOldMeta('og:title', 'property')
+    removeOldMeta('og:description', 'property')
+    removeOldMeta('og:type', 'property')
+    removeOldMeta('og:image', 'property')
 
-      // Thêm mới
-      setMeta("description", seo.descriptionHead);
-      setMeta("og:title", seo.titleHead, "property");
-      setMeta("og:description", seo.descriptionHead, "property");
-      setMeta("og:type", seo.og_type || "website", "property");
+    // Thêm mới
+    setMeta('description', seo.descriptionHead)
+    setMeta('og:title', seo.titleHead, 'property')
+    setMeta('og:description', seo.descriptionHead, 'property')
+    setMeta('og:type', seo.og_type || 'website', 'property')
 
-      if (Array.isArray(seo.og_image)) {
-        seo.og_image.forEach((img) => {
-          setMeta("og:image", img, "property");
-        });
-      }
-    },
+    if (Array.isArray(seo.og_image)) {
+      seo.og_image.forEach(img => {
+        setMeta('og:image', img, 'property')
+      })
+    }
+  }
+    
   },
 };
 </script>
