@@ -33,7 +33,7 @@
               <v-tab
                 v-for="(server, index) in movie.servers"
                 :key="index"
-                @click="switchServer(server)"
+                @click="switchServer(server, index)"
                 :class="{ 'active-tab': tabserver === index }"
               >
                 {{ server.server_name || `Server ${index + 1}` }}
@@ -267,7 +267,6 @@ function cleanManifest(manifest, opts = {}) {
     for (let i = 0; i < lines.length; i++) {
         if (!toRemove[i]) {
             let line = lines[i];
-            line = line.replace(/\/convertv7\//g, '/');
             cleanedLines.push(line);
         }
     }
@@ -374,8 +373,11 @@ export default {
   mounted() {
     this.MoveInfor(this.slug);
     this.ListMovieByCate();
+    window.addEventListener('beforeunload', this.savePlaybackState);
   },
   beforeUnmount() {
+    this.savePlaybackState();
+    window.removeEventListener('beforeunload', this.savePlaybackState);
     if (this.hls) {
       this.hls.destroy();
     }
@@ -419,12 +421,15 @@ export default {
         }
         this.hls = new Hls();
         
-        // Use the new function to process the URL
         const processedUrl = await fetchAndProcessPlaylist(url);
         
         this.hls.loadSource(processedUrl);
         this.hls.attachMedia(video);
-        this.hls.on(Hls.Events.MANIFEST_PARSED, function() {
+        this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+          const savedState = JSON.parse(localStorage.getItem('lastPlaybackState'));
+          if (savedState && savedState.slug === this.slug && savedState.tap === this.$route.query.tap) {
+            video.currentTime = savedState.time;
+          }
           video.play();
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
@@ -442,20 +447,36 @@ export default {
           console.log(result);
           if (result.status == true) {
             const tapFromUrl = this.$route.query.tap;
+            const savedState = JSON.parse(localStorage.getItem('lastPlaybackState'));
             let initialVideoUrl = '';
             let initialEpisodePage = '';
+            let initialServerIndex = 0;
 
-            const episodeData = result.episodes[0].server_data.find(ep => ep.slug === tapFromUrl);
-            if (episodeData) {
-              initialVideoUrl = episodeData.link_m3u8;
-              initialEpisodePage = 'Tập ' + tapFromUrl;
-            } else {
-              initialVideoUrl = result.episodes[0].server_data[0].link_m3u8;
-              initialEpisodePage = result.movie.episode_current;
+            if (savedState && savedState.slug === slug) {
+              const serverData = result.episodes[savedState.serverIndex]?.server_data;
+              const episodeData = serverData?.find(ep => ep.slug === savedState.tap);
+              if (episodeData) {
+                initialVideoUrl = episodeData.link_m3u8;
+                initialEpisodePage = 'Tập ' + savedState.tap;
+                initialServerIndex = savedState.serverIndex;
+              }
             }
+            
+            if (!initialVideoUrl) {
+                const episodeData = result.episodes[0].server_data.find(ep => ep.slug === tapFromUrl);
+                if (episodeData) {
+                    initialVideoUrl = episodeData.link_m3u8;
+                    initialEpisodePage = 'Tập ' + tapFromUrl;
+                } else {
+                    initialVideoUrl = result.episodes[0].server_data[0].link_m3u8;
+                    initialEpisodePage = result.movie.episode_current;
+                }
+            }
+
 
             this.movie.videoUrl = initialVideoUrl;
             this.movie.page = initialEpisodePage;
+            this.tabserver = initialServerIndex;
 
             this.idMovie = result.movie._id;
             this.movie.title = result.movie.origin_name;
@@ -557,7 +578,7 @@ export default {
       this.isLoading = false;
       this.$router.push({ name: 'MovieDetail', params: { slug: this.slug }, query: { tap: episode.slug } });
     },
-    switchServer(server) {
+    switchServer(server, index) {
       this.isLoading = true;
       this.movie.pageMovie = server.server_data;
       
@@ -578,8 +599,21 @@ export default {
         query: { tap: currentTap },
       });
       
+      this.tabserver = index;
       this.isLoading = false;
     },
+    savePlaybackState() {
+      const video = document.getElementById('videoPlayer');
+      if (video && !video.paused && this.$route.name === 'MovieDetail') {
+        const state = {
+          slug: this.slug,
+          tap: this.$route.query.tap,
+          time: video.currentTime,
+          serverIndex: this.tabserver
+        };
+        localStorage.setItem('lastPlaybackState', JSON.stringify(state));
+      }
+    }
   },
 };
 </script>
