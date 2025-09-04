@@ -1,26 +1,29 @@
-import 'core-js/stable'
-import 'regenerator-runtime/runtime'
-import { createApp } from 'vue'
+// src/main.js
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+import { createApp } from 'vue';
 
-import App from './App.vue'
+import App from './App.vue';
 
-import router from './router'
-import store from './store'
-import 'bootstrap/dist/css/bootstrap.css'
+import router from './router';
+import store from './store';
+import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import 'bootstrap-vue-3/dist/bootstrap-vue-3.css'
-import {BootstrapVue3 } from 'bootstrap-vue-3'
-import ElementPlus from 'element-plus'
-import i18n from '@/lang'
-import 'element-plus/dist/index.css'
-import 'vuetify/styles'
-import { createVuetify } from 'vuetify'
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
-import '@mdi/font/css/materialdesignicons.css'
-import { aliases, mdi } from 'vuetify/iconsets/mdi'
+import 'bootstrap-vue-3/dist/bootstrap-vue-3.css';
+import { BootstrapVue3 } from 'bootstrap-vue-3';
+import ElementPlus from 'element-plus';
+import i18n from '@/lang';
+import 'element-plus/dist/index.css';
+import 'vuetify/styles';
+import { createVuetify } from 'vuetify';
+import * as components from 'vuetify/components';
+import * as directives from 'vuetify/directives';
+import '@mdi/font/css/materialdesignicons.css';
+import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
+// Import EventBus
+import emitter from './eventBus';
 
 const vuetify = createVuetify({
   components,
@@ -32,15 +35,15 @@ const vuetify = createVuetify({
       mdi,
     },
   },
-})
-
+});
 
 const app = createApp(App);
+
 app.config.errorHandler = (err, vm, info) => {
-  console.error("Lỗi Vue:", err, info)
-  // phát sự kiện để App.vue bắt và show snackbar
-  app.config.globalProperties.$emit?.("show-error", err.message || "Có lỗi xảy ra")
-}
+  console.error("Lỗi Vue:", err, info);
+  // Thay thế bằng EventBus (mitt)
+  emitter.emit("show-error", err.message || "Có lỗi xảy ra");
+};
 
 window.addEventListener('error', function (e) {
   if (
@@ -52,13 +55,11 @@ window.addEventListener('error', function (e) {
   }
 });
 
-app.use(router)
+app.use(router);
 app.use(store);
-app.use(BootstrapVue3)
-app.use(ElementPlus)
-app.use(i18n)
-app.use(vuetify)
+app.use(BootstrapVue3);
+app.use(ElementPlus);
+app.use(i18n);
+app.use(vuetify);
 
-
-app.mount('#app')
-
+app.mount('#app');

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import emitter from './eventBus';
 
 export default {
   name: 'App',
@@ -42,10 +43,15 @@ export default {
       this.$store.commit("setEmpInfor", null);
     }
   }
-  this.$bus.$on("show-error", (msg) => {
+  // Thay đổi ở đây:
+  emitter.on("show-error", (msg) => {
       this.errorMessage = msg;
       this.showError = true;
     });
+  },
+  // Thêm vòng đời beforeUnmount để hủy lắng nghe sự kiện
+  beforeUnmount() {
+    emitter.off("show-error");
   },
   watch: {
     theme(newVal) {
