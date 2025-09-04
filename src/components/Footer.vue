@@ -2,11 +2,14 @@
   <v-footer class="bg-grey-darken-4 text-white pa-8" height="auto">
     <v-container>
       <v-row>
-        <v-col cols="12" md="4">
+        <v-col cols="12" md="6" class="text-center text-md-left">
           <div class="text-h5 font-weight-bold">
             <span class="font-italic">Phim</span><span class="text-yellow-darken-2">360</span>
           </div>
-          <p class="mt-2 text-body-2">
+        </v-col>
+
+        <v-col cols="12" md="6" class="mt-4 mt-md-0">
+          <p class="text-body-2 text-md-right text-center">
             <strong>Phim360</strong> - {{$t('Trang xem phim Online với giao diện hiện đại, thân thiện người dùng.')}}
             {{$t('Nguồn phim tổng hợp từ các website lớn với đa dạng thể loại và quốc gia.')}}
           </p>
@@ -14,9 +17,10 @@
       </v-row>
 
       <v-divider class="my-4"></v-divider>
+
       <v-row class="align-center">
         <v-col>
-          <p class="text-caption">
+          <p class="text-caption text-center">
             © 2025 Phim360.
           </p>
         </v-col>
