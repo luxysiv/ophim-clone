@@ -1,17 +1,16 @@
 <template>
-  <div>
-    <!-- Header (Thanh điều hướng) -->
+  <div class="container">
     <header class="fixed-header">
       <header-component />
     </header>
 
-    <div class="main">
+    <main class="main">
       <div class="row">
         <router-view />
       </div>
-    </div>
+    </main>
     <hr/>
-    <!-- Footer (Chân trang) -->
+    
     <footer>
       <footer-component />
     </footer>
@@ -39,6 +38,23 @@ export default {
 </script>
 
 <style scoped>
+/*
+  * Để Flexbox hoạt động đúng, cần đảm bảo html và body có chiều cao 100%.
+  * Thêm các style này vào file CSS chung hoặc vào <style> không có 'scoped' của component chính (ví dụ: App.vue).
+*/
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Container chính của layout với Flexbox */
+.container {
+  display: flex;
+  flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
+  min-height: 100vh; /* Đảm bảo chiều cao tối thiểu bằng chiều cao của viewport */
+}
+
+/* Header cố định */
 .fixed-header {
   position: fixed;
   top: 0;
@@ -48,8 +64,11 @@ export default {
   background-color: rgb(2, 2, 2);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
 }
-.main{
-  padding: 0 15px 0 15px;
-}
 
+/* Nội dung chính */
+.main {
+  flex: 1; /* Cho phép phần nội dung chính tự động giãn nở để lấp đầy khoảng trống */
+  padding: 0 15px 0 15px;
+  margin-top: 60px; /* Thêm margin-top để nội dung không bị header cố định che mất */
+}
 </style>
