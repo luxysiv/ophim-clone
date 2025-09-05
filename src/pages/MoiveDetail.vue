@@ -13,7 +13,7 @@
     <v-row dense>
       <v-col cols="12" md="10">
         <div class="video-wrapper">
-          <video id="videoPlayer" class="w-full h-full" controls autoplay></video>
+          <video id="videoPlayer" class="w-full h-full" controls autoplay @ended="handleVideoEnd"></video>
         </div>
 
         <div
@@ -28,6 +28,25 @@
             <v-btn variant="text" @click="shareMovie"><v-icon start icon="mdi-share-variant" />{{ $t('Chia sẻ') }}</v-btn>
           </div>
 
+          <div class="d-flex align-center" style="gap: 8px">
+            <v-btn
+              v-if="currentEpisodeIndex > 0"
+              variant="flat"
+              @click="handlePreviousEpisode"
+              class="d-flex align-center"
+            >
+              <v-icon start>mdi-arrow-left</v-icon> {{ `Tập ${currentEpisodeIndex}` }}
+            </v-btn>
+            <v-btn
+              v-if="currentEpisodeIndex < movie.pageMovie.length - 1"
+              variant="flat"
+              @click="handleNextEpisode"
+              class="d-flex align-center"
+            >
+              {{ `Tập ${currentEpisodeIndex + 2}` }} <v-icon end>mdi-arrow-right</v-icon>
+            </v-btn>
+          </div>
+          
           <div class="d-flex" style="gap: 8px">
             <v-tabs v-model="tabserver" class="custom-tabs" background-color="transparent">
               <v-tab
@@ -59,16 +78,16 @@
             <v-row>
               <v-col v-for="(episode, index) in movie.pageMovie" :key="index" cols="auto" class="pa-2">
                 <v-btn color="primary" @click="playEpisode(episode)">
-                  {{ episode.name ? $t('Tập ') + episode.name : 'Trailer' }}
+                  {{ `Tập ${episode.name}` || `Tập ${index + 1}` }}
                 </v-btn>
               </v-col>
             </v-row>
           </v-card-text>
         </v-card>
-
+        
         <v-card class="pa-6 text-left" color="grey-darken-4" variant="flat" rounded="lg" theme="dark">
           <v-card-title class="text-white mb-4">{{ movie.title }} ( {{ movie.name }})</v-card-title>
-          <v-card-text class="text-grey-lighten-2" :v-html="movie.description"></v-card-text>
+          <v-card-text class="text-grey-lighten-2" v-html="movie.description"></v-card-text>
           <v-card-text class="text-white">
             <p><strong>{{ $t('Diễn viên') }}:</strong> {{ movie.actors.join(', ') }}</p>
             <p><strong>{{ $t('Đạo diễn') }}:</strong> {{ movie.director.join(', ') }}</p>
@@ -214,6 +233,13 @@ export default {
         categoris: '',
         trailer_url: '',
         name: '',
+        currentEpisode: null,
+        poster_url: '',
+        year: null,
+        quality: '',
+        episode_current: '',
+        lang: '',
+        origin_name: '',
       },
       idMovie: '',
       isTrailer: false,
@@ -221,6 +247,15 @@ export default {
       suggestedMovies: [],
       shareDialog: false,
       hls: null,
+
+      historyKey: 'watchHistory',
+      lastViewedPosition: 0,
+      lastViewedEpisodeInfo: null,
+      saveInterval: null,
+      PLAYBACK_SAVE_THRESHOLD_SECONDS: 5,
+      SAVE_INTERVAL_SECONDS: 10,
+      currentEpisodeIndex: -1,
+      episodeSlug: this.$route.query.tap,
     };
   },
   props: ['slug'],
@@ -237,6 +272,14 @@ export default {
         });
       }
     },
+    'movie.currentEpisode'(newEpisode) {
+        if (newEpisode && this.movie.pageMovie) {
+            const index = this.movie.pageMovie.findIndex(ep => ep.slug === newEpisode.slug);
+            this.currentEpisodeIndex = index;
+        } else {
+            this.currentEpisodeIndex = -1;
+        }
+    }
   },
   mounted() {
     this.MoveInfor(this.slug);
@@ -244,10 +287,13 @@ export default {
     window.addEventListener('beforeunload', this.savePlaybackState);
   },
   beforeUnmount() {
-    this.savePlaybackState();
+    this.savePlaybackPosition();
     window.removeEventListener('beforeunload', this.savePlaybackState);
     if (this.hls) {
       this.hls.destroy();
+    }
+    if (this.saveInterval) {
+      clearInterval(this.saveInterval);
     }
   },
   methods: {
@@ -258,10 +304,11 @@ export default {
         return;
       }
 
-      if (video.src) {
-        video.pause();
-        video.src = '';
-        video.load();
+      if (this.saveInterval) {
+        clearInterval(this.saveInterval);
+      }
+      if (this.hls) {
+        this.hls.destroy();
       }
 
       const oldIframe = document.querySelector('.video-wrapper iframe');
@@ -271,11 +318,10 @@ export default {
 
       const youtubeMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/);
       if (youtubeMatch) {
-        const videoId = youtubeMatch[1];
         video.style.display = 'none';
         const wrapper = document.querySelector('.video-wrapper');
         const iframe = document.createElement('iframe');
-        iframe.src = `https://www.youtube.com/embed/${videoId}`;
+        iframe.src = `https://www.youtube.com/embed/${youtubeMatch[1]}`;
         iframe.width = '100%';
         iframe.height = '100%';
         iframe.frameBorder = '0';
@@ -284,83 +330,102 @@ export default {
         wrapper.appendChild(iframe);
       } else if (Hls.isSupported()) {
         video.style.display = 'block';
-        if (this.hls) {
-          this.hls.destroy();
-        }
-        this.hls = new Hls();
         
         const processedUrl = await fetchAndProcessPlaylist(url);
         
+        this.hls = new Hls();
         this.hls.loadSource(processedUrl);
         this.hls.attachMedia(video);
         this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          const savedState = JSON.parse(localStorage.getItem('lastPlaybackState'));
-          if (savedState && savedState.slug === this.slug && savedState.tap === this.$route.query.tap) {
-            video.currentTime = savedState.time;
+          const history = JSON.parse(localStorage.getItem(this.historyKey) || '[]');
+          const currentMovieHistory = history.find(item => item.slug === this.slug);
+          if (currentMovieHistory && currentMovieHistory.episode.slug === this.movie.currentEpisode.slug) {
+            video.currentTime = currentMovieHistory.position;
+          } else {
+            video.currentTime = 0;
           }
-          video.play();
+          video.play().catch(e => console.error("Video playback failed:", e));
+        });
+        this.hls.on(Hls.Events.ERROR, (event, data) => {
+            console.error('HLS error:', data);
         });
       } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.style.display = 'block';
         video.src = url;
         video.addEventListener('loadedmetadata', function() {
-          video.play();
+          video.play().catch(e => console.error("Video playback failed:", e));
         });
       }
+
+      this.saveInterval = setInterval(() => {
+        this.savePlaybackPosition();
+      }, this.SAVE_INTERVAL_SECONDS * 1000);
     },
     MoveInfor(slug) {
       MoveInfor(
         slug,
         (result) => {
-          console.log(result);
           if (result.status == true) {
-            const tapFromUrl = this.$route.query.tap;
-            const savedState = JSON.parse(localStorage.getItem('lastPlaybackState'));
+            const history = JSON.parse(localStorage.getItem(this.historyKey) || '[]');
+            const currentMovieHistory = history.find(item => item.slug === slug);
+            if (currentMovieHistory) {
+              this.lastViewedPosition = currentMovieHistory.position;
+              this.lastViewedEpisodeInfo = currentMovieHistory.episode;
+              this.tabserver = currentMovieHistory.serverIndex;
+            } else {
+              this.lastViewedPosition = 0;
+              this.lastViewedEpisodeInfo = null;
+              this.tabserver = 0;
+            }
+
             let initialVideoUrl = '';
             let initialEpisodePage = '';
-            let initialServerIndex = 0;
+            let initialEpisode = null;
+            
+            this.movie.servers = result.episodes;
+            const serverData = result.episodes[this.tabserver]?.server_data;
 
-            if (savedState && savedState.slug === slug) {
-              const serverData = result.episodes[savedState.serverIndex]?.server_data;
-              const episodeData = serverData?.find(ep => ep.slug === savedState.tap);
-              if (episodeData) {
-                initialVideoUrl = episodeData.link_m3u8;
-                initialEpisodePage = 'Tập ' + savedState.tap;
-                initialServerIndex = savedState.serverIndex;
-              }
+            if (currentMovieHistory) {
+              initialEpisode = serverData?.find(ep => ep.slug === currentMovieHistory.episode.slug);
             }
             
-            if (!initialVideoUrl) {
-                const episodeData = result.episodes[0].server_data.find(ep => ep.slug === tapFromUrl);
-                if (episodeData) {
-                    initialVideoUrl = episodeData.link_m3u8;
-                    initialEpisodePage = 'Tập ' + tapFromUrl;
-                } else {
-                    initialVideoUrl = result.episodes[0].server_data[0].link_m3u8;
-                    initialEpisodePage = result.movie.episode_current;
-                }
+            if (!initialEpisode) {
+              const tapFromUrl = this.$route.query.tap;
+              initialEpisode = serverData?.find(ep => ep.slug === tapFromUrl);
+            }
+            
+            if (!initialEpisode && serverData && serverData.length > 0) {
+              initialEpisode = serverData[0];
             }
 
-
+            if (initialEpisode) {
+              initialVideoUrl = initialEpisode.link_m3u8;
+              initialEpisodePage = initialEpisode.name || `Tập ${serverData.indexOf(initialEpisode) + 1}`;
+              this.movie.currentEpisode = initialEpisode;
+            }
+            
             this.movie.videoUrl = initialVideoUrl;
-            this.movie.page = initialEpisodePage;
-            this.tabserver = initialServerIndex;
-
+            this.movie.page = `Tập ${initialEpisodePage}`;
             this.idMovie = result.movie._id;
             this.movie.title = result.movie.origin_name;
             this.movie.description = result.movie.content;
-            this.movie.pageMovie = result.episodes[0].server_data;
+            this.movie.pageMovie = serverData;
             this.movie.director = result.movie.director;
-            this.movie.servers = result.episodes;
             this.movie.trailer_url = result.movie.trailer_url;
             this.movie.name = result.movie.name;
+            this.movie.poster_url = result.movie.poster_url;
+            this.movie.year = result.movie.year;
+            this.movie.quality = result.movie.quality;
+            this.movie.episode_current = result.movie.episode_current;
+            this.movie.lang = result.movie.lang;
+            this.movie.origin_name = result.movie.origin_name;
 
-            if (result.movie.status == 'trailer' || !result.episodes[0].server_data[0].link_m3u8) {
+
+            if (result.movie.status == 'trailer' || !initialVideoUrl) {
               this.movie.videoUrl = result.movie.trailer_url;
               this.isTrailer = true;
             }
 
-            console.log(this.movie.videoUrl);
             this.movie.actors = result.movie.actor;
             for (var i = 0; i < result.movie.country.length; i++) {
               this.movie.genre = result.movie.country[i];
@@ -419,7 +484,6 @@ export default {
             this.suggestedMovies = data.data.items;
             this.isLoading = false;
           }
-          console.log(data);
         },
         (err) => {
           console.log(err);
@@ -437,49 +501,115 @@ export default {
     },
     getTrailer() {
       this.movie.videoUrl = this.movie.trailer_url;
+      this.movie.currentEpisode = null;
+      this.isTrailer = true;
+      this.movie.page = 'Trailer';
       this.$router.push({ name: 'MovieDetail', params: { slug: this.slug }, query: { tap: 'trailer' } });
+      this.scrollToPlayer();
     },
     playEpisode(episode) {
       this.isLoading = true;
       this.movie.videoUrl = episode.link_m3u8;
-      this.movie.page = 'Tập ' + episode.slug;
+      this.movie.page = episode.name ? `Tập ${episode.name}` : `Tập ${this.movie.pageMovie.indexOf(episode) + 1}`;
+      this.movie.currentEpisode = episode;
+      this.isTrailer = false;
       this.isLoading = false;
       this.$router.push({ name: 'MovieDetail', params: { slug: this.slug }, query: { tap: episode.slug } });
+      this.scrollToPlayer();
     },
     switchServer(server, index) {
       this.isLoading = true;
+      this.savePlaybackPosition();
       this.movie.pageMovie = server.server_data;
       
-      const currentTap = this.movie.page.split('Tập ')[1]?.trim() || server.server_data[0].slug;
+      const currentTap = this.movie.currentEpisode?.slug || server.server_data[0].slug;
       const data = server.server_data.find((ep) => ep.slug === currentTap);
 
       if (data) {
         this.movie.videoUrl = data.link_m3u8;
         this.isTrailer = false;
+        this.movie.currentEpisode = data;
       } else {
         this.movie.videoUrl = server.server_data[0].link_m3u8;
         this.isTrailer = false;
+        this.movie.currentEpisode = server.server_data[0];
       }
       
       this.$router.push({
         name: 'MovieDetail',
         params: { slug: this.slug },
-        query: { tap: currentTap },
+        query: { tap: this.movie.currentEpisode.slug },
       });
       
       this.tabserver = index;
       this.isLoading = false;
+      this.scrollToPlayer();
     },
-    savePlaybackState() {
-      const video = document.getElementById('videoPlayer');
-      if (video && !video.paused && this.$route.name === 'MovieDetail') {
-        const state = {
+    updateHistoryEntry(movieData, episodeData, position, serverIndex) {
+      if (!movieData || !episodeData) return;
+      let history = JSON.parse(localStorage.getItem(this.historyKey) || '[]');
+      
+      let historyEntry = history.find((item) => item.slug === this.slug);
+
+      if (historyEntry) {
+        historyEntry.episode = { slug: episodeData.slug, name: episodeData.name };
+        historyEntry.position = Math.floor(position);
+        historyEntry.serverIndex = serverIndex;
+        historyEntry.timestamp = Date.now();
+      } else {
+        historyEntry = {
           slug: this.slug,
-          tap: this.$route.query.tap,
-          time: video.currentTime,
-          serverIndex: this.tabserver
+          name: movieData.name,
+          origin_name: movieData.origin_name,
+          poster_url: movieData.poster_url,
+          year: movieData.year,
+          quality: movieData.quality,
+          episode_current: movieData.episode_current,
+          episode: { slug: episodeData.slug, name: episodeData.name },
+          position: Math.floor(position),
+          serverIndex: serverIndex,
+          timestamp: Date.now(),
         };
-        localStorage.setItem('lastPlaybackState', JSON.stringify(state));
+      }
+
+      history = history.filter((item) => item.slug !== this.slug);
+      history.unshift(historyEntry);
+      
+      try {
+        localStorage.setItem(this.historyKey, JSON.stringify(history.slice(0, 20)));
+      } catch (e) {
+        console.warn('LocalStorage quota exceeded, clearing old history');
+        localStorage.removeItem(this.historyKey);
+        localStorage.setItem(this.historyKey, JSON.stringify([historyEntry]));
+      }
+    },
+    savePlaybackPosition() {
+      const video = document.getElementById('videoPlayer');
+      if (video && !video.paused && this.movie && this.movie.currentEpisode && video.currentTime > this.PLAYBACK_SAVE_THRESHOLD_SECONDS) {
+        this.updateHistoryEntry(this.movie, this.movie.currentEpisode, video.currentTime, this.tabserver);
+      }
+    },
+    handleNextEpisode() {
+      if (this.currentEpisodeIndex !== -1 && this.currentEpisodeIndex < this.movie.pageMovie.length - 1) {
+        const nextEpisode = this.movie.pageMovie[this.currentEpisodeIndex + 1];
+        this.playEpisode(nextEpisode);
+      }
+    },
+    handlePreviousEpisode() {
+      if (this.currentEpisodeIndex > 0) {
+        const prevEpisode = this.movie.pageMovie[this.currentEpisodeIndex - 1];
+        this.playEpisode(prevEpisode);
+      }
+    },
+    handleVideoEnd() {
+      setTimeout(() => {
+        this.handleNextEpisode();
+      }, 500);
+    },
+    scrollToPlayer() {
+      const playerElement = document.querySelector('.video-wrapper');
+      if (playerElement) {
+        playerElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
   },
@@ -487,6 +617,7 @@ export default {
 </script>
 
 <style scoped>
+/* Các style khác không thay đổi */
 .video-wrapper {
   width: 100%;
   aspect-ratio: 16 / 9;

@@ -2,6 +2,57 @@
   <div style="width: 100%">
     <CarouselPage />
 
+    <div v-if="historyMovies.length > 0">
+      <v-row class="category-header" align="center" no-gutters>
+        <v-col cols="auto">
+          <h2 class="category-title">
+            <v-icon size="20" color="#ffcc00" class="mr-1">mdi-history</v-icon>
+            {{ $t('LỊCH SỬ ĐÃ XEM') }}
+          </h2>
+        </v-col>
+        <v-col cols="auto">
+          <router-link :to="{ name: 'HistoryPage' }" class="view-all">
+            {{ $t('Xem tất cả') }} >>
+          </router-link>
+        </v-col>
+      </v-row>
+      
+      <div class="horizontal-scroll-container">
+        <div
+          v-for="(item, index) in historyMovies.slice(0, 12)"
+          :key="item.slug || index"
+          class="movie-item-wrapper"
+        >
+          <router-link
+            :to="{ name: 'MovieDetail', params: { slug: item.slug }, query: { tap: item.episode?.slug } }"
+          >
+            <v-card class="mx-auto bg-dark text-white" max-width="344">
+              <v-img
+                :src="getOptimizedImage(item.poster_url)"
+                :alt="`Poster phim ${item.name}`"
+                class="movie-img"
+                height="250"
+                cover
+              ></v-img>
+
+              <v-card-subtitle class="episode-lang">
+                Tập: {{ item.episode?.name || 'N/A' }}
+              </v-card-subtitle>
+              
+              <v-card-title class="movie-title">{{ item.name }}</v-card-title>
+              
+              <v-card-text class="movie-info">
+                <div class="text-grey text-truncate">
+                  <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
+                  {{ item.origin_name }} ({{ item.year }})
+                </div>
+              </v-card-text>
+            </v-card>
+          </router-link>
+        </div>
+      </div>
+    </div>
+    
     <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
       <v-row class="category-header" align="center" no-gutters>
         <v-col cols="auto">
@@ -26,7 +77,6 @@
           </router-link>
         </v-col>
       </v-row>
-
       <div class="horizontal-scroll-container">
         <div
           v-for="(item, index) in isLoading
@@ -85,8 +135,8 @@ export default {
     return {
       urlImage: urlImage,
       isLoading: true,
+      historyMovies: [],
       sections: [
-        
         {
           title: this.$t('PHIM THỊNH HÀNH'),
           id: "danh-sach/thinh-hanh",
@@ -141,11 +191,16 @@ export default {
     CarouselPage,
   },
   mounted() {
+    this.loadHistory();
     this.sections.forEach((item) => {
       this.ListMovie(item.id, item);
     });
   },
   methods: {
+    loadHistory() {
+      const history = JSON.parse(localStorage.getItem('watchHistory') || '[]');
+      this.historyMovies = history.slice(0, 12).sort((a, b) => b.timestamp - a.timestamp);
+    },
     ListMovie(sectionId, section) {
       ListMovieByCateHome(
         sectionId,
@@ -165,9 +220,11 @@ export default {
       );
     },
     getOptimizedImage(imagePath) {
-      return `${this.urlImage + encodeURIComponent(imagePath)}&w=384&q=100`;
+      if (imagePath && imagePath.startsWith('https://')) {
+          return imagePath;
+      }
+      return imagePath ? `${this.urlImage}${encodeURIComponent(imagePath)}&w=384&q=100` : '/placeholder.jpg';
     },
-    // Chuan SEO
     updateMetaTags(seo) {
     document.title = seo.titleHead || 'Phim hay'
 
@@ -184,14 +241,12 @@ export default {
       document.head.appendChild(meta)
     }
 
-    // Xóa cũ
     removeOldMeta('description')
     removeOldMeta('og:title', 'property')
     removeOldMeta('og:description', 'property')
     removeOldMeta('og:type', 'property')
     removeOldMeta('og:image', 'property')
 
-    // Thêm mới
     setMeta('description', seo.descriptionHead)
     setMeta('og:title', seo.titleHead, 'property')
     setMeta('og:description', seo.descriptionHead, 'property')
@@ -203,14 +258,6 @@ export default {
       })
     }
   },
-    onImageLoad(index) {
-      this.$nextTick(() => {
-        const imgRef = this.$refs["img_" + index];
-        if (imgRef && imgRef.$el) {
-          imgRef.$el.classList.add("loaded");
-        }
-      });
-    },
   },
 };
 </script>
@@ -254,11 +301,9 @@ export default {
 
 .movie-item-wrapper {
   flex: 0 0 auto;
-  /* Kích thước mặc định cho desktop */
   width: calc(16.666% - 16.666px); 
 }
 
-/* Đảm bảo card chiếm toàn bộ chiều rộng của wrapper */
 .v-card {
   width: 100%;
 }
