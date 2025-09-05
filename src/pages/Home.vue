@@ -27,19 +27,13 @@
         </v-col>
       </v-row>
 
-      <v-row no-gutters tag="transition-group" name="fade-scale" class="movie-list">
-        <v-col
+      <div class="horizontal-scroll-container">
+        <div
           v-for="(item, index) in isLoading
             ? Array(12).fill({})
             : section.listMovie.slice(0, 12)"
           :key="item.slug || index"
-          cols="6"
-          xs="6"
-          sm="4"
-          md="3"
-          lg="2"
-          xl="2"
-          style="padding: 10px"
+          class="movie-item-wrapper"
         >
           <v-skeleton-loader v-if="isLoading" type="image" height="250" />
           <router-link
@@ -71,12 +65,11 @@
                   <v-icon size="14" class="mr-1" color="grey">mdi-tag</v-icon>
                   {{ item.origin_name }} ({{ item.year }})
                 </div>
-                
               </v-card-text>
             </v-card>
           </router-link>
-        </v-col>
-      </v-row>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -246,6 +239,30 @@ export default {
   color: #ff9900;
 }
 
+.horizontal-scroll-container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 10px 0;
+  gap: 20px;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.horizontal-scroll-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.movie-item-wrapper {
+  flex: 0 0 auto;
+  /* Kích thước mặc định cho desktop */
+  width: calc(16.666% - 16.666px); 
+}
+
+/* Đảm bảo card chiếm toàn bộ chiều rộng của wrapper */
+.v-card {
+  width: 100%;
+}
+
 .movie-title {
   font-size: 14px;
   font-weight: 600;
@@ -313,30 +330,28 @@ a {
   text-overflow: ellipsis;
   white-space: normal;
 }
-@media (max-width: 400px) {
-  .v-img {
-    height: 180px !important;
-  }
-
-  .movie-title {
-    font-size: 12px;
-  }
-
-  .movie-info {
-    font-size: 11px;
-  }
-
-  .episode-lang {
-    font-size: 11px;
-  }
-}
-.v-img {
-  height: 250px;
-}
 
 @media (max-width: 600px) {
-  .v-img {
-    height: 180px;
+  .movie-item-wrapper {
+    width: calc(50% - 10px) !important; /* Màn hình dưới 600px: Hiển thị 2 card */
+  }
+}
+
+@media (min-width: 601px) and (max-width: 960px) {
+  .movie-item-wrapper {
+    width: calc(25% - 15px) !important; /* Màn hình trung bình: hiển thị 4 card */
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1264px) {
+  .movie-item-wrapper {
+    width: calc(20% - 16px) !important; /* Màn hình lớn: hiển thị 5 card */
+  }
+}
+
+@media (min-width: 1265px) {
+  .movie-item-wrapper {
+    width: calc(16.666% - 16.666px) !important; /* Màn hình cực lớn: hiển thị 6 card */
   }
 }
 </style>
