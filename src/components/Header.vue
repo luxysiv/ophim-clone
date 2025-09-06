@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-app-bar class="main-navbar">
-      <v-app-bar-nav-icon v-show="$vuetify.display.smAndDown" @click="drawer = !drawer" />
+      <v-app-bar-nav-icon v-show="$vuetify.display.lgAndDown" @click="drawer = !drawer" />
       <v-img :src="imageLogo" alt="Phim360" contain class="mx-4" cover style="cursor: pointer" @click="goHome"></v-img>
 
-      <v-toolbar-items class="hidden-sm-and-down">
+      <v-toolbar-items class="d-none d-lg-flex">
         <v-btn text :to="{ path: '/home' }" :class="{ 'text-green': $route.path === '/home' }">
           {{ $t('Trang chủ') }}
         </v-btn>
@@ -160,19 +160,29 @@
       </v-menu>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" app temporary class="d-md-none">
+    <v-navigation-drawer v-model="drawer" app temporary class="d-lg-none">
       <v-list nav dense>
-        <v-list-item :to="{ path: '/home' }" :class="{ 'text-green': $route.path === '/home' }">
+        <v-list-item :to="{ path: '/home' }" :class="{ 'text-green': $route.path === '/home' }" @click="drawer = false">
           <v-list-item-title>{{ $t('Trang chủ') }}</v-list-item-title>
         </v-list-item>
 
-        <v-list-item :to="{ path: '/phim-bo' }" :class="{ 'text-green': $route.path === '/phim-bo' }">
+        <v-list-item :to="{ path: '/phim-bo' }" :class="{ 'text-green': $route.path === '/phim-bo' }" @click="drawer = false">
           <v-list-item-title>{{ $t('Phim Bộ') }}</v-list-item-title>
         </v-list-item>
 
-        <v-list-item :to="{ path: '/phim-le' }" :class="{ 'text-green': $route.path === '/phim-le' }">
+        <v-list-item :to="{ path: '/phim-le' }" :class="{ 'text-green': $route.path === '/phim-le' }" @click="drawer = false">
           <v-list-item-title>{{ $t('Phim Lẻ') }}</v-list-item-title>
         </v-list-item>
+
+        <v-list-item :to="{ path: '/phim-sap-chieu' }" :class="{ 'text-green': $route.path === '/phim-sap-chieu' }" @click="drawer = false">
+          <v-list-item-title>{{ $t('Sắp chiếu') }}</v-list-item-title>
+        </v-list-item>
+        
+        <v-list-item :to="{ path: '/hoat-hinh' }" :class="{ 'text-green': $route.path === '/hoat-hinh' }" @click="drawer = false">
+          <v-list-item-title>{{ $t('Hoạt hình') }}</v-list-item-title>
+        </v-list-item>
+
+        <v-divider class="my-2"></v-divider>
 
         <v-expansion-panels multiple>
           <v-expansion-panel>
@@ -210,11 +220,6 @@
               </v-list>
             </v-expansion-panel-text>
           </v-expansion-panel>
-
-          <v-list-item :to="{ path: '/phim-sap-chieu' }" :class="{ 'text-green': $route.path === '/phim-sap-chieu' }">
-            <v-list-item-title>{{ $t('Sắp chiếu') }}</v-list-item-title>
-          </v-list-item>
-          <v-divider class="my-2"></v-divider>
         </v-expansion-panels>
         <v-list-item @click="changeTheme">
           <v-list-item-icon>
